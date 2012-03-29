@@ -1,165 +1,133 @@
 <?php if (FALSE) : ?>
-    <script type="text/javascript">
+	<script type="text/javascript">
 <?php endif; ?>
-    elgg.provide('hj.comments');
+elgg.provide('hj.comments');
 
-    /**
-     *  Initialize hypeAlive JS
-     */
-    hj.comments.init = function() {
-        if(window.ajaxcommentsready === undefined) {
-            window.ajaxcommentsready = true;
-        }
-        hj.comments.triggerRefresh();
+/**
+ *  Initialize hypeAlive JS
+ */
+hj.comments.init = function() {
+	if(window.ajaxcommentsready === undefined) {
+		window.ajaxcommentsready = true;
+	}
+	//hj.comments.triggerRefresh();
 
-        var bar_loader = '<div class="hj-ajax-loader hj-loader-bar"></div>';
+	var bar_loader = '<div class="hj-ajax-loader hj-loader-bar"></div>';
 
-        // Show comment input on click
-        $('.elgg-menu-item-comment')
-        .unbind('click')
-        .bind('click', function(event) {
-            event.preventDefault();
+	// Show comment input on click
+	$('.elgg-menu-item-comment')
+	.unbind('click')
+	.bind('click', function(event) {
+		event.preventDefault();
 
-            $(this)
-            .parents('div.hj-annotations-menu')
-            .siblings('ul:first')
-            .find('.hj-comments-input:first')
-            .toggle();
-        });
+		var comments_block = $(this).closest('.hj-annotations-bar').find('.hj-annotations-comments-block').first();
+		comments_block
+		.find('.hj-comments-input')
+		.last()
+		.toggle('fast', function() {
+			if (comments_block.hasClass('hidden')) {
+				if ($(this).css('display') == 'none') {
+					comments_block.hide();
+				}
+				if ($(this).css('display') == 'block') {
+					comments_block.show();
+				}
+			}
 
-        // Toggle loading of older comments
-        $('.hj-comments-summary')
-        .each(function() {
-            $(this)
-            .unbind('click')
-            .bind('click', function(event) {
-                event.preventDefault();
-                var ref = new Array();
-                var commentsList = $(this).siblings('.hj-comments-list:first').children('.hj-syncable.hj-comments:first');
-                var last = $('li.elgg-item:last', commentsList);
-                if (!last.length) {
-                    last = commentsList;
-                }
-                var data = commentsList.data('options');
-                data.timestamp = last.data('timestamp');
-                ref.push(data);
-                $(this).css({'height':'16px'}).html(bar_loader);
-                hj.comments.refresh(ref, 'old');
-            });
-        });
+			$(this)
+			.find('[name="annotation_value"]')
+			.focus();
+		})
+	});
 
-        $('.hj-ajaxed-comment-save')
-        .removeAttr('onsubmit')
-        .unbind('submit')
-        .bind('submit', hj.comments.saveComment);
+	$('.hj-ajaxed-comment-edit')
+	.unbind('click')
+	.bind('click', hj.comments.editComment);
 
-    };
+	$('.hj-ajaxed-comment-save')
+	.removeAttr('onsubmit')
+	.unbind('submit')
+	.bind('submit', hj.comments.saveComment);
 
-    hj.comments.triggerRefresh = function() {
-        var time = 25000;
-        if (!window.commentstimer) {
-            window.commentstimer = true;
-            var refresh_comments = window.setTimeout(function(){
-                var ref = new Array();
-                // Let's get the timestamp of the first item in the list (newest comment)
-                $('.hj-syncable.hj-comments')
-                .each(function() {
-                    var first = $('li.elgg-item:first', $(this));
-                    if (!first.length) {
-                        first = $(this);
-                    }
-                    var data = $(this).data('options');
-                    data.timestamp = first.data('timestamp');
-                    ref.push(data);
-                });
-                if (window.ajaxcommentsready) {
-                    //elgg.system_message(elgg.echo('hj:comments:refreshing'));
-                    hj.comments.refresh(ref, 'new');
-                }
-                window.commentstimer = false;
-            }, time);
-        }
-    }
+};
 
-    hj.comments.refresh = function(data, sync) {
-        if (!data.length) return true;
-        if (window.ajaxcommentsready || sync == 'old') {
-            window.ajaxcommentsready = false;
-            elgg.action('action/comment/get', {
-                data : {
-                    sync : sync,
-                    data : data
-                },
-                success : function(data) {
-                    if (data && data.output != 'null') {
-                        $.each(data.output, function(key, val) {
-                            var container = $('#hj-annotations-'+ val.id);
-                            var commentsList = container.find('ul.hj-syncable.hj-comments:first');
-                            $.each(val.comments, function(key2, val2) {
-                                var new_item = $(val2).hide();
-                                if (sync == 'new') {
-                                    commentsList
-                                    .prepend(new_item.fadeIn(1000));
-                                } else {
-                                    commentsList
-                                    .append(new_item.fadeIn(1000));
-                                }
-                            });
-                        });
-                    }
-                    $('.hj-comments-summary').has('.hj-ajax-loader').each(function() {$(this).hide()});
-                    window.ajaxcommentsready = true;
-                    elgg.trigger_hook('success', 'hj:framework:ajax');
-                }
-            });
-        }
-    }
+hj.comments.editComment = function(event) {
+	event.preventDefault();
 
-    hj.comments.saveComment = function(event) {
-        event.preventDefault();
+	var
+	params = $(this).data('options').params,
+	item = $('#elgg-object-' + params.entity_guid),
+	item_html = item.html(),
+	value = item.find('.annotation-value').html(),
+	id = params.entity_guid,
+	form = item.closest('.annotations').siblings('.hj-comments-input').last().find('form').html();
+		
+	item.html($('<form>').html(form));
+	var input = item.find('[name="annotation_value"]');
+	input.focus();
+	input.val(value);
+	item.find('[name="annotation_guid"]').val(id);
 
-        var     values = $(this).serialize(),
-        action = $(this).attr('action'),
-        data = new Object(),
-        ref = new Array(),
-        id,
-        container, commentsList;
+	item
+	.find('form')
+	.bind('submit', function(event) {
+		event.preventDefault();
+		input.addClass('hj-input-processing');
+		value = input.val();
+		elgg.action('action/comment/save', {
+			data : {
+				annotation_guid : id,
+				annotation_value : value
+			},
+			success : function() {
+				item.html(item_html);
+				item.find('.annotation-value').html(value);
+				elgg.trigger_hook('success', 'hj:framework:ajax');
+			}
+		})
+	});
 
-        data.container_guid = $('input[name="container_guid"]', $(this)).val();
-        data.river_id = $('input[name="river_id"]', $(this)).val();
-        data.aname = $('input[name="aname"]', $(this)).val();
 
-        if (data.river_id) {
-            id = data.river_id
-        } else {
-            id = data.container_guid
-        }
-        container = $('#hj-annotations-'+ id);
-        commentsList = container.find('ul.hj-syncable.hj-comments:first');
+}
 
-        data.timestamp = $('li.elgg-item:first', commentsList).data('timestamp');
-        ref.push(data);
+hj.comments.saveComment = function(event) {
+	event.preventDefault();
 
-        var input = $('input[name="annotation_value"]', $(this));
+	var     values = $(this).serialize(),
+	action = $(this).attr('action'),
+	container_guid, river_id, id, container, commentsList;
 
-        input
-        .addClass('hj-input-processing');
+	container_guid = $('input[name="container_guid"]', $(this)).val();
+	river_id = $('input[name="river_id"]', $(this)).val();
 
-        elgg.action(action + '?' + values, {
-	    contentType : 'application/json',
-            success : function(output) {
-                hj.comments.refresh(ref, 'new');
+	if (river_id) {
+		id = river_id
+	} else {
+		id = container_guid
+	}
+	container = $('#hj-annotations-'+ id);
+	commentsList = container.find('.hj-comments').last();
 
-                input
-                .removeClass('hj-input-processing')
-                .val('')
-                .parents('div.hj-comments-input:first')
-                .toggle();
-            }
-        });
-    }
+	var input = $('[name="annotation_value"]', $(this));
 
-    elgg.register_hook_handler('init', 'system', hj.comments.init);
-    //elgg.register_hook_handler('init', 'system', hj.comments.triggerRefresh);
-    elgg.register_hook_handler('success', 'hj:framework:ajax', hj.comments.init, 500);
+	input
+	.addClass('hj-input-processing');
+
+	elgg.action(action + '?' + values, {
+		contentType : 'application/json',
+		success : function(output) {
+			hj.framework.ajax.base.listRefresh("hj-comments-" + id);
+
+			input
+			.removeClass('hj-input-processing')
+			.val('')
+			.parents('.hj-comments-input')
+			.last()
+			.toggle();
+		}
+	});
+}
+
+elgg.register_hook_handler('init', 'system', hj.comments.init);
+elgg.register_hook_handler('success', 'hj:framework:ajax', hj.comments.init, 500);
 <?php if (FALSE) : ?></script><?php endif; ?>

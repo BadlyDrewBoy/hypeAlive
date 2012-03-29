@@ -27,6 +27,13 @@ $river_input = elgg_view('input/dropdown', array(
 	'options_values' => array('on' => 'Yes', 'off' => 'No')
 		));
 
+$plusone_label = "Use +1 instead of likes";
+$plusone_input = elgg_view('input/dropdown', array(
+    'name' => 'params[plusone]',
+    'value' => $vars['entity']->plusone,
+    'options_values' => array('on' => 'Yes', 'off' => 'No')
+));
+
 $entity_label = "Enable hypeAlive comments and likes for content items (overwrites the defaul elgg_view_comments())";
 $entity_input = elgg_view('input/dropdown', array(
 	'name' => 'params[entity_comments]',
@@ -47,13 +54,28 @@ $notifications_input = elgg_view('input/text', array(
 	'value' => $vars['entity']->notifications
 		));
 
-
 $livesearch_label = "Enable/disable live search";
 $livesearch_input = elgg_view('input/dropdown', array(
 	'name' => 'params[livesearch]',
 	'value' => $vars['entity']->livesearch,
 	'options_values' => array('on' => 'Enabled', 'off' => 'Disabled')
 		));
+
+$depth_label = "Maximum Depth of the Comment Tree";
+$depth_input = elgg_view('input/text', array(
+	'name' => 'params[max_comment_depth]',
+	'value' => $vars['entity']->max_comment_depth
+		));
+
+$comment_form_label = "Comment Form Appearance";
+$comment_form_input = elgg_view('input/dropdown', array(
+	'name' => 'params[comment_form]',
+	'value' => $vars['entity']->comment_form,
+	'options_values' => array(
+		'simple' => 'Simple (no buttons, comment submitted when Enter is pressed)',
+		'advanced' => 'Advanced (multiple lines, buttons for submit and clear)')
+		));
+
 
 $settings = <<<__HTML
 
@@ -68,10 +90,13 @@ $settings = <<<__HTML
     <h3>Settings</h3>
     <div>
         <p><i>$river_label</i><br />$river_input</p>
+        <p><i>$plusone_label</i><br />$plusone_input</p>
         <p><i>$entity_label</i><br />$entity_input</p>
         <p><i>$forum_label</i><br />$forum_input</p>
+		<p><i>$depth_label</i><br />$depth_input</p>
         <p><i>$notifications_label</i><br />$notifications_input</p>
 		<p><i>$livesearch_label</i><br />$livesearch_input</p>
+		<p><i>$comment_form_label</i><br />$comment_form_input</p>
     </div>
     </hr>
 

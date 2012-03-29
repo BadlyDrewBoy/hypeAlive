@@ -6,6 +6,8 @@ $english = array(
      */
     'hj:alive:comments:likebutton' => 'Like',
     'hj:alive:comments:unlikebutton' => 'Unlike',
+	'hj:alive:comments:plusonebutton' => '+1 this',
+    'hj:alive:comments:minusonebutton' => 'Remove +1',
     'hj:alive:comments:commentsbutton' => 'Comment',
     'hj:alive:comments:sharebutton' => 'Share',
     'hj:alive:comments:viewall' => 'View all %s comments',
@@ -14,14 +16,28 @@ $english = array(
     'hj:comment:commenton' => 'Comment on %s',
     'hj:alive:comments:valuecantbeblank' => 'Comment can not be blank',
 
-    'hj:alive:comments:lang:you' => 'You ',
-    'hj:alive:comments:lang:and' => 'and ',
-    'hj:alive:comments:lang:others' => 'other people ',
-    'hj:alive:comments:lang:othersone' => 'other person ',
-    'hj:alive:comments:lang:people' => 'people ',
-    'hj:alive:comments:lang:peopleone' => 'person ',
-    'hj:alive:comments:lang:likethis' => 'like this',
-    'hj:alive:comments:lang:likesthis' => 'likes this',
+    'hj:alive:comments:lang:likes:you' => 'You ',
+    'hj:alive:comments:lang:likes:and' => 'and ',
+    'hj:alive:comments:lang:likes:others' => 'other people ',
+    'hj:alive:comments:lang:likes:othersone' => 'other person ',
+    'hj:alive:comments:lang:likes:people' => 'people ',
+    'hj:alive:comments:lang:likes:peopleone' => 'person ',
+    'hj:alive:comments:lang:likes:likethis' => 'like this',
+    'hj:alive:comments:lang:likes:likesthis' => 'likes this',
+	'hj:alive:comments:lang:likes:wholikesthis' => 'See who likes this',
+
+	'hj:alive:comments:lang:plusone:you' => 'You ',
+    'hj:alive:comments:lang:plusone:and' => 'and ',
+    'hj:alive:comments:lang:plusone:others' => 'more',
+    'hj:alive:comments:lang:plusone:othersone' => 'more',
+    'hj:alive:comments:lang:plusone:people' => '',
+    'hj:alive:comments:lang:plusone:peopleone' => '',
+    'hj:alive:comments:lang:plusone:likethis' => '+1\'d this',
+    'hj:alive:comments:lang:plusone:likesthis' => '',
+	'hj:alive:comments:lang:plusone:wholikesthis' => 'See who +1\'d this',
+
+
+
 
 
     'hj:alive:comments:count' => 'comments',
@@ -53,21 +69,23 @@ $english = array(
     /**
      * NOTIFICATIONS
      */
-    'hj:comments:notify:activity_type:create' => 'New %s %s added',
-    'hj:comments:notify:activity_type:update' => 'Updates to %s %s',
-    'hj:comments:notify:activity' => 'activity | <br />%s',
+    'hj:comments:notify:activity_type:create' => '"created %s %s"',
+    'hj:comments:notify:activity_type:update' => '"updated %s %s"',
+    'hj:comments:notify:activity' => 'activity 
+		
+			%s'
+	,
 
-    'hj:comments:notify:post' => 'content | %s %s',
+    'hj:comments:notify:post' => 'item titled %s',
 
     // Level 1
     'generic_comment:email:level1:subject' => 'You have a new comment',
     'generic_comment:email:level1:body' =>
-            "You have a new comment from %s on your %s: <br />
-                <br />
-                <b>%s</b><br />
-                <br />
+            "You have a new comment from %s on your %s:
+                
+                %s
 
-                You can reply here: <br />
+                You can reply here:
                 %s.
             ",
 
@@ -129,6 +147,10 @@ $english = array(
 
 	'search_types:group_topic_posts' => 'Discussion posts',
 	'hj:alive:reply_to' => 'Reply to topic "%s" in group "%s"',
+	
+	'item:user:default' => 'User Profile',
+
+
 );
 
 add_translation("en", $english);

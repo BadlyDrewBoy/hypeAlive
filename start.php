@@ -30,9 +30,6 @@ function hj_alive_init() {
 
 	$shortcuts = hj_framework_path_shortcuts($plugin);
 
-	// Helper Classes
-	elgg_register_classes($shortcuts['classes']);
-
 	// Register Libraries
 	elgg_register_library('hj:alive:comments:base', $shortcuts['lib'] . 'comments/base.php');
 	elgg_load_library('hj:alive:comments:base');
@@ -68,10 +65,6 @@ function hj_alive_river_init() {
 	$plugin = 'hypeAlive';
 
 	$shortcuts = hj_framework_path_shortcuts($plugin);
-
-	// Register JS and CSS libraries
-	$alive_js = elgg_get_simplecache_url('js', 'hj/river/base');
-	elgg_register_js('hj.river.base', $alive_js);
 
 	elgg_unregister_page_handler('activity', 'elgg_river_page_handler');
 	elgg_register_page_handler('activity', 'hj_alive_river_page_handler');
@@ -199,7 +192,7 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 			'entity' => $entity,
 			'text' => elgg_view_friendly_time($timestamp),
 			'href' => false,
-			'priority' => 500
+			'priority' => 100
 		);
 		$return[] = ElggMenuItem::factory($time);
 	}
@@ -208,7 +201,12 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 	 * Like / Unlike
 	 */
 	if ($entity->getType() == 'river') {
-		$show_like = true;
+		$object = $entity->getObjectEntity();
+		if (!elgg_instanceof($object, 'object')) {
+			$show_like = true;
+		} elseif ($object->canComment() || $object->canAnnotate()) {
+			$show_like = true;
+		}
 	} else if (elgg_instanceof($entity, 'object', 'groupforumtopic')) {
 		$container = get_entity($entity->container_guid);
 		$show_like = $container->canWriteToContainer();
@@ -227,24 +225,46 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 			$unlikes_class = "hidden";
 			$likes_class = "visible";
 		}
+		if (elgg_get_plugin_setting('plusone', 'hypeAlive') == 'on') {
+			$like_button = elgg_view_icon('plusone');
+			$like_text = elgg_echo('hj:alive:comments:plusonebutton');
+			$unlike_button = elgg_view_icon('minusone');
+			$unlike_text = elgg_echo('hj:alive:comments:minusonebutton');
+		} else {
+			$like_text = $like_button = elgg_echo('hj:alive:comments:likebutton');
+			$unlike_text = $unlike_button = elgg_echo('hj:alive:comments:unlikebutton');
+		}
+
+		if (elgg_instanceof($entity, 'object', 'hjannotation')) {
+			$likes_view = hj_alive_view_likes_list($params['params']);
+			$likes_inline = "<div class=\"likes likes-inline\">$likes_view</div>";
+			$likes_count = array(
+				'name' => 'likes_count',
+				'text' => $likes_inline,
+				'href' => false,
+				'priority' => 310
+			);
+			$return[] = ElggMenuItem::factory($likes_count);
+		}
 		$likes = array(
 			'name' => 'like',
-			'text' => elgg_echo('hj:alive:comments:likebutton'),
+			'text' => $like_button,
 			'entity' => $entity,
-			'title' => elgg_echo('hj:alive:comments:likebutton'),
+			'title' => $like_text,
 			'class' => $likes_class,
 			'rel' => 'like',
-			'priority' => 100
+			'priority' => 300
 		);
 		$unlikes = array(
 			'name' => 'unlike',
-			'text' => elgg_echo('hj:alive:comments:unlikebutton'),
+			'text' => $unlike_button,
 			'entity' => $entity,
-			'title' => elgg_echo('hj:alive:comments:unlikebutton'),
+			'title' => $unlike_text,
 			'class' => $unlikes_class,
 			'rel' => 'unlike',
-			'priority' => 105
+			'priority' => 305
 		);
+
 
 		$return[] = ElggMenuItem::factory($likes);
 		$return[] = ElggMenuItem::factory($unlikes);
@@ -254,13 +274,29 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 	 * Comment
 	 */
 	if ($entity->getType() == 'river') {
-		$show_comment = true;
+		$object = $entity->getObjectEntity();
+		if (!elgg_instanceof($object, 'object')) {
+			$show_comment = true;
+		} elseif ($object->canComment() || $object->canAnnotate()) {
+			$show_comment = true;
+		}
 	} else if (elgg_instanceof($entity, 'object', 'groupforumtopic')) {
 		$container = get_entity($entity->container_guid);
 		$show_comment = $container->canWriteToContainer();
 	} else if ($entity->canComment() || $entity->canAnnotate()) {
 		$show_comment = true;
 	}
+
+	if (elgg_instanceof($entity, 'object', 'hjannotation')) {
+		if (!$max_depth = elgg_get_plugin_setting('max_comment_depth', 'hypeAlive')) {
+			$max_depth = 3;
+			elgg_set_plugin_setting('max_comment_depth', $max_depth);
+		}
+		if ($entity->depthToOriginalContainer() > $max_depth) {
+			$show_comment = false;
+		}
+	}
+
 
 	if ($show_comment) {
 		$comment = array(
@@ -283,19 +319,33 @@ function hj_alive_commentshead_menu($hook, $type, $return, $params) {
 	}
 	unset($return);
 
+	$params = hj_framework_extract_params_from_entity($entity, $params);
+	$params = hj_framework_json_query(array('params' => $params));
 	/**
 	 * Delete
 	 */
-	if (($entity->canEdit())) {
+	if ($entity->canEdit()) {
+		$edit = array(
+			'name' => 'edit',
+			'text' => elgg_echo('hj:framework:edit'),
+			'class' => 'hj-ajaxed-comment-edit',
+			'href' => "javascript:void(0)",
+			'data-options' => htmlentities($params, ENT_QUOTES, 'UTF-8'),
+			'priority' => 800,
+			'section' => 'dropdown'
+		);
+		$return[] = ElggMenuItem::factory($edit);
+
 		$delete = array(
 			'name' => 'delete',
-			'text' => elgg_view_icon('delete'),
-			'entity' => $entity,
-			'class' => 'hj-ajaxed-remove hidden',
+			'text' => elgg_echo('hj:framework:delete'),
+			'class' => 'hj-ajaxed-remove',
 			'id' => "hj-ajaxed-remove-$entity->guid",
 			'href' => "action/framework/entities/delete?e=$entity->guid",
+			'data-options' => htmlentities($params, ENT_QUOTES, 'UTF-8'),
 			'is_action' => true,
-			'priority' => 1000
+			'priority' => 1000,
+			'section' => 'dropdown'
 		);
 		$return[] = ElggMenuItem::factory($delete);
 	}
