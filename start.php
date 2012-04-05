@@ -14,7 +14,7 @@
  * @copyright Copyrigh (c) 2011, Ismayil Khayredinov
  */
 
-elgg_register_event_handler('init', 'system', 'hj_alive_init');
+elgg_register_event_handler('init', 'system', 'hj_alive_init', 502);
 
 /**
  * Initialize hypeAlive
