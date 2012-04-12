@@ -2,7 +2,7 @@
 
 if (!get_input('annotation_value')) {
 	register_error(elgg_echo('hj:alive:comments:valuecantbeblank'));
-	return true;
+	forward(REFERER);
 }
 
 $annotation_guid = get_input('annotation_guid', null);
@@ -13,7 +13,7 @@ $river_id = get_input('river_id', false);
 
 if (!$annotation_guid && !$river_id && !elgg_instanceof($container)) {
 	register_error(elgg_echo('hj:comments:cantfind'));
-	return true;
+	forward(REFERER);
 }
 
 $annotation = new hjAnnotation($annotation_guid);
@@ -26,14 +26,10 @@ if (!$annotation_guid) {
 	$annotation->river_id = $river_id;
 	$annotation->access_id = get_input('access_id', ACCESS_DEFAULT);
 }
-$guid = $annotation->save();
-
-
-if ($guid) {
+if ($annotation->save()) {
 	system_message(elgg_echo('hj:comments:savesuccess'));
+	forward($annotation->getURL());
 } else {
 	register_error(elgg_echo('hj:comments:saveerror'));
+	forward(REFERER);
 }
-
-header('Content-Type: application/json');
-print(json_encode($guid));
