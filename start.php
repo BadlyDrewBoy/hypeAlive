@@ -102,7 +102,6 @@ function hj_alive_comments_init() {
 	$shortcuts = hj_framework_path_shortcuts($plugin);
 
 	// Actions
-	elgg_register_action('comment/get', $shortcuts['actions'] . 'hj/comment/get.php');
 	elgg_register_action('comment/save', $shortcuts['actions'] . 'hj/comment/save.php');
 
 	elgg_register_action('like/get', $shortcuts['actions'] . 'hj/like/get.php');
