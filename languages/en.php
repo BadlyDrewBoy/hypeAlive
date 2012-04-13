@@ -54,6 +54,7 @@ $english = array(
     'hj:alive:comments:bodymissing' => 'Oh, you have not entered any text',
     'hj:alive:comments:topicmissing' => 'Oh, you need to enter a name for your forum topic',
 
+	'search:comment' => 'Comment',
     'hj:alive:comments:commenton' => 'Comment on %s',
     'hj:alive:comments:commentcontent' => '%s: %s',
 	'hj:alive:comment_on:river' => 'Comment on an activity: %s',

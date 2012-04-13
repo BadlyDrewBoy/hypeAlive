@@ -64,10 +64,13 @@ if (!elgg_instanceof($entity, 'object', 'hjannotation')) {
 				$url = $container->getURL();
 				$title = "<a href=\"$url\">$title</a>";
 			} else if (elgg_instanceof($container)) {
-				$title = $container->title;
+				if ($title = $container->title && !empty($title)) {
 				$title = elgg_echo('search:comment_on', array($title));
 				$url = $container->getURL();
 				$title = "<a href=\"$url\">$title</a>";
+				} else {
+					$title = elgg_echo('search:comment');
+				}
 			} else {
 				$title = elgg_echo('hj:alive:comment_on:river', array(elgg_view('river/elements/summary', array('item' => $container))));
 			}
