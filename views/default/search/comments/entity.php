@@ -44,7 +44,7 @@ if (!elgg_instanceof($entity, 'object', 'hjannotation')) {
 
 	$description = $entity->getVolatileData('search_matched_comment');
 	$tc = $entity->getVolatileData('search_matched_comment_time_created');
-	;
+
 	$time = elgg_view_friendly_time($tc);
 
 	$body = "<p class=\"mbn\">$title</p>$description";
@@ -65,11 +65,13 @@ if (!elgg_instanceof($entity, 'object', 'hjannotation')) {
 				$title = "<a href=\"$url\">$title</a>";
 			} else if (elgg_instanceof($container)) {
 				if ($title = $container->title && !empty($title)) {
-				$title = elgg_echo('search:comment_on', array($title));
-				$url = $container->getURL();
-				$title = "<a href=\"$url\">$title</a>";
+					$title = elgg_echo('search:comment_on', array($title));
+					$url = $container->getURL();
+					$title = "<a href=\"$url\">$title</a>";
 				} else {
+					$url = $container->getURL();
 					$title = elgg_echo('search:comment');
+					$title = "<a href=\"$url\">$title</a>";
 				}
 			} else {
 				$title = elgg_echo('hj:alive:comment_on:river', array(elgg_view('river/elements/summary', array('item' => $container))));

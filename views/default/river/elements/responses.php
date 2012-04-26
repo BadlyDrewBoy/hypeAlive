@@ -21,11 +21,9 @@ if ($item->annotation_id != 0 || !$object) {
 }
 
 if (elgg_get_plugin_setting('river_comments', 'hypeAlive') !== 'off') {
-    //if (elgg_is_logged_in()) {
 	echo elgg_view('hj/comments/bar', array(
 	    'entity' => $item,
 	));
-    //}
 } else {
     $comment_count = $object->countComments();
 

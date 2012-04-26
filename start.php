@@ -16,9 +16,6 @@
 
 elgg_register_event_handler('init', 'system', 'hj_alive_init', 502);
 
-/**
- * Initialize hypeAlive
- */
 function hj_alive_init() {
 
 	$plugin = 'hypeAlive';
@@ -30,13 +27,11 @@ function hj_alive_init() {
 
 	$shortcuts = hj_framework_path_shortcuts($plugin);
 
-	// Register Libraries
-	elgg_register_library('hj:alive:comments:base', $shortcuts['lib'] . 'comments/base.php');
-	elgg_load_library('hj:alive:comments:base');
-
 	elgg_register_library('hj:alive:setup', $shortcuts['lib'] . 'alive/setup.php');
-
-	//Check if the initial setup has been performed, if not porform it
+	elgg_register_library('hj:alive:base', $shortcuts['lib'] . 'alive/base.php');
+	elgg_load_library('hj:alive:base');
+	
+	//Check if the initial setup has been performed, if not perform it
 	if (!elgg_get_plugin_setting('hj:alive:setup')) {
 		elgg_load_library('hj:alive:setup');
 		if (hj_alive_setup())
@@ -104,7 +99,7 @@ function hj_alive_comments_init() {
 	// Actions
 	elgg_register_action('comment/save', $shortcuts['actions'] . 'hj/comment/save.php');
 
-	elgg_register_action('like/get', $shortcuts['actions'] . 'hj/like/get.php');
+	elgg_register_action('like/get', $shortcuts['actions'] . 'hj/like/get.php', 'public');
 	elgg_register_action('like/save', $shortcuts['actions'] . 'hj/like/save.php');
 
 	// Register JS and CSS libraries
@@ -116,12 +111,6 @@ function hj_alive_comments_init() {
 
 	$js_likes_url = elgg_get_simplecache_url('js', 'hj/likes/base');
 	elgg_register_js('hj.likes.base', $js_likes_url);
-
-	elgg_load_css('hj.comments.base');
-	if (elgg_is_logged_in()) {
-		elgg_load_js('hj.comments.base');
-		elgg_load_js('hj.likes.base');
-	}
 
 	// Register a hook to replace Elgg comments with hypeAlive
 	if (elgg_get_plugin_setting('entity_comments', 'hypeAlive') !== 'off') {
@@ -152,10 +141,6 @@ function hj_alive_likes_init() {
 
 	$shortcuts = hj_framework_path_shortcuts($plugin);
 
-	// Register Libraries
-	elgg_register_library('hj:alive:likes:base', $shortcuts['lib'] . 'likes/base.php');
-	elgg_load_library('hj:alive:likes:base');
-
 	$js_generic_url = elgg_get_simplecache_url('js', 'hj/likes/base');
 	elgg_register_js('hj.likes.base', $js_generic_url);
 }
@@ -179,6 +164,7 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 	if (!$entity) {
 		return $return;
 	}
+
 	unset($return);
 
 	/**
@@ -186,7 +172,6 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 	 */
 	if (elgg_instanceof($entity, 'object', 'hjannotation') && $timestamp = $entity->time_created) {
 		$time = array(
-			'handler' => $handler,
 			'name' => 'time',
 			'entity' => $entity,
 			'text' => elgg_view_friendly_time($timestamp),
