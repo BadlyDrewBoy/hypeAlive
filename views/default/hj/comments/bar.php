@@ -68,6 +68,7 @@ echo <<<__COMMENTS
 				</div>
 			</div>
 		</div>
+		$extend
 	</div>
 </div>
 __COMMENTS;
