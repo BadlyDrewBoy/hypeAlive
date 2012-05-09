@@ -16,3 +16,8 @@
 - Added comments to the search
 - Fixed notifications
 
+1.8.5 -> 1.8.6
+- UI improvements
+- Different list handling
+- +1s
+

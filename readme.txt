@@ -23,8 +23,8 @@ hypeAlive covers the following:
 
 REQUIREMENTS
 ------------
-1) Elgg 1.8.3+
-2) hypeFramework 1.8.5+
+1) Elgg 1.8.4+
+2) hypeFramework 1.8.6+
 
 INTEGRATION / COMPATIBILITY
 ---------------------------
@@ -37,7 +37,7 @@ INTEGRATION / COMPATIBILITY
 
 INSTALLATION
 ------------
--- Install hypeFramework 1.8.5+
+-- Install hypeFramework 1.8.6+
 -- Place hypeAlive below hypeFramework in the comments list and activate
 -- Run upgrade.php
 
