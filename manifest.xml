@@ -4,14 +4,16 @@
     <author>Ismayil Khayredinov (hypeJunction)</author>
     <version>1.8.6</version>
     <category>enhancements</category>
-    <blurb>hypeAlive - Real-Time Functionalities for Elgg</blurb>
+	<category>comments</category>
+	<category>hypeJunction</category>
+    <blurb>hypeAlive - Real-Time Commenting and Search Functionalities for Elgg</blurb>
     <description>Creates an AJAX commenting and feed system for Elgg</description>
     <website>http://hypeJunction.com</website>
     <copyright>See lisence.txt</copyright>
     <license>GNU Public License version 2</license>
     <requires>
         <type>elgg_version</type>
-		<version>2011122100</version>
+		<version>2012041801</version>
     </requires>
     <requires>
         <type>plugin</type>

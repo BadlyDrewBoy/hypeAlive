@@ -20,4 +20,8 @@
 - UI improvements
 - Different list handling
 - +1s
+- Maximum comment tree depth
+- Extended and short forms
+- Edit / delete comments
+
 

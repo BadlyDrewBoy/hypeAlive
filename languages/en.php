@@ -151,6 +151,8 @@ $english = array(
 	
 	'item:user:default' => 'User Profile',
 
+	'hj:alive:button:clear' => 'Clear',
+	
 
 );
 

@@ -78,6 +78,7 @@ function hj_alive_view_comments_list($entity, $params) {
 	$vars['sync'] = true;
 	$vars['pagination'] = true;
 	$vars['position'] = 'before';
+	$vars['list_type'] = 'list';
 	$vars['base_url'] = 'hj/sync/metadata';
 	$vars['list_class'] = 'hj-comments';
 	$vars['count'] = $count;

@@ -52,7 +52,7 @@ if (elgg_get_plugin_setting('comment_form', 'hypeAlive') == 'advanced') {
 	
 	$form_body .= elgg_view('input/button', array(
 		'type' => 'reset',
-		'value' => elgg_echo('clear')
+		'value' => elgg_echo('hj:alive:button:clear')
 	));
 } else {
 	$form_body .= elgg_view('input/text', array(
