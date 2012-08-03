@@ -26,14 +26,16 @@ if ($comments_count <= 0) {
 
 $comments_view = hj_alive_view_comments_list($entity, $params);
 
-$menu = elgg_view_menu('comments', array(
-	'entity' => $entity,
-	'class' => 'elgg-menu-hz',
-	'sort_by' => 'priority',
-	'params' => $params
-		));
+if (elgg_is_logged_in()) {
+	$menu = elgg_view_menu('comments', array(
+		'entity' => $entity,
+		'class' => 'elgg-menu-hz',
+		'sort_by' => 'priority',
+		'params' => $params
+			));
 
-$comments_input = elgg_view('hj/comments/input', $params);
+	$comments_input = elgg_view('hj/comments/input', $params);
+}
 
 unset($params['aname']);
 unset($params['entity']);
