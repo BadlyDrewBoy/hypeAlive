@@ -24,6 +24,13 @@ if ($container_guid = elgg_extract('container_guid', $vars, false)) {
 			));
 }
 
+if ($instance_id = elgg_extract('instance_id', $vars, false)) {
+	$form_body .= elgg_view('input/hidden', array(
+		'name' => 'instance_id',
+		'value' => $instance_id
+			));
+}
+
 if ($river_id = elgg_extract('river_id', $vars, false)) {
 	$form_body .= elgg_view('input/hidden', array(
 		'name' => 'river_id',

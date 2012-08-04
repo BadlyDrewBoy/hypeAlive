@@ -95,15 +95,20 @@ hj.comments.saveComment = function(event) {
 
 	var     values = $(this).serialize(),
 	action = $(this).attr('action'),
-	container_guid, river_id, id, container, commentsList;
+	container_guid, river_id, id, container, commentsList, instance_id;
 
 	container_guid = $('input[name="container_guid"]', $(this)).val();
 	river_id = $('input[name="river_id"]', $(this)).val();
+	instance_id = $('input[name="instance_id"]', $(this)).val();
 
 	if (river_id) {
 		id = river_id
 	} else {
-		id = container_guid
+		if (instance_id && instance_id.length > 0) {
+			id = container_guid + '-' + instance_id
+		} else {
+			id = container_guid
+		}
 	}
 	container = $('#hj-annotations-'+ id);
 	commentsList = container.find('.hj-comments').last();

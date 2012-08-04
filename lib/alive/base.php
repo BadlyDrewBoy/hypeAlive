@@ -11,8 +11,9 @@ function hj_alive_prepare_view_params($entity, $annotation_name = 'generic_comme
 		$object = $entity->getObjectEntity();
 		if (elgg_instanceof($object, 'object')) {
 			$guid = $object->guid;
-			$params['selector_id'] = $guid;
+			$params['selector_id'] = "$guid-$entity->id";
 			$params['container_guid'] = $guid;
+			$params['instance_id'] = $entity->id;
 		} else {
 			$river_id = $entity->id;
 			$params['selector_id'] = $river_id;
@@ -31,6 +32,7 @@ function hj_alive_prepare_view_params($entity, $annotation_name = 'generic_comme
 function hj_alive_view_comments_list($entity, $params) {
 	$container_guid = elgg_extract('container_guid', $params, null);
 	$river_id = elgg_extract('river_id', $params, null);
+	$selector_id = elgg_extract('selector_id', $params, null);
 	$annotation_name = elgg_extract('aname', $params, 'generic_comment');
 
 	$options = array(
@@ -88,25 +90,20 @@ function hj_alive_view_comments_list($entity, $params) {
 	$vars['class'] = 'hj-view-list';
 	$vars['inverse_order'] = true;
 
-	if ($container_guid) {
-		$vars['list_id'] = "hj-comments-$container_guid";
-	} else {
-		$vars['list_id'] = "hj-comments-$river_id";
-	}
-
+	$vars['list_id'] = "hj-comments-$selector_id";
 	$vars['class'] = "hj-annotation-list-$annotation_name";
 
 	$visible = elgg_view_entity_list($comments, $vars);
 
-	$limit = elgg_extract('limit', $options, 0);
-	if ($count > 0 && $count > $limit) {
-		$remainder = $count - $limit;
-		if ($limit > 0) {
-			$summary = elgg_echo('hj:alive:comments:remainder', array($remainder));
-		} else {
-			$summary = elgg_echo('hj:alive:comments:viewall', array($remainder));
-		}
-	}
+//	$limit = elgg_extract('limit', $options, 0);
+//	if ($count > 0 && $count > $limit) {
+//		$remainder = $count - $limit;
+//		if ($limit > 0) {
+//			$summary = elgg_echo('hj:alive:comments:remainder', array($remainder));
+//		} else {
+//			$summary = elgg_echo('hj:alive:comments:viewall', array($remainder));
+//		}
+//	}
 	return $visible;
 }
 
