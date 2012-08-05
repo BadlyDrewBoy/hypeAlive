@@ -51,7 +51,7 @@ hj.likes.refresh = function(data) {
 			success : function(data) {
 				if (data && data.output != 'null') {
 					$.each(data.output, function(key, val) {
-						var container = $('#hj-annotations-'+ val.id);
+						var container = $('#hj-annotations-'+ val.selector_id);
 						var likesList = container.find('.likes').first();
 						if (val.likes && val.likes.length > 0) {
 							likesList.html(val.likes);

@@ -14,6 +14,7 @@ if (!is_array($data)) {
 foreach ($data as $entity) {
     $params['container_guid'] = elgg_extract('container_guid', $entity, null);
     $params['river_id'] = elgg_extract('river_id', $entity, null);
+	$selector_id  = elgg_extract('selector_id', $entity, null);
 
     $likes = hj_alive_view_likes_list($params);
     $owner = hj_alive_does_user_like($params);
@@ -22,7 +23,7 @@ foreach ($data as $entity) {
         $id = $params['container_guid'];
     }
     
-    $output[] = array('id' => $id, 'likes' => $likes, 'self' => $owner['self']);
+    $output[] = array('id' => $id, 'likes' => $likes, 'self' => $owner['self'], 'selector_id' => $selector_id);
 }
 
 print(json_encode($output));
