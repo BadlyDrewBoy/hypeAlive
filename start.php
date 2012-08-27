@@ -105,12 +105,15 @@ function hj_alive_comments_init() {
 	// Register JS and CSS libraries
 	$css_url = elgg_get_simplecache_url('css', 'hj/comments/base');
 	elgg_register_css('hj.comments.base', $css_url);
+	elgg_register_simplecache_view('css/hj/comments/base');
 
 	$js_generic_url = elgg_get_simplecache_url('js', 'hj/comments/base');
 	elgg_register_js('hj.comments.base', $js_generic_url);
+	elgg_register_simplecache_view('js/hj/comments/base');
 
 	$js_likes_url = elgg_get_simplecache_url('js', 'hj/likes/base');
 	elgg_register_js('hj.likes.base', $js_likes_url);
+	elgg_register_simplecache_view('js/hj/likes/base');
 
 	// Register a hook to replace Elgg comments with hypeAlive
 	if (elgg_get_plugin_setting('entity_comments', 'hypeAlive') !== 'off') {
@@ -143,6 +146,8 @@ function hj_alive_likes_init() {
 
 	$js_generic_url = elgg_get_simplecache_url('js', 'hj/likes/base');
 	elgg_register_js('hj.likes.base', $js_generic_url);
+	elgg_register_simplecache_view('js/hj/likes/base');
+	
 }
 
 /**
