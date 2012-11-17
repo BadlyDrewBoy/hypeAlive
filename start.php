@@ -127,12 +127,13 @@ function hj_alive_comments_init() {
 	}
 
 	if (elgg_get_plugin_setting('river_comments', 'hypeAlive') !== 'off') {
-		elgg_unregister_plugin_hook_handler('register', 'menu:river', 'elgg_river_menu_setup');
+		//elgg_unregister_plugin_hook_handler('register', 'menu:river', 'elgg_river_menu_setup');
 		elgg_unregister_plugin_hook_handler('register', 'menu:river', 'likes_river_menu_setup');
 		elgg_unregister_plugin_hook_handler('register', 'menu:river', 'discussion_add_to_river_menu');
 		if (elgg_get_context() == 'activity') {
 			elgg_unregister_plugin_hook_handler('register', 'menu:entity', 'likes_entity_menu_setup');
 		}
+		elgg_register_plugin_hook_handler('register', 'menu:river', 'hj_alive_river_menu_setup');
 	}
 
 	elgg_register_plugin_hook_handler('register', 'menu:comments', 'hj_alive_comments_menu');
@@ -418,6 +419,17 @@ function hj_alive_notification_settings($hook, $type, $return, $params) {
 	$notify_settings = explode(',', $notify_settings);
 	foreach ($notify_settings as $key => $setting) {
 		$return[] = trim($setting);
+	}
+
+	return $return;
+}
+
+function hj_alive_river_menu_setup($hook, $type, $return, $params) {
+
+	foreach ($return as $key => $item) {
+		if ($item instanceof ElggMenuItem && $item->getName() == 'comment') {
+			unset($return[$key]);
+		}
 	}
 
 	return $return;
