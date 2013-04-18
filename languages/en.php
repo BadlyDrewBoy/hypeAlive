@@ -1,7 +1,26 @@
 <?php
 
 $english = array(
-    /**
+
+	'hj:alive:river:tab:all' => 'Everyone',
+	'hj:alive:river:tab:mine' => 'Me',
+	'hj:alive:river:tab:friends' => 'My Friends',
+	'hj:alive:river:tab:groups' => 'My Groups',
+	'hj:alive:river:tab:subscriptions' => 'My Interactions',
+
+	'river:groups' => 'Activity in my groups',
+	'river:subscriptions' => 'My Interactions',
+
+	'hj:alive:river:settings' => 'Feed Settings',
+	'hj:alive:river:hidden_types_subtypes' => 'Hide all activity about:',
+	'hj:alive:river:hidden_users' => 'Hide all activity from these users:',
+	'hj:alive:river:hidden_groups' => 'Hide all activity from these groups:',
+
+	'hj:alive:filter:tsp' => 'Filter activity by topic',
+	'hj:alive:filter:users' => 'Filter activity by user',
+	'hj:alive:filter:groups' => 'Filter activity by group',
+
+	/**
      * Comments
      */
     'hj:alive:comments:likebutton' => 'Like',
