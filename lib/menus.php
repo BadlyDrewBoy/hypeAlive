@@ -22,9 +22,11 @@ if (HYPEALIVE_RIVER) {
 	}
 }
 elgg_register_plugin_hook_handler('register', 'menu:comments', 'hj_alive_comments_menu');
-elgg_register_plugin_hook_handler('register', 'menu:commentshead', 'hj_alive_commentshead_menu');
+//elgg_register_plugin_hook_handler('register', 'menu:commentshead', 'hj_alive_commentshead_menu');
+
 
 function hj_alive_comments_menu($hook, $type, $return, $params) {
+
 	$entity = elgg_extract('entity', $params, false);
 	$container_guid = elgg_extract('container_guid', $params['params'], null);
 	$river_id = elgg_extract('river_id', $params['params'], null);
@@ -69,6 +71,7 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 	} else if ($entity->canAnnotate()) {
 		$show_like = true;
 	}
+	
 	if ($show_like) {
 		unset($params['entity']);
 		$likes_owner = hj_alive_does_user_like($params['params']);

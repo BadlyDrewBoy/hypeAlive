@@ -18,7 +18,10 @@ define('HYPEALIVE_FORUM_COMMENTS', elgg_get_plugin_setting('forum_comments', 'hy
 define('HYPEALIVE_MAX_COMMENT_DEPTH', elgg_get_plugin_setting('max_comment_depth', 'hypeAlive'));
 
 define('HYPEALIVE_LIKES', elgg_get_plugin_setting('likes', 'hypeAlive'));
-define('HYPEALIVE_PLUSONE', elgg_get_plugin_setting('plusone', 'hypeAlive'));
+define('HYPEALIVE_DISLIKES', elgg_get_plugin_setting('dislikes', 'hypeAlive'));
+define('HYPEALIVE_LIKES_STYLE', elgg_get_plugin_setting('likes_style', 'hypeAlive'));
+define('HYPEALIVE_LIKES_LIMIT', elgg_get_plugin_setting('likes_limit', 'hypeAlive'));
+
 define('HYPEALIVE_SEARCH', elgg_get_plugin_setting('livesearch', 'hypeAlive'));
 define('HYPEALIVE_RIVER', elgg_get_plugin_setting('river', 'hypeAlive'));
 

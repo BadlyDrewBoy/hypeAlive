@@ -1,13 +1,16 @@
 <?php
 
-// Custom filter clause
-elgg_register_plugin_hook_handler('custom_sql_clause', 'framework:lists', 'hj_alive_filter_activity');
-
-elgg_register_plugin_hook_handler('hj:notification:setting', 'annotation', 'hj_alive_notification_settings');
-
-if (HYPEALIVE_COMMENTS || HYPEALIVE_LIKES) {
+// Custom activity filter clause
+if (HYPEALIVE_RIVER) {
+	elgg_register_plugin_hook_handler('custom_sql_clause', 'framework:lists', 'hj_alive_filter_activity');
+}
+if (HYPEALIVE_COMMENTS || HYPEALIVE_LIKES || HYPEALIVE_DISLIKES) {
 	// Register default comments bar
 	elgg_register_plugin_hook_handler('comments', 'all', 'hj_alive_comments_replacement');
+}
+
+if (HYPEALIVE_LIKES) {
+	elgg_unregister_plugin_hook_handler('register', 'menu:entity', 'likes_entity_menu_setup');
 }
 
 if (HYPEALIVE_COMMENTS) {
@@ -16,9 +19,8 @@ if (HYPEALIVE_COMMENTS) {
 	elgg_register_plugin_hook_handler('search', 'comments', 'hj_alive_search_comments_hook');
 }
 
-if (HYPEALIVE_LIKES) {
-	elgg_unregister_plugin_hook_handler('register', 'menu:entity', 'likes_entity_menu_setup');
-}
+
+elgg_register_plugin_hook_handler('hj:notification:setting', 'annotation', 'hj_alive_notification_settings');
 
 function hj_alive_filter_activity($hook, $type, $options, $params) {
 
@@ -29,12 +31,12 @@ function hj_alive_filter_activity($hook, $type, $options, $params) {
 			list($type, $subtype) = explode(':', $tsp);
 			$type_subtype_pairs[$type][] = $subtype;
 		}
-		foreach ($type_subtype_pairs as $type=> $subtypes) {
+		foreach ($type_subtype_pairs as $type => $subtypes) {
 			if (!is_array($subtypes)) {
 				$type_subtype_pairs[$type] = true;
 			}
 		}
-		$options['type_subtype_pairs']= $type_subtype_pairs;
+		$options['type_subtype_pairs'] = $type_subtype_pairs;
 	}
 
 	$query = get_input("members", false);
@@ -47,11 +49,8 @@ function hj_alive_filter_activity($hook, $type, $options, $params) {
 	return $options;
 }
 
-/**
- *  Replaces native Elgg comments with hypeAlive Comments
- */
 function hj_alive_comments_replacement($hook, $entity_type, $returnvalue, $params) {
-	return elgg_view('hj/comments/bar', $params);
+	return elgg_view('framework/alive/annotations', $params);
 }
 
 function hj_alive_search_comments_hook($hook, $type, $value, $params) {

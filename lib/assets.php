@@ -1,25 +1,11 @@
 <?php
 
-elgg_register_js('alive.base.js', elgg_get_simplecache_url('js', 'framework/alive/base'));
-elgg_register_simplecache_view('js/framework/alive/base');
+if (HYPEALIVE_COMMENTS || HYPEALIVE_LIKES || HYPEALIVE_DISLIKES) {
+	elgg_register_js('alive.annotations.js', elgg_get_simplecache_url('js', 'framework/alive/annotations'));
+	elgg_register_simplecache_view('js/framework/alive/annotations');
 
-elgg_register_css('alive.base.css', elgg_get_simplecache_url('css', 'framework/alive/base'));
-elgg_register_simplecache_view('css/framework/alive/base');
-
-if (HYPEALIVE_COMMENTS) {
-	elgg_register_js('alive.comments.js', elgg_get_simplecache_url('js', 'framework/alive/comments'));
-	elgg_register_simplecache_view('js/framework/alive/comments');
-
-	elgg_register_css('alive.comments.css', elgg_get_simplecache_url('css', 'framework/alive/comments'));
-	elgg_register_simplecache_view('css/framework/alive/comments');
-}
-
-if (HYPEALIVE_LIKES) {
-	elgg_register_js('alive.likes.js', elgg_get_simplecache_url('js', 'framework/alive/likes'));
-	elgg_register_simplecache_view('js/framework/alive/likes');
-
-	elgg_register_css('alive.likes.css', elgg_get_simplecache_url('css', 'framework/alive/likes'));
-	elgg_register_simplecache_view('css/framework/alive/likes');
+	elgg_register_css('alive.annotations.css', elgg_get_simplecache_url('css', 'framework/alive/annotations'));
+	elgg_register_simplecache_view('css/framework/alive/annotations');
 }
 
 if (HYPEALIVE_SEARCH) {

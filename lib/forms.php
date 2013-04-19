@@ -7,7 +7,32 @@ function hj_alive_init_plugin_settings_form($hook, $type, $return, $params) {
 	$entity = elgg_extract('entity', $params);
 
 	$river_tabs = ($entity->river_tabs) ? unserialize($entity->river_tabs) : array();
-	
+
+	// Types and subtypes to rate
+	$dbprefix = elgg_get_config('dbprefix');
+	$data = get_data("SELECT type AS type, subtype AS subtype
+								FROM {$dbprefix}entity_subtypes");
+
+	foreach ($data as $r) {
+		$type = $r->type;
+		$subtype = $r->subtype;
+
+		$types[$type][] = $subtype;
+
+		$str = elgg_echo("item:$type:$subtype");
+		$subtype_options[$str] = "$type:$subtype";
+	}
+
+	if (!array_key_exists('user', $types)) {
+		$str = elgg_echo("item:user");
+		$subtype_options[$str] = "user:default";
+	}
+
+	if (!array_key_exists('group', $types)) {
+		$str = elgg_echo("item:group");
+		$subtype_options[$str] = "group:default";
+	}
+
 	$config = array(
 		'fields' => array(
 			'params[comments]' => array(
@@ -70,14 +95,34 @@ function hj_alive_init_plugin_settings_form($hook, $type, $return, $params) {
 				'value' => $entity->likes,
 				'hint' => elgg_echo('edit:plugin:hypealive:params[likes]:hint')
 			),
-			'params[plusone]' => array(
+			'params[dislikes]' => array(
 				'input_type' => 'dropdown',
 				'options_values' => array(
 					0 => elgg_echo('disable'),
 					1 => elgg_echo('enable')
 				),
-				'value' => $entity->plusone,
-				'hint' => elgg_echo('edit:plugin:hypealive:params[plusone]:hint')
+				'value' => $entity->likes,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[dislikes]:hint')
+			),
+			'params[likes_style]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'like' => elgg_echo('hj:alive:likes:style:like'),
+					'plusone' => elgg_echo('hj:alive:likes:style:plusone'),
+					'kudo' => elgg_echo('hj:alive:likes:style:kudo'),
+					'vote' => elgg_echo('hj:alive:likes:style:vote'),
+				),
+				'value' => $entity->likes,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[likes_style]:hint')
+			),
+			'params[likes_limit]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'one_only' => elgg_echo('hj:alive:likes:limit:one_only'),
+					'one_each' => elgg_echo('hj:alive:likes:limit:one_each')
+				),
+				'value' => $entity->likes,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[likes_limit]:hint')
 			),
 			'params[livesearch]' => array(
 				'input_type' => 'dropdown',
