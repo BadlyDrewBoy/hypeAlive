@@ -1,7 +1,6 @@
 <?php
 
 $container_guid = elgg_extract('container_guid', $vars, null);
-$river_id = elgg_extract('river_id', $vars, null);
 $annotation_name = elgg_extract('aname', $vars, 'generic_comment');
 $list_id = elgg_extract('list_id', $vars);
 
@@ -21,20 +20,13 @@ if ($container_guid) {
 	$options['container_guids'] = $container_guid;
 }
 
-if ($river_id) {
-	if (!$list_id) {
-		$list_id = "ric$river_id";
-	}
-	$options['metadata_name_value_pairs'][] = array('name' => 'river_id', 'value' => $river_id);
-}
-
 $list_options = array(
 	'list_type' => 'stream',
-	'list_class' => 'hj-comments-list',
+	'list_class' => 'hj-replies-list',
 	'pagination' => true,
 	'pagination_type' => 'stream',
 	'pagination_position' => 'after',
-	'base_url' => ($container_guid) ? "stream/comments/content/$container_guid" : "stream/comments/activity/$river_id",
+	'base_url' => "stream/replies/$container_guid",
 );
 
 $count = elgg_get_entities($options);
@@ -43,7 +35,7 @@ $options['count'] = false;
 $limit = (int) get_input("__lim_$list_id", false);
 
 if (!$limit) {
-	$limit = HYPEALIVE_COMMENTS_LIMIT;
+	$limit = HYPEALIVE_COMMENTS_LOAD_LIMIT;
 	set_input("__lim_$list_id", $limit);
 }
 

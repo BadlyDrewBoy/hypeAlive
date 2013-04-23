@@ -20,6 +20,17 @@ $english = array(
 	'hj:alive:filter:users' => 'Filter activity by user',
 	'hj:alive:filter:groups' => 'Filter activity by group',
 
+	'hj:alive:comments:load:next' => 'next %s comments &#9661;',
+	'hj:alive:comments:load:next:remaining' => 'next %s comments &#9661;',
+	'hj:alive:comments:load:next:all' => '%s comments &#9661;',
+
+	'hj:alive:comments:load:previous' => 'previous %s comments &#9651;',
+	'hj:alive:comments:load:previous:remaining' => 'previous %s comments &#9651;',
+	'hj:alive:comments:load:previous:all' => '%s comments &#8711;',
+
+	'hj:alive:replies:show' => '%s replies',
+	'hj:alive:replies:hide' => 'Hide %s replies',
+	
 	/**
      * Comments
      */
@@ -28,6 +39,7 @@ $english = array(
 	'hj:alive:comments:plusonebutton' => '+1 this',
     'hj:alive:comments:minusonebutton' => 'Remove +1',
     'hj:alive:comments:commentsbutton' => 'Comment',
+	'hj:alive:comments:replybutton' => 'Reply',
     'hj:alive:comments:sharebutton' => 'Share',
     'hj:alive:comments:viewall' => 'View all %s comments',
     'hj:alive:comments:remainder' => 'View remaining %s comments',

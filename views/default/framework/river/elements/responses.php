@@ -21,12 +21,12 @@ if (!$item instanceof ElggRiverItem) {
 
 $object = $item->getObjectEntity();
 
-// annotations do not have comments
-if ($item->annotation_id != 0 || !$object) {
-	return true;
+if (HYPEALIVE_RIVER_COMMENTS) {
+	echo elgg_view('framework/alive/comments', array(
+		'entity' => (elgg_instanceof($object, 'object')) ? $object : hj_alive_get_river_stream_object($item)
+	));
+} else if (!$item->annotation_id && $object) {
+	echo elgg_view('framework/river/elements/comments', array(
+		'entity' => $object
+	));
 }
-
-$vars['entity'] = $item;
-unset($vars['item']);
-
-echo elgg_view('framework/alive/annotations', $vars);

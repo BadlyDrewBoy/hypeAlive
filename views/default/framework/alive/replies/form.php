@@ -1,10 +1,9 @@
 <?php
 
 $entity = elgg_extract('entity', $vars, false);
-if (!elgg_is_logged_in()) {
-	return true;
-}
-if (!$entity) {
+$params = elgg_clean_vars($vars);
+
+if (!elgg_is_logged_in() || !$entity) {
 	return true;
 }
 
@@ -17,6 +16,11 @@ $form_body .= elgg_view('input/hidden', array(
 	'value' => elgg_extract('aname', $vars, 'generic_comment')
 		));
 
+$form_body .= elgg_view('input/hidden', array(
+	'name' => 'list_id',
+	'value' => elgg_extract('list_id', $vars)
+		));
+
 if ($container_guid = elgg_extract('container_guid', $vars, false)) {
 	$form_body .= elgg_view('input/hidden', array(
 		'name' => 'container_guid',
@@ -24,59 +28,48 @@ if ($container_guid = elgg_extract('container_guid', $vars, false)) {
 			));
 }
 
-if ($instance_id = elgg_extract('instance_id', $vars, false)) {
-	$form_body .= elgg_view('input/hidden', array(
-		'name' => 'instance_id',
-		'value' => $instance_id
-			));
-}
-
-if ($river_id = elgg_extract('river_id', $vars, false)) {
-	$form_body .= elgg_view('input/hidden', array(
-		'name' => 'river_id',
-		'value' => $river_id
-			));
-}
-
-if (!$access = $entity->access_id) {
-	$access = ACCESS_DEFAULT;
-}
-
-$form_body .= elgg_view('input/hidden', array(
-	'name' => 'access_id',
-	'value' => $access
-		));
-
-if (elgg_get_plugin_setting('comment_form', 'hypeAlive') == 'advanced') {
+if (HYPEALIVE_COMMENT_FORM == 'advanced') {
+	$class = 'hj-comments-form-advanced';
 	$form_body .= elgg_view('input/plaintext', array(
 		'name' => 'annotation_value',
 		'rows' => '2'
-	));
-	
+			));
+
 	$form_body .= elgg_view('input/submit', array(
 		'value' => elgg_echo('submit')
-	));
-	
+			));
+
 	$form_body .= elgg_view('input/button', array(
 		'type' => 'reset',
 		'value' => elgg_echo('hj:alive:button:clear')
-	));
+			));
 } else {
+	$class = 'hj-comments-form-simple';
 	$form_body .= elgg_view('input/text', array(
 		'name' => 'annotation_value'
 			));
 
-	$form_body .= elgg_view('input/submit', array(
+	$button = elgg_view('input/submit', array(
 		'value' => 'submit',
-		'class' => 'hidden'
+			//'class' => 'hidden'
 			));
 }
+
+$comments_count = hj_alive_count_comments($entity, $params);
+if ($comments_count <= 0 || elgg_instanceof($entity, 'object', 'hjannotation')) {
+	$class .= ' hidden';
+}
+
+$icon = elgg_view_entity_icon(elgg_get_logged_in_user_entity(), 'tiny', array('use_hover' => false));
+$form_body = elgg_view_image_block($icon, $form_body, array(
+	'image_alt' => $button
+		));
 
 $form = elgg_view('input/form', array(
 	'body' => $form_body,
 	'enctype' => 'application/json',
-	'action' => 'action/comment/save',
-	'class' => 'hj-comments-save'
+	'action' => 'action/reply/save',
+	'class' => "hj-comments-form hj-replies-form $class"
 		));
 
 echo $form;

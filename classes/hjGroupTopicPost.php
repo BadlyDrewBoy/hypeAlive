@@ -1,6 +1,6 @@
 <?php
 
-class hjComment extends hjObject {
+class hjGroupTopicPost extends hjObject {
 
 	protected function initializeAttributes() {
 		parent::initializeAttributes();

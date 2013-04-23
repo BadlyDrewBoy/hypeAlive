@@ -33,7 +33,7 @@ $comment = '<span class="annotation-value">' . elgg_view('output/text', array(
 
 $comment = elgg_echo('hj:alive:comments:commentcontent', array($author, $comment));
 
-$bar = elgg_view('hj/comments/bar', $vars);
+$bar = elgg_view_comments($entity);
 
 $content = <<<HTML
     <div class="clearfix">

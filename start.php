@@ -16,6 +16,12 @@ define('HYPEALIVE_RIVER_COMMENTS', elgg_get_plugin_setting('river_comments', 'hy
 define('HYPEALIVE_ENTITY_COMMENTS', elgg_get_plugin_setting('entity_comments', 'hypeAlive'));
 define('HYPEALIVE_FORUM_COMMENTS', elgg_get_plugin_setting('forum_comments', 'hypeAlive'));
 define('HYPEALIVE_MAX_COMMENT_DEPTH', elgg_get_plugin_setting('max_comment_depth', 'hypeAlive'));
+define('HYPEALIVE_COMMENT_FORM', elgg_get_plugin_setting('comment_form', 'hypeAlive'));
+define('HYPEALIVE_COMMENT_FORM_POSITION', elgg_get_plugin_setting('comment_form_position', 'hypeAlive'));
+define('HYPEALIVE_COMMENTS_ORDER', elgg_get_plugin_setting('comments_order', 'hypeAlive'));
+define('HYPEALIVE_COMMENTS_LOAD_STYLE', elgg_get_plugin_setting('comments_load_style', 'hypeAlive'));
+define('HYPEALIVE_COMMENTS_LIMIT', elgg_get_plugin_setting('comments_limit', 'hypeAlive'));
+define('HYPEALIVE_COMMENTS_LOAD_LIMIT', elgg_get_plugin_setting('comments_load_limit', 'hypeAlive'));
 
 define('HYPEALIVE_LIKES', elgg_get_plugin_setting('likes', 'hypeAlive'));
 define('HYPEALIVE_DISLIKES', elgg_get_plugin_setting('dislikes', 'hypeAlive'));
@@ -54,7 +60,8 @@ function hj_alive_init() {
 		'assets',
 		'views',
 		'menus',
-		'hooks'
+		'hooks',
+		'stream'
 	);
 
 	foreach ($libraries as $lib) {
@@ -64,4 +71,8 @@ function hj_alive_init() {
 			elgg_load_library("alive:library:$lib");
 		}
 	}
+}
+
+if (HYPEALIVE_RIVER_COMMENTS) {
+	elgg_register_event_handler('created', 'river', 'hj_alive_create_river_stream_object');
 }

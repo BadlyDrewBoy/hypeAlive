@@ -2,28 +2,34 @@
 
 // Custom activity filter clause
 if (HYPEALIVE_RIVER) {
-	elgg_register_plugin_hook_handler('custom_sql_clause', 'framework:lists', 'hj_alive_filter_activity');
+	elgg_register_plugin_hook_handler('custom_sql_clause', 'framework:lists', 'hj_alive_activity_filter_clauses');
 }
+
+// Replace default comments
 if (HYPEALIVE_COMMENTS || HYPEALIVE_LIKES || HYPEALIVE_DISLIKES) {
 	// Register default comments bar
 	elgg_register_plugin_hook_handler('comments', 'all', 'hj_alive_comments_replacement');
 }
 
+// Clean up likes menu in case the likes plugin is enabled
 if (HYPEALIVE_LIKES) {
 	elgg_unregister_plugin_hook_handler('register', 'menu:entity', 'likes_entity_menu_setup');
 }
 
-if (HYPEALIVE_COMMENTS) {
 // Search comments
+if (HYPEALIVE_COMMENTS) {
 	elgg_unregister_plugin_hook_handler('search', 'comments', 'search_comments_hook');
 	elgg_register_plugin_hook_handler('search', 'comments', 'hj_alive_search_comments_hook');
 }
 
+//elgg_register_plugin_hook_handler('hj:notification:setting', 'annotation', 'hj_alive_notification_settings');
 
-elgg_register_plugin_hook_handler('hj:notification:setting', 'annotation', 'hj_alive_notification_settings');
+function hj_alive_activity_filter_clauses($hook, $type, $options, $params) {
 
-function hj_alive_filter_activity($hook, $type, $options, $params) {
-
+	if (!elgg_in_context('activity')) {
+		return $options;
+	}
+	
 	$query = get_input("__tsp", false);
 
 	if ($query && is_array($query) && !empty($query)) {
@@ -45,12 +51,15 @@ function hj_alive_filter_activity($hook, $type, $options, $params) {
 		$options['subject_guids'] = $query;
 	}
 
-
 	return $options;
 }
 
 function hj_alive_comments_replacement($hook, $entity_type, $returnvalue, $params) {
-	return elgg_view('framework/alive/annotations', $params);
+	$entity = elgg_extract('entity', $params);
+	if (elgg_instanceof($entity, 'object', 'hjannotation')) {
+		return elgg_view('framework/alive/replies', $params);
+	}
+	return elgg_view('framework/alive/comments', $params);
 }
 
 function hj_alive_search_comments_hook($hook, $type, $value, $params) {

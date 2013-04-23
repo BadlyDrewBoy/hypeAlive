@@ -1,8 +1,83 @@
 <?php
 
+elgg_register_page_handler('stream', 'hj_alive_page_handler');
+
 if (HYPEALIVE_RIVER) {
 	elgg_unregister_page_handler('activity', 'elgg_river_page_handler');
 	elgg_register_page_handler('activity', 'hj_alive_river_page_handler');
+}
+
+function hj_alive_page_handler($page) {
+
+	switch ($page[0]) {
+		default :
+			return false;
+			break;
+
+		case 'comments' :
+			switch ($page[1]) {
+				case 'content' :
+				default :
+
+					$container = get_entity($page[2]);
+					if (!elgg_instanceof($container)) {
+						return false;
+					}
+
+					if (!elgg_is_xhr()) {
+						forward($container->getURL());
+					}
+
+					$content .= elgg_view('framework/alive/comments/list', array(
+						'container_guid' => $container->guid,
+						'aname' => 'generic_comment',
+						'list_id' => get_input('list_id', false)
+							));
+
+					break;
+
+				case 'activity' :
+					$river = elgg_get_river(array('ids' => array($page[2])));
+					if (!$river) {
+						return false;
+					}
+
+					$content .= elgg_view_river_item($river[0]);
+
+					$content .= elgg_view('framework/alive/comments/list', array(
+						'river_id' => $page[2],
+						'aname' => 'generic_comment',
+						'list_id' => get_input('list_id', false)
+							));
+					break;
+			}
+
+			break;
+
+		case 'replies' :
+			$content = elgg_view('framework/alive/replies/list', array(
+				'container_guid' => $page[1],
+				'aname' => 'generic_comment',
+				'list_id' => get_input('list_id', false)
+					));
+			break;
+
+		case 'view' :
+
+			break;
+	}
+
+	if (!$content) {
+		return false;
+	}
+
+	$layout = elgg_view_layout('one_sidebar', array(
+		'content' => $content,
+		'title' => false
+			));
+
+	echo elgg_view_page(null, $layout);
+	return true;
 }
 
 function hj_alive_river_page_handler($page) {
@@ -30,6 +105,14 @@ function hj_alive_river_page_handler($page) {
 						$tabs[] = $tab;
 					}
 				}
+
+
+				elgg_register_menu_item('title', array(
+					'name' => 'river:settings',
+					'text' => elgg_echo('hj:alive:river:settings'),
+					'href' => "activity/settings/$user->username",
+					'class' => 'elgg-button',
+				));
 			} else {
 				$tabs = array('all');
 			}
@@ -52,13 +135,6 @@ function hj_alive_river_page_handler($page) {
 
 			$type = preg_replace('[\W]', '', get_input('type', 'all'));
 			$subtype = preg_replace('[\W]', '', get_input('subtype', ''));
-
-			elgg_register_menu_item('title', array(
-				'name' => 'river:settings',
-				'text' => elgg_echo('hj:alive:river:settings'),
-				'href' => "activity/settings/$user->username",
-				'class' => 'elgg-button',
-			));
 
 			$title = elgg_echo("river:$page_type");
 			$content = elgg_view('framework/activity/list', array(

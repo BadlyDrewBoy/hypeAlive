@@ -99,7 +99,7 @@ if (!get_input("__lim_$list_id", false)) {
 $getter_options = $options;
 
 $list_options = array(
-	'list_class' => 'elgg-river-layout',
+	'list_class' => 'elgg-river',
 	'pagination' => true,
 	'limit_select_options' => array(25, 50, 100, 200)
 );

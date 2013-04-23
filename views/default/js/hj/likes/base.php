@@ -51,19 +51,19 @@ hj.likes.refresh = function(data) {
 			success : function(data) {
 				if (data && data.output != 'null') {
 					$.each(data.output, function(key, val) {
-						var container = $('#hj-annotations-'+ val.selector_id);
+						var container = $('#hj-stream-'+ val.selector_id);
 						var likesList = container.find('.likes').first();
 						if (val.likes && val.likes.length > 0) {
 							likesList.html(val.likes);
 							if (likesList.find('.hj-likes-summary').text().length > 0) {
-								likesList.closest('.hj-annotations-likes-block').show();
+								likesList.closest('.hj-stream-likes-block').show();
 							} else {
-								likesList.closest('.hj-annotations-likes-block').hide();
+								likesList.closest('.hj-stream-likes-block').hide();
 							}
 						} else {
-							likesList.closest('.hj-annotations-likes-block').hide();
+							likesList.closest('.hj-stream-likes-block').hide();
 						}
-						var menu = container.find('.hj-annotations-menu').first();
+						var menu = container.find('.hj-stream-menu').first();
 						if (val.self) {
 							$('.elgg-menu-item-like:first > a', menu)
 							.addClass('hidden');
@@ -89,7 +89,7 @@ hj.likes.saveLike = function(event) {
 
 	var action_type = $(this).find('a:first').attr('rel');
 	var likesList = $(this)
-	.closest('.hj-annotations-bar')
+	.closest('.hj-stream')
 	.find('.hj-likes-summary')
 	.first();
 

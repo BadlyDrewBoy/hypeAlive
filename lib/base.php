@@ -2,32 +2,23 @@
 
 function hj_alive_prepare_view_params($entity, $annotation_name = 'generic_comment') {
 
+	if ($entity->getType() == 'river') {
+		$entity = hj_alive_get_river_stream_object($entity);
+	}
+
 	$params = array(
 		'entity' => $entity,
-		'aname' => $annotation_name
+		'aname' => $annotation_name,
+		'container_guid' => $entity->guid,
+		'list_id' => "comments-$entity->guid"
 	);
-
-	if ($entity->getType() == 'river') {
-		$object = $entity->getObjectEntity();
-		if (elgg_instanceof($object, 'object')) {
-			$params['entity'] = $object;
-			$params['container_guid'] = $object->guid;
-		} else {
-			$params['river_id'] = $entity->id;
-		}
-	} else {
-		$guid = $entity->guid;
-		$params['container_guid'] = $guid;
-	}
 
 	return $params;
 }
 
-
 function hj_alive_view_comments_list($entity, $params) {
-
+	$params['entity'] = $entity;
 	return elgg_view('framework/alive/comments/list', $params);
-	
 }
 
 function hj_alive_count_comments($entity, $params) {
@@ -57,8 +48,6 @@ function hj_alive_count_comments($entity, $params) {
 
 	return $count;
 }
-
-
 
 function hj_alive_view_likes_list($params) {
 	$container_guid = elgg_extract('container_guid', $params, null);
@@ -244,42 +233,41 @@ function hj_alive_does_user_like($params) {
 	return false;
 }
 
-
 function hj_alive_import_annotations($annotation_name) {
 
-    $annotations = elgg_get_annotations(array(
-        'annotation_names' => array($annotation_name)
-            ));
+	$annotations = elgg_get_annotations(array(
+		'annotation_names' => array($annotation_name)
+			));
 
-    foreach ($annotations as $annotation) {
-        if (!hj_alive_annotation_match_exists($annotation)) {
-            $import = new hjAnnotation();
-            $import->annotation_id = $annotation->id;
-            $import->annotation_name = $annotation->name;
-            $import->annotation_value = $annotation->value;
-            $import->owner_guid = $annotation->owner_guid;
-            $import->container_guid = $annotation->entity_guid;
-            $import->access_id = $annotation->access_id;
-            $import->save(false);
-        }
-    }
+	foreach ($annotations as $annotation) {
+		if (!hj_alive_annotation_match_exists($annotation)) {
+			$import = new hjAnnotation();
+			$import->annotation_id = $annotation->id;
+			$import->annotation_name = $annotation->name;
+			$import->annotation_value = $annotation->value;
+			$import->owner_guid = $annotation->owner_guid;
+			$import->container_guid = $annotation->entity_guid;
+			$import->access_id = $annotation->access_id;
+			$import->save(false);
+		}
+	}
 
-    return true;
+	return true;
 }
 
 function hj_alive_annotation_match_exists($annotation) {
-    $match = elgg_get_entities_from_metadata(array(
-        'type' => 'object',
-        'subtype' => 'hjannotation',
-        'count' => true,
-        'owner_guid' => $annotation->owner_guid,
-        'container_guid' => $annotation->entity_guid,
-        'metadata_name_value_pairs' => array(
-            array('name' => 'annotation_id', 'value' => $annotation->id)
-            )));
+	$match = elgg_get_entities_from_metadata(array(
+		'type' => 'object',
+		'subtype' => 'hjannotation',
+		'count' => true,
+		'owner_guid' => $annotation->owner_guid,
+		'container_guid' => $annotation->entity_guid,
+		'metadata_name_value_pairs' => array(
+			array('name' => 'annotation_id', 'value' => $annotation->id)
+			)));
 
-    if ($match > 0) {
-        return true;
-    }
-    return false;
+	if ($match > 0) {
+		return true;
+	}
+	return false;
 }

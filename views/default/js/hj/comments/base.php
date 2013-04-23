@@ -20,9 +20,9 @@ hj.comments.init = function() {
 	.bind('click', function(event) {
 		event.preventDefault();
 
-		var comments_block = $(this).closest('.hj-annotations-bar').find('.hj-annotations-comments-block').first();
+		var comments_block = $(this).closest('.hj-stream').find('.hj-stream-comments-block').first();
 		comments_block
-		.find('.hj-comments-input')
+		.find('.hj-comments-form')
 		.last()
 		.toggle('fast', function() {
 			if (comments_block.hasClass('hidden')) {
@@ -40,11 +40,11 @@ hj.comments.init = function() {
 		})
 	});
 
-	$('.hj-ajaxed-comment-edit')
+	$('.hj-comments-edit')
 	.unbind('click')
 	.bind('click', hj.comments.editComment);
 
-	$('.hj-ajaxed-comment-save')
+	$('.hj-comments-save')
 	.removeAttr('onsubmit')
 	.unbind('submit')
 	.bind('submit', hj.comments.saveComment);
@@ -60,7 +60,7 @@ hj.comments.editComment = function(event) {
 	item_html = item.html(),
 	value = item.find('.annotation-value').html(),
 	id = params.entity_guid,
-	form = item.closest('.annotations').siblings('.hj-comments-input').last().find('form').html();
+	form = item.closest('.annotations').siblings('.hj-comments-form').last().find('form').html();
 		
 	item.html($('<form>').html(form));
 	var input = item.find('[name="annotation_value"]');
@@ -110,7 +110,7 @@ hj.comments.saveComment = function(event) {
 			id = container_guid
 		}
 	}
-	container = $('#hj-annotations-'+ id);
+	container = $('#hj-stream-'+ id);
 	commentsList = container.find('.hj-comments').last();
 
 	var input = $('[name="annotation_value"]', $(this));
@@ -126,7 +126,7 @@ hj.comments.saveComment = function(event) {
 			input
 			.removeClass('hj-input-processing')
 			.val('')
-			.parents('.hj-comments-input')
+			.parents('.hj-comments-form')
 			.last()
 			.toggle();
 		}

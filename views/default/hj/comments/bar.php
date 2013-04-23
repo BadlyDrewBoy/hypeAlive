@@ -52,20 +52,20 @@ if (!elgg_instanceof($entity, 'object', 'hjannotation')) {
 $extend = elgg_view('hj/comments/bar/extend', $vars);
 
 echo <<<__COMMENTS
-<div id="hj-annotations-{$params['selector_id']}" class="hj-annotations-bar clearfix">
-	<div class="hj-annotations-header hj-annotations-menu clearfix">
+<div id="hj-stream-{$params['selector_id']}" class="hj-stream clearfix">
+	<div class="hj-stream-header hj-stream-menu clearfix">
 		$menu
     </div>
-	<div class="hj-annotations-body">
-		<div class="hj-annotations-likes-block $likes_block_hidden">
+	<div class="hj-stream-body">
+		<div class="hj-stream-likes-block $likes_block_hidden">
 			$likes_block
 		</div>
-		<div class="hj-annotations-comments-block $comments_block_hidden">
-			<div class="hj-annotations-list">
+		<div class="hj-stream-comments-block $comments_block_hidden">
+			<div class="hj-stream-list">
 				<div class="annotations">
 					$comments_view
 				</div>
-				<div class="hj-comments-bubble hj-comments-input hidden">
+				<div class="hj-comments-bubble hj-comments-form hidden">
 					$comments_input
 				</div>
 			</div>

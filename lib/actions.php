@@ -9,6 +9,7 @@ elgg_register_action('alive/admin/comments/import', $shortcuts['actions'] . 'adm
 
 if (HYPEALIVE_COMMENTS) {
 	elgg_register_action('comment/save', $shortcuts['actions'] . 'comment/save.php');
+	elgg_register_action('reply/save', $shortcuts['actions'] . 'comment/save.php');
 }
 
 if (HYPEALIVE_LIKES) {

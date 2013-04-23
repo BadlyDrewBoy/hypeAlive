@@ -1,11 +1,11 @@
 <?php
 
 if (HYPEALIVE_COMMENTS || HYPEALIVE_LIKES || HYPEALIVE_DISLIKES) {
-	elgg_register_js('alive.annotations.js', elgg_get_simplecache_url('js', 'framework/alive/annotations'));
-	elgg_register_simplecache_view('js/framework/alive/annotations');
+	elgg_register_js('alive.stream.js', elgg_get_simplecache_url('js', 'framework/alive/stream'));
+	elgg_register_simplecache_view('js/framework/alive/stream');
 
-	elgg_register_css('alive.annotations.css', elgg_get_simplecache_url('css', 'framework/alive/annotations'));
-	elgg_register_simplecache_view('css/framework/alive/annotations');
+	elgg_register_css('alive.stream.css', elgg_get_simplecache_url('css', 'framework/alive/stream'));
+	elgg_register_simplecache_view('css/framework/alive/stream');
 }
 
 if (HYPEALIVE_SEARCH) {

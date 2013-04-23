@@ -17,7 +17,7 @@ if (!elgg_instanceof($entity, 'object', 'hjannotation')) {
 }
 
 echo <<<__HTML
-<div class="hj-annotations-likes-block $likes_block_hidden">
+<div class="hj-stream-likes-block $likes_block_hidden">
 	$likes_block
 </div>
 __HTML;

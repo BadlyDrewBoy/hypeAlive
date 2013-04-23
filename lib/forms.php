@@ -86,6 +86,41 @@ function hj_alive_init_plugin_settings_form($hook, $type, $return, $params) {
 				'value' => $entity->comment_form,
 				'hint' => elgg_echo('edit:plugin:hypealive:params[comment_form]:hint')
 			),
+			'params[comment_form_position]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'before' => elgg_echo('hj:alive:comment_form_position:before'),
+					'after' => elgg_echo('hj:alive:comment_form_position:after'),
+				),
+				'value' => $entity->comment_form_position,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[comment_form_position]:hint')
+			),
+			'params[comments_order]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'asc' => elgg_echo('hj:alive:comment_order:chronological'),
+					'desc' => elgg_echo('hj:alive:comment_order:reverse_chronological'),
+				),
+				'value' => $entity->comments_order,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[comments_order]:hint')
+			),
+			'params[comments_load_style]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'load_newer' => elgg_echo('hj:alive:comments_load_style:newer'),
+					'load_older' => elgg_echo('hj:alive:comments_load_style:older'),
+				),
+				'value' => $entity->comments_load_style,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[comments_load_style]:hint')
+			),
+			'params[comments_limit]' => array(
+				'value' => $entity->comments_limit,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[comments_limit]:hint')
+			),
+			'params[comments_load_limit]' => array(
+				'value' => $entity->comments_load_limit,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[comments_load_limit]:hint')
+			),
 			'params[likes]' => array(
 				'input_type' => 'dropdown',
 				'options_values' => array(

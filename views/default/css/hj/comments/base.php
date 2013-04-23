@@ -25,7 +25,7 @@ li.elgg-menu-item-time {
 }
 
 .hj-comments-bubble,
-.hj-annotations-list .elgg-list > li
+.hj-stream-list .elgg-list > li
 {
 	background:#f4f4f4;
 	border-bottom:1px solid #ddd;
@@ -41,20 +41,20 @@ li.elgg-menu-item-time {
 	padding:0;
 	margin:0;
 }
-.hj-annotations-list .hj-annotations-list .hj-comments-bubble {
+.hj-stream-list .hj-stream-list .hj-comments-bubble {
 	border-bottom:0;
 }
 
-.hj-annotations-list .hj-annotations-list .elgg-list > li {
+.hj-stream-list .hj-stream-list .elgg-list > li {
 	border-bottom:0;
 }
 
-.hj-annotations-list .elgg-list {
+.hj-stream-list .elgg-list {
 	border:0px;
 	margin:0;
 }
 
-.hj-annotations-bar form {
+.hj-stream form {
 	background:0;
 	border:#ddd;
 	height:auto;
@@ -62,7 +62,7 @@ li.elgg-menu-item-time {
 	padding:0;
 }
 
-.hj-comments-input {
+.hj-comments-form {
 	font-size:10px;
 }
 
@@ -83,7 +83,7 @@ li.elgg-menu-item-time {
 	text-align:left;
 }
 
-.hj-annotations-bar textarea {
+.hj-stream textarea {
 	height:auto;
 }
 
