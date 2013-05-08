@@ -6,9 +6,12 @@ if (HYPEALIVE_RIVER) {
 }
 
 // Replace default comments
-if (HYPEALIVE_COMMENTS || HYPEALIVE_LIKES || HYPEALIVE_DISLIKES) {
+if (HYPEALIVE_COMMENTS) {
 	// Register default comments bar
 	elgg_register_plugin_hook_handler('comments', 'all', 'hj_alive_comments_replacement');
+	// Remove default comments search
+	elgg_unregister_plugin_hook_handler('search', 'comments', 'search_comments_hook');
+	elgg_register_entity_type('object', 'hjcomment');
 }
 
 // Clean up likes menu in case the likes plugin is enabled
@@ -16,13 +19,12 @@ if (HYPEALIVE_LIKES) {
 	elgg_unregister_plugin_hook_handler('register', 'menu:entity', 'likes_entity_menu_setup');
 }
 
-// Search comments
-if (HYPEALIVE_COMMENTS) {
-	elgg_unregister_plugin_hook_handler('search', 'comments', 'search_comments_hook');
-	elgg_register_plugin_hook_handler('search', 'comments', 'hj_alive_search_comments_hook');
+if (HYPEALIVE_FORUM_COMMENTS) {
+	elgg_register_entity_type('object', 'hjgrouptopicpost');
 }
 
-//elgg_register_plugin_hook_handler('hj:notification:setting', 'annotation', 'hj_alive_notification_settings');
+elgg_register_plugin_hook_handler('permissions_check:comment', 'all', 'hj_alive_can_comment');
+elgg_register_plugin_hook_handler('container_permissions_check', 'all', 'hj_alive_can_write_to_container');
 
 function hj_alive_activity_filter_clauses($hook, $type, $options, $params) {
 
@@ -55,66 +57,32 @@ function hj_alive_activity_filter_clauses($hook, $type, $options, $params) {
 }
 
 function hj_alive_comments_replacement($hook, $entity_type, $returnvalue, $params) {
+
 	$entity = elgg_extract('entity', $params);
-	if (elgg_instanceof($entity, 'object', 'hjannotation')) {
+	if (elgg_instanceof($entity, 'object', 'hjcomment')) {
 		return elgg_view('framework/alive/replies', $params);
 	}
+	
 	return elgg_view('framework/alive/comments', $params);
+	
 }
 
-function hj_alive_search_comments_hook($hook, $type, $value, $params) {
-	$db_prefix = elgg_get_config('dbprefix');
+function hj_alive_can_comment($hook, $type, $return, $params) {
 
-	$query = sanitise_string($params['query']);
-	$limit = sanitise_int($params['limit']);
-	$offset = sanitise_int($params['offset']);
+	$entity = elgg_extract('entity', $params);
 
-	$params['type_subtype_pairs'] = array('object' => 'hjannotation');
-	$params['metadata_name_value_pairs'] = array(
-		'name' => 'annotation_name', 'value' => array('generic_comment', 'group_topic_post'), 'operand' => '='
-	);
-
-	$params['joins'] = array(
-		"JOIN {$db_prefix}metadata md on e.guid = md.entity_guid",
-		"JOIN {$db_prefix}metastrings msn_n on md.name_id = msn_n.id",
-		"JOIN {$db_prefix}metastrings msv_n on md.value_id = msv_n.id"
-	);
-
-	$fields = array('string');
-	$params['wheres'] = array(
-		"(msn_n.string = 'annotation_value')",
-		search_get_where_sql('msv_n', $fields, $params, FALSE)
-	);
-
-	$params['count'] = TRUE;
-	$count = elgg_get_entities_from_metadata($params);
-
-	// no need to continue if nothing here.
-	if (!$count) {
-		return array('entities' => array(), 'count' => $count);
+	if (elgg_instanceof($entity, 'object', 'hjcomment')) {
+		return ($entity->getDepthToOriginalContainer() <= HYPEALIVE_MAX_COMMENT_DEPTH);
 	}
 
-	$params['count'] = FALSE;
-	$entities = elgg_get_entities_from_metadata($params);
+	return $return;
 
-	// add the volatile data for why these entities have been returned.
-	foreach ($entities as $key => $entity) {
-		$desc = search_get_highlighted_relevant_substrings($entity->annotation_value, $params['query']);
-		$entity->setVolatileData('search_annotation_value', $desc);
-	}
-
-	return array(
-		'entities' => $entities,
-		'count' => $count,
-	);
 }
 
-function hj_alive_notification_settings($hook, $type, $return, $params) {
+function hj_alive_can_write_to_container($hook, $type, $return, $params) {
 
-	$notify_settings = elgg_get_plugin_setting('notifications', 'hypeAlive');
-	$notify_settings = explode(',', $notify_settings);
-	foreach ($notify_settings as $key => $setting) {
-		$return[] = trim($setting);
+	if ($params['subtype'] === 'hjcomment') {
+		return true;
 	}
 
 	return $return;

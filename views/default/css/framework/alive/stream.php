@@ -61,6 +61,7 @@
 	form.hj-comments-form fieldset input[type="submit"] {
 		background: #f4f4f4;
 		color: #ccc;
+		right: 17px;
 	}
 	.hj-stream-header {
 		margin: 5px 0 0;

@@ -10,9 +10,9 @@ if (!$river_id && !elgg_instanceof($container)) {
 }
 
 if (get_input('action_type') == 'like') {
-    $annotation_value = '1';
+    $description = '1';
 } else {
-    $annotation_value = '0';
+    $description = '0';
     $params = array(
         'container_guid' => $container_guid,
         'river_id' => $river_id
@@ -36,7 +36,7 @@ if (!get_input('access_id', false)) {
 
 if (!$guid) {
     $annotation = new hjAnnotation($guid);
-    $annotation->annotation_value = $annotation_value;
+    $annotation->description = $description;
     $annotation->annotation_name = 'likes';
     $annotation->owner_guid = elgg_get_logged_in_user_guid();
     $annotation->container_guid = $container_guid;

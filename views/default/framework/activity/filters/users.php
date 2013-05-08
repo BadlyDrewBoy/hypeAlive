@@ -43,7 +43,7 @@ $form = elgg_view('input/form', array(
 	'action' => "activity/{$vars['page_type']}",
 	'disable_security' => true,
 	'body' => $filter,
-	'class' => 'pull-right'
+	'class' => 'float-alt'
 ));
 $body = '<div class="hj-framework-list-filter">' . $form . '</div>';
 

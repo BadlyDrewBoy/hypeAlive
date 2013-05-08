@@ -28,11 +28,9 @@ $menu = elgg_view_menu('replies', array(
 
 $replies = elgg_view('framework/alive/replies/replies', $params);
 $likes = elgg_view('framework/alive/likes/wrapper', $params);
-$dislikes = elgg_view('framework/alive/dislikes/wrapper', $params);
 
 $params['menu'] = $menu;
 $params['replies'] = $replies;
 $params['likes'] = $likes;
-$params['dislikes'] = $dislikes;
 
 echo elgg_view('framework/alive/replies/wrapper', $params);

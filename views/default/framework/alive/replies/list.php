@@ -1,30 +1,24 @@
 <?php
 
 $container_guid = elgg_extract('container_guid', $vars, null);
-$annotation_name = elgg_extract('aname', $vars, 'generic_comment');
 $list_id = elgg_extract('list_id', $vars);
 
 $options = array(
 	'types' => 'object',
-	'subtypes' => array('hjannotation'),
-	'metadata_name_value_pairs' => array(
-		array('name' => 'annotation_name', 'value' => $annotation_name),
-	),
+	'subtypes' => array('hjcomment'),
+	'container_guids' => $container_guid,
 	'count' => true
 );
 
-if ($container_guid) {
-	if (!$list_id) {
-		$list_id = "comments-$container_guid";
-	}
-	$options['container_guids'] = $container_guid;
+if (!$list_id) {
+	$list_id = "comments-$container_guid";
 }
 
 $list_options = array(
 	'list_type' => 'stream',
 	'list_class' => 'hj-replies-list',
 	'pagination' => true,
-	'pagination_type' => 'stream',
+	'pagination_type' => 'comments',
 	'pagination_position' => 'after',
 	'base_url' => "stream/replies/$container_guid",
 );

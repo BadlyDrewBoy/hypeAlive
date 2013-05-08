@@ -13,7 +13,7 @@ function hj_alive_page_handler($page) {
 		default :
 			return false;
 			break;
-
+			
 		case 'comments' :
 			switch ($page[1]) {
 				case 'content' :
@@ -30,7 +30,6 @@ function hj_alive_page_handler($page) {
 
 					$content .= elgg_view('framework/alive/comments/list', array(
 						'container_guid' => $container->guid,
-						'aname' => 'generic_comment',
 						'list_id' => get_input('list_id', false)
 							));
 
@@ -46,7 +45,6 @@ function hj_alive_page_handler($page) {
 
 					$content .= elgg_view('framework/alive/comments/list', array(
 						'river_id' => $page[2],
-						'aname' => 'generic_comment',
 						'list_id' => get_input('list_id', false)
 							));
 					break;
@@ -57,7 +55,6 @@ function hj_alive_page_handler($page) {
 		case 'replies' :
 			$content = elgg_view('framework/alive/replies/list', array(
 				'container_guid' => $page[1],
-				'aname' => 'generic_comment',
 				'list_id' => get_input('list_id', false)
 					));
 			break;
@@ -105,8 +102,6 @@ function hj_alive_river_page_handler($page) {
 						$tabs[] = $tab;
 					}
 				}
-
-
 				elgg_register_menu_item('title', array(
 					'name' => 'river:settings',
 					'text' => elgg_echo('hj:alive:river:settings'),

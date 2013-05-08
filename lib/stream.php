@@ -15,7 +15,7 @@ function hj_alive_create_river_stream_object($event, $type, $river) {
 	$ia = elgg_set_ignore_access(true);
 
 	$stream = new ElggObject();
-	$stream->subtype = 'stream';
+	$stream->subtype = 'hjstream';
 	$stream->owner_guid = $river->subject_guid;
 	$stream->container_guid = $river->subject_guid;
 	$stream->access_id = $river->access_id;
@@ -46,7 +46,7 @@ function hj_alive_get_river_stream_object($river) {
 
 	$stream = elgg_get_entities_from_metadata(array(
 		'types' => 'object',
-		'subtypes' => 'stream',
+		'subtypes' => 'hjstream',
 		'metadata_name_value_pairs' => array(
 			array(
 				'name' => 'river_id',

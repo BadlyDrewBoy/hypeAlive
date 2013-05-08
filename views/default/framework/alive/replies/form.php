@@ -3,7 +3,7 @@
 $entity = elgg_extract('entity', $vars, false);
 $params = elgg_clean_vars($vars);
 
-if (!elgg_is_logged_in() || !$entity) {
+if (!elgg_is_logged_in() || !$entity || !$entity->canComment()) {
 	return true;
 }
 
@@ -12,26 +12,20 @@ $form_body .= elgg_view('input/hidden', array(
 		));
 
 $form_body .= elgg_view('input/hidden', array(
-	'name' => 'aname',
-	'value' => elgg_extract('aname', $vars, 'generic_comment')
-		));
-
-$form_body .= elgg_view('input/hidden', array(
 	'name' => 'list_id',
 	'value' => elgg_extract('list_id', $vars)
 		));
 
-if ($container_guid = elgg_extract('container_guid', $vars, false)) {
-	$form_body .= elgg_view('input/hidden', array(
-		'name' => 'container_guid',
-		'value' => $container_guid
-			));
-}
+$form_body .= elgg_view('input/hidden', array(
+	'name' => 'container_guid',
+	'value' => elgg_extract('container_guid', $vars, false)
+		));
+
 
 if (HYPEALIVE_COMMENT_FORM == 'advanced') {
 	$class = 'hj-comments-form-advanced';
 	$form_body .= elgg_view('input/plaintext', array(
-		'name' => 'annotation_value',
+		'name' => 'description',
 		'rows' => '2'
 			));
 
@@ -46,7 +40,7 @@ if (HYPEALIVE_COMMENT_FORM == 'advanced') {
 } else {
 	$class = 'hj-comments-form-simple';
 	$form_body .= elgg_view('input/text', array(
-		'name' => 'annotation_value'
+		'name' => 'description'
 			));
 
 	$button = elgg_view('input/submit', array(
@@ -56,7 +50,7 @@ if (HYPEALIVE_COMMENT_FORM == 'advanced') {
 }
 
 $comments_count = hj_alive_count_comments($entity, $params);
-if ($comments_count <= 0 || elgg_instanceof($entity, 'object', 'hjannotation')) {
+if ($comments_count <= 0 || elgg_instanceof($entity, 'object', 'hjcomment')) {
 	$class .= ' hidden';
 }
 

@@ -44,24 +44,6 @@ function hj_alive_init_plugin_settings_form($hook, $type, $return, $params) {
 				'value' => $entity->comments,
 				'hint' => elgg_echo('edit:plugin:hypealive:params[comments]:hint')
 			),
-			'params[river_comments]' => array(
-				'input_type' => 'dropdown',
-				'options_values' => array(
-					0 => elgg_echo('disable'),
-					1 => elgg_echo('enable')
-				),
-				'value' => $entity->river_comments,
-				'hint' => elgg_echo('edit:plugin:hypealive:params[river_comments]:hint')
-			),
-			'params[entity_comments]' => array(
-				'input_type' => 'dropdown',
-				'options_values' => array(
-					0 => elgg_echo('disable'),
-					1 => elgg_echo('enable')
-				),
-				'value' => $entity->entity_comments,
-				'hint' => elgg_echo('edit:plugin:hypealive:params[entity_comments]:hint')
-			),
 			'params[forum_comments]' => array(
 				'input_type' => 'dropdown',
 				'options_values' => array(
@@ -130,15 +112,6 @@ function hj_alive_init_plugin_settings_form($hook, $type, $return, $params) {
 				'value' => $entity->likes,
 				'hint' => elgg_echo('edit:plugin:hypealive:params[likes]:hint')
 			),
-			'params[dislikes]' => array(
-				'input_type' => 'dropdown',
-				'options_values' => array(
-					0 => elgg_echo('disable'),
-					1 => elgg_echo('enable')
-				),
-				'value' => $entity->likes,
-				'hint' => elgg_echo('edit:plugin:hypealive:params[dislikes]:hint')
-			),
 			'params[likes_style]' => array(
 				'input_type' => 'dropdown',
 				'options_values' => array(
@@ -177,6 +150,41 @@ function hj_alive_init_plugin_settings_form($hook, $type, $return, $params) {
 				'value' => $entity->river,
 				'hint' => elgg_echo('edit:plugin:hypealive:params[river]:hint')
 			),
+			'params[river_comments]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					0 => elgg_echo('disable'),
+					1 => elgg_echo('enable')
+				),
+				'value' => $entity->river_comments,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[river_comments]:hint')
+			),
+			'params[river_order]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'asc' => elgg_echo('hj:alive:river_order:chronological'),
+					'desc' => elgg_echo('hj:alive:river_order:reverse_chronological'),
+				),
+				'value' => $entity->river_order,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[river_order]:hint')
+			),
+			'params[river_load_style]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'load_newer' => elgg_echo('hj:alive:river_load_style:newer'),
+					'load_older' => elgg_echo('hj:alive:river_load_style:older'),
+				),
+				'value' => $entity->river_load_style,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[river_load_style]:hint')
+			),
+			'params[river_limit]' => array(
+				'value' => $entity->river_limit,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[river_limit]:hint')
+			),
+			'params[river_load_limit]' => array(
+				'value' => $entity->river_load_limit,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[river_load_limit]:hint')
+			),
 			'params[river_tabs][all]' => array(
 				'value' => $river_tabs['all'],
 				'maxlength' => 2,
@@ -202,7 +210,38 @@ function hj_alive_init_plugin_settings_form($hook, $type, $return, $params) {
 				'maxlength' => 2,
 				'hint' => elgg_echo('edit:plugin:hypealive:params[river_tabs]:hint')
 			),
-			
+			'params[river_tabs][bookmarks]' => array(
+				'value' => $river_tabs['bookmarks'],
+				'maxlength' => 2,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[river_tabs]:hint')
+			),
+			'params[subscriptions]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					0 => elgg_echo('disable'),
+					1 => elgg_echo('enable')
+				),
+				'value' => $entity->subscriptions,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[subscriptions]:hint')
+			),
+			'params[bookmarks]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					0 => elgg_echo('disable'),
+					1 => elgg_echo('enable')
+				),
+				'value' => $entity->bookmarks,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[bookmarks]:hint')
+			),
+			'params[shares]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					0 => elgg_echo('disable'),
+					1 => elgg_echo('enable')
+				),
+				'value' => $entity->shares,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[shares]:hint')
+			),
 		),
 		'buttons' => false
 	);

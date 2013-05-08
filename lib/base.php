@@ -1,6 +1,6 @@
 <?php
 
-function hj_alive_prepare_view_params($entity, $annotation_name = 'generic_comment') {
+function hj_alive_prepare_view_params($entity, $annotation_name = null) {
 
 	if ($entity->getType() == 'river') {
 		$entity = hj_alive_get_river_stream_object($entity);
@@ -8,7 +8,6 @@ function hj_alive_prepare_view_params($entity, $annotation_name = 'generic_comme
 
 	$params = array(
 		'entity' => $entity,
-		'aname' => $annotation_name,
 		'container_guid' => $entity->guid,
 		'list_id' => "comments-$entity->guid"
 	);
@@ -21,32 +20,63 @@ function hj_alive_view_comments_list($entity, $params) {
 	return elgg_view('framework/alive/comments/list', $params);
 }
 
-function hj_alive_count_comments($entity, $params) {
-	$container_guid = elgg_extract('container_guid', $params, null);
-	$river_id = elgg_extract('river_id', $params, null);
-	$annotation_name = elgg_extract('aname', $params, 'generic_comment');
+function hj_alive_count_comments($entity) {
 
 	$options = array(
 		'type' => 'object',
-		'subtype' => 'hjannotation',
-		'metadata_name_value_pairs' => array(
-			array('name' => 'annotation_name', 'value' => $annotation_name),
-			array('name' => 'annotation_value', 'value' => '', 'operand' => '!='),
-		),
+		'subtype' => 'hjcomment',
+		'container_guid' => $entity->guid,
 		'count' => true,
 	);
-
-	if ($container_guid) {
-		$options['container_guid'] = $container_guid;
-	}
-
-	if ($river_id) {
-		$options['metadata_name_value_pairs'][] = array('name' => 'river_id', 'value' => $river_id);
-	}
 
 	$count = elgg_get_entities_from_metadata($options);
 
 	return $count;
+}
+
+function hj_alive_count_likes($entity) {
+
+	$options = array(
+		'annotation_names' => array('likes'),
+		'annotation_values' => 1,
+		'guids' => $entity->guid,
+		'count' => true,
+	);
+
+	$count = elgg_get_annotations($options);
+
+	return $count;
+
+}
+
+function hj_alive_count_bookmarks($entity) {
+
+	$options = array(
+		'relationship' => 'bookmarked',
+		'relationship_guid' => $entity->guid,
+		'inverse_relationship' => true,
+		'count' => true
+	);
+
+	$count = elgg_get_entities_from_relationship($options);
+
+	return $count;
+
+}
+
+function hj_alive_count_shares($entity) {
+
+	$options = array(
+		'relationship' => 'shared',
+		'relationship_guid' => $entity->guid,
+		'inverse_relationship' => true,
+		'count' => true
+	);
+
+	$count = elgg_get_entities_from_relationship($options);
+
+	return $count;
+
 }
 
 function hj_alive_view_likes_list($params) {
@@ -270,4 +300,37 @@ function hj_alive_annotation_match_exists($annotation) {
 		return true;
 	}
 	return false;
+}
+
+function hj_alive_notify_subscribed_users($guid) {
+
+	$entity = get_entity($guid);
+
+	$subscribers = $entity->getSubscribedUsers();
+	$subtype = $entity->getSubtype();
+
+	$from = elgg_get_site_entity()->guid;
+
+	$subject = elgg_echo("hj:forum:new:$subtype");
+
+	$subject_link = elgg_view('framework/bootstrap/user/elements/name', array('entity' => $entity->getOwnerEntity()));
+	$object_link = elgg_view('framework/bootstrap/object/elements/title', array('entity' => $entity));
+	$breadcrumbs = elgg_view('framework/bootstrap/object/elements/breadcrumbs', array('entity' => $entity));
+	if (!empty($breadcrumbs)) {
+		$breadcrumbs_link = elgg_echo('river:in:forum', array($breadcrumbs));
+	}
+	$key = "river:create:object:$subtype";
+	$summary = elgg_echo($key, array($subject_link, $object_link)) . $breadcrumbs_link;
+	$body = elgg_view('framework/bootstrap/object/elements/description', array('entity' => $entity));
+	$link = elgg_view('output/url', array(
+		'text' => elgg_echo('hj:framework:notification:link'),
+		'href' => $entity->getURL(),
+		'is_trusted' => true
+	));
+	$footer = elgg_echo('hj:framework:notification:full_link', array($link));
+
+	$message = "<p>$summary</p><p>$body</p><p>$footer</p>";
+
+	notify_user($subscribers, $from, $subject, $message);
+
 }

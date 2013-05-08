@@ -15,9 +15,7 @@ if (!$limit = (int) elgg_extract('limit', $getter_options, HYPEALIVE_COMMENTS_LI
 
 $count = (int) elgg_extract('count', $vars, 0);
 
-if ($count < HYPEALIVE_COMMENTS_LOAD_LIMIT) {
-	$next_limit = HYPEALIVE_COMMENTS_LOAD_LIMIT;
-}
+$next_limit = HYPEALIVE_COMMENTS_LOAD_LIMIT;
 
 $base_url = elgg_normalize_url(elgg_extract('base_url', $list_options, full_url()));
 

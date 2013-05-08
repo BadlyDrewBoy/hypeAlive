@@ -35,7 +35,7 @@ hj.comments.init = function() {
 			}
 
 			$(this)
-			.find('[name="annotation_value"]')
+			.find('[name="description"]')
 			.focus();
 		})
 	});
@@ -63,7 +63,7 @@ hj.comments.editComment = function(event) {
 	form = item.closest('.annotations').siblings('.hj-comments-form').last().find('form').html();
 		
 	item.html($('<form>').html(form));
-	var input = item.find('[name="annotation_value"]');
+	var input = item.find('[name="description"]');
 	input.focus();
 	input.val(value);
 	item.find('[name="annotation_guid"]').val(id);
@@ -77,7 +77,7 @@ hj.comments.editComment = function(event) {
 		elgg.action('action/comment/save', {
 			data : {
 				annotation_guid : id,
-				annotation_value : value
+				description : value
 			},
 			success : function() {
 				item.html(item_html);
@@ -113,7 +113,7 @@ hj.comments.saveComment = function(event) {
 	container = $('#hj-stream-'+ id);
 	commentsList = container.find('.hj-comments').last();
 
-	var input = $('[name="annotation_value"]', $(this));
+	var input = $('[name="description"]', $(this));
 
 	input
 	.addClass('hj-input-processing');

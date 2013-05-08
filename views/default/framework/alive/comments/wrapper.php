@@ -10,6 +10,6 @@ $attr = elgg_format_attributes($attr);
 
 echo <<<__HTML
 <div $attr>
-	{$vars['menu']}{$vars['likes']}{$vars['dislikes']}{$vars['comments']}{$extend}
+	{$vars['menu']}{$vars['likes']}{$vars['comments']}{$extend}
 </div>
 __HTML;

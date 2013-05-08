@@ -1,16 +1,17 @@
 <?php if (FALSE) : ?><script type="text/javascript"><?php endif; ?>
 
 	elgg.provide('framework.alive');
-	elgg.provide('framework.alive');
 	elgg.provide('framework.alive.stream');
 	elgg.provide('framework.alive.likes');
-	elgg.provide('framework.alive.dislikes');
 
-	elgg.provide('framework.alive.stream.order');
-	elgg.provide('framework.alive.stream.load_style');
+	elgg.provide('framework.alive.comments.order');
+	elgg.provide('framework.alive.comments.load_style');
 
-	framework.alive.stream.order = '<?php echo HYPEALIVE_COMMENTS_ORDER ?>';
-	framework.alive.stream.load_style = '<?php echo HYPEALIVE_COMMENTS_LOAD_STYLE ?>';
+	elgg.provide('framework.alive.river.order');
+	elgg.provide('framework.alive.river.load_style');
+
+	framework.alive.comments.order = '<?php echo HYPEALIVE_COMMENTS_ORDER ?>';
+	framework.alive.river.order = '<?php echo HYPEALIVE_RIVER_ORDER ?>';
 
 	framework.alive.stream.init = function() {
 
@@ -25,7 +26,7 @@
 			.fadeIn()
 			.children('.hj-comments-form')
 			.fadeIn()
-			.find('[name="annotation_value"]')
+			.find('[name="description"]')
 			.focus()
 		});
 
@@ -45,7 +46,7 @@
 			.fadeIn()
 			.children('.hj-comments-form')
 			.fadeIn()
-			.find('[name="annotation_value"]')
+			.find('[name="description"]')
 			.focus()
 
 		});
@@ -101,7 +102,7 @@
 		form = item.closest('.annotations').siblings('.hj-comments-form').last().find('form').html();
 
 		item.html($('<form>').html(form));
-		var input = item.find('[name="annotation_value"]');
+		var input = item.find('[name="description"]');
 		input.focus();
 		input.val(value);
 		item.find('[name="annotation_guid"]').val(id);
@@ -115,7 +116,7 @@
 			elgg.action('action/comment/save', {
 				data : {
 					annotation_guid : id,
-					annotation_value : value
+					description : value
 				},
 				success : function() {
 					item.html(item_html);
@@ -133,7 +134,7 @@
 		event.preventDefault();
 
 		$form = $(this);
-		$input = $('[name="annotation_value"]', $form);
+		$input = $('[name="description"]', $form);
 
 		elgg.action($form.attr('action'), {
 			data : $form.serialize(),
@@ -146,7 +147,7 @@
 				if (response.status >= 0) {
 					var list_id = $('[name=list_id]', $form).val();
 					$item = $(response.output.view).addClass('hj-comment-new');
-					if (framework.alive.stream.order == 'asc') {
+					if (framework.alive.comments.order == 'asc') {
 						$('#'+list_id).append($item);
 					} else {
 						$('#'+list_id).prepend($item);
@@ -181,7 +182,7 @@
 			success : function(response) {
 				if (response.status >= 0) {
 					var updatedLists = response.output.body.lists;
-					elgg.trigger_hook('refresh:comments', 'framework:alive', { lists : updatedLists });
+					elgg.trigger_hook('refresh:stream', 'framework:alive', { lists : updatedLists });
 				}
 			},
 			complete : function() {
@@ -223,7 +224,12 @@
 					$first = $last = $existing = $new;
 				}
 
-				if (framework.alive.stream.order == 'asc') {
+				if (updatedList.list_id == 'activity') {
+					var order = framework.alive.river.order;
+				} else {
+					var order = framework.alive.comments.order;
+				}
+				if (order == 'asc') {
 					if ($existing.length > 0) {
 						if ($existing.data('ts') < $new.data('ts')) {
 							$existing.replaceWith($new.fadeIn());
@@ -298,7 +304,6 @@
 					ref.push(data);
 				});
 				if (window.ajaxlikesready) {
-					//elgg.system_message(elgg.echo('hj:comments:refreshing'));
 					framework.alive.likes.refresh(ref);
 				}
 				window.likestimer = false;
@@ -379,6 +384,6 @@
 	elgg.register_hook_handler('init', 'system', framework.alive.stream.init);
 	elgg.register_hook_handler('init', 'system', framework.alive.likes.init);
 
-	elgg.register_hook_handler('refresh:comments', 'framework:alive', framework.alive.stream.refreshLists);
+	elgg.register_hook_handler('refresh:stream', 'framework:alive', framework.alive.stream.refreshLists);
 	
 <?php if (FALSE) : ?></script><?php endif; ?>

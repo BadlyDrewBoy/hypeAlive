@@ -80,7 +80,7 @@ if (!elgg_instanceof($entity, 'object', 'hjannotation')) {
 			$owner = get_entity($entity->owner_guid);
 			$icon = elgg_view_entity_icon($owner, 'tiny');
 
-			$description = $entity->getVolatileData('search_annotation_value');
+			$description = $entity->getVolatileData('search_description');
 			$tc = $entity->time_created;
 			$time = elgg_view_friendly_time($tc);
 
@@ -107,7 +107,7 @@ if (!elgg_instanceof($entity, 'object', 'hjannotation')) {
 			$owner = get_entity($entity->owner_guid);
 			$icon = elgg_view_entity_icon($owner, 'tiny');
 
-			$description = $entity->getVolatileData('search_annotation_value');
+			$description = $entity->getVolatileData('search_description');
 			$tc = $entity->time_created;
 			$time = elgg_view_friendly_time($tc);
 

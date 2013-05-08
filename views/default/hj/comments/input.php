@@ -49,7 +49,7 @@ $form_body .= elgg_view('input/hidden', array(
 
 if (elgg_get_plugin_setting('comment_form', 'hypeAlive') == 'advanced') {
 	$form_body .= elgg_view('input/plaintext', array(
-		'name' => 'annotation_value',
+		'name' => 'description',
 		'rows' => '2'
 	));
 	
@@ -63,7 +63,7 @@ if (elgg_get_plugin_setting('comment_form', 'hypeAlive') == 'advanced') {
 	));
 } else {
 	$form_body .= elgg_view('input/text', array(
-		'name' => 'annotation_value'
+		'name' => 'description'
 			));
 
 	$form_body .= elgg_view('input/submit', array(

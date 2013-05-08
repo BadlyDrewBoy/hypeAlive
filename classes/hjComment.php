@@ -12,7 +12,10 @@ class hjComment extends hjObject {
 			$return = parent::save();
 
 			if ($return) {
-				$this->setAncestry();
+				$origin = $this->getOriginalContainer();
+				if (!check_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $origin->guid)) {
+					add_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $origin->guid);
+				}
 				$this->notifySubscribedUsers();
 			}
 
@@ -22,72 +25,48 @@ class hjComment extends hjObject {
 		return parent::save();
 	}
 
-	public function countTopics($recursive = false) {
-		return $this->getLatestTopics(0, true, $recursive);
-	}
-
-	public function countPosts($recursive = false) {
-		return $this->getLatestPosts(0, true, $recursive);
-	}
-
-	public function getLatestTopics($limit = 10, $count = false, $recursive = false) {
-		return hj_forum_get_latest_topics($this->guid, $limit, $count, $recursive);
-	}
-
-	public function getLatestTopic($recursive = false) {
-		$topics = $this->getLatestTopics(1, false, $recursive);
-		return ($topics) ? $topics[0] : false;
-	}
-
-	public function getLatestPosts($limit = 10, $count = false, $recursive = false) {
-		return hj_forum_get_latest_posts($this->guid, $limit, $count, $recursive);
-	}
-
-	public function getLatestPost($recursive = false) {
-		$posts = $this->getLatestPosts(1, false, $recursive);
-		return ($posts) ? $posts[0] : false;
-	}
-
 	public function getURL() {
-		$friendly_title = elgg_get_friendly_title($this->getTitle());
-		return elgg_get_site_url() . "forum/view/$this->guid/$friendly_title";
+		return elgg_get_site_url() . "stream/view/{$this->getOriginalContainer()->guid}?comment=$this->guid";
 	}
 
 	public function getEditURL() {
-		return elgg_get_site_url() . "forum/edit/$this->guid";
+		return elgg_get_site_url() . "stream/edit/$this->guid";
 	}
 
-	public function isOpenFor($subtype = null) {
-
-		if ($this->status == 'closed')
-			return false;
-
-		return true;
-	}
-
-	public function isSticky() {
-		if ($this->sticky == true) {
-			return true;
+	public function getOriginalContainer() {
+		$check = true;
+		$container = $this;
+		while ($check) {
+			if (!elgg_instanceof($container, 'object', 'hjcomment')) {
+				$check = false;
+			} else {
+				$container = $container->getContainerEntity();
+			}
 		}
-
-		return false;
+		return $container;
 	}
 
-	public function hasCategories() {
-		$options = array(
-			'types' => 'object',
-			'subtypes' => 'hjforumcategory',
-			'count' => true,
-			'container_guid' => $this->guid
-		);
+	public function getDepthToOriginalContainer() {
+		$check = true;
+		$container = $this;
+		$count = 1;
+		while ($check) {
+			if (!elgg_instanceof($container, 'object', 'hjcomment')) {
+				$check = false;
+			} else {
+				$container = $container->getContainerEntity();
+				$count = $count + 1;
+			}
+		}
+		return $count;
+	}
 
-		$categories = elgg_get_entities($options);
-
-		return ($categories);
+	public function getOriginalOwner() {
+		return $this->findOriginalContainer()->getOwnerEntity();
 	}
 
 	public function notifySubscribedUsers() {
-		return hj_forum_notify_subscribed_users($this->guid);
+		return hj_alive_notify_subscribed_users($this->guid);
 	}
 
 }

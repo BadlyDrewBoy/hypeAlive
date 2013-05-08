@@ -28,12 +28,14 @@ $author = elgg_view('output/url', array(
 	));
 
 $comment = '<span class="annotation-value">' . elgg_view('output/text', array(
-    'value' => $entity->annotation_value
+    'value' => $entity->description
 	)) . '</span>';
 
 $comment = elgg_echo('hj:alive:comments:commentcontent', array($author, $comment));
 
-$bar = elgg_view('hj/comments/bar', $vars);
+if (HYPEALIVE_COMMENTS) {
+	$bar = elgg_view_comments($entity);
+}
 
 $content = <<<HTML
     <div class="clearfix">

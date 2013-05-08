@@ -3,17 +3,12 @@
 $entity = elgg_extract('entity', $vars, false);
 $params = elgg_clean_vars($vars);
 
-if (!elgg_is_logged_in() || !$entity) {
+if (!elgg_is_logged_in() || !$entity || !$entity->canComment()) {
 	return true;
 }
 
 $form_body .= elgg_view('input/hidden', array(
-	'name' => 'annotation_guid'
-		));
-
-$form_body .= elgg_view('input/hidden', array(
-	'name' => 'aname',
-	'value' => elgg_extract('aname', $vars, 'generic_comment')
+	'name' => 'guid'
 		));
 
 $form_body .= elgg_view('input/hidden', array(
@@ -21,29 +16,20 @@ $form_body .= elgg_view('input/hidden', array(
 	'value' => elgg_extract('list_id', $vars)
 		));
 
-if ($container_guid = elgg_extract('container_guid', $vars, false)) {
-	$form_body .= elgg_view('input/hidden', array(
-		'name' => 'container_guid',
-		'value' => $container_guid
-			));
-}
-
-if ($river_id = elgg_extract('river_id', $vars, false)) {
-	$form_body .= elgg_view('input/hidden', array(
-		'name' => 'river_id',
-		'value' => $river_id
-			));
-}
+$form_body .= elgg_view('input/hidden', array(
+	'name' => 'container_guid',
+	'value' => elgg_extract('container_guid', $vars, false)
+		));
 
 if (HYPEALIVE_COMMENT_FORM == 'advanced') {
 	$class = 'hj-comments-form-advanced';
 	$form_body .= elgg_view('input/plaintext', array(
-		'name' => 'annotation_value',
+		'name' => 'description',
 		'rows' => '2'
 			));
 
 	$form_body .= elgg_view('input/submit', array(
-		'value' => elgg_echo('submit')
+		'value' => elgg_echo('save')
 			));
 
 	$form_body .= elgg_view('input/button', array(
@@ -53,17 +39,16 @@ if (HYPEALIVE_COMMENT_FORM == 'advanced') {
 } else {
 	$class = 'hj-comments-form-simple';
 	$form_body .= elgg_view('input/text', array(
-		'name' => 'annotation_value'
+		'name' => 'description'
 			));
 
 	$button = elgg_view('input/submit', array(
-		'value' => 'submit',
-			//'class' => 'hidden'
+		'value' => elgg_echo('save')
 			));
 }
 
 $comments_count = hj_alive_count_comments($entity, $params);
-if ($comments_count <= 0 || elgg_instanceof($entity, 'object', 'hjannotation')) {
+if ($comments_count <= 0 || elgg_instanceof($entity, 'object', 'hjcomment')) {
 	$class .= ' hidden';
 }
 

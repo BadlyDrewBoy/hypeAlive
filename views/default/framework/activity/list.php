@@ -92,17 +92,41 @@ if (elgg_instanceof($user, 'user')) {
 }
 
 $list_id = elgg_extract('list_id', $vars, 'activity');
-if (!get_input("__lim_$list_id", false)) {
-	set_input("__lim_$list_id", 25);
+
+$limit = (int) get_input("__lim_$list_id", false);
+
+if (!$limit) {
+	$limit = HYPEALIVE_RIVER_LIMIT;
+	set_input("__lim_$list_id", $limit);
+}
+
+$list_options = array(
+	'list_type' => 'stream',
+	'list_class' => 'elgg-river',
+	'pagination' => true,
+	'pagination_type' => 'river',
+	'pagination_position' => 'after'
+);
+
+if (HYPEALIVE_RIVER_ORDER == 'asc') {
+	if (HYPEALIVE_RIVER_LOAD_STYLE == 'load_older') {
+		$options['order_by'] = 'rv.posted DESC';
+		$list_options['pagination_position'] = 'before';
+		$list_options['reverse_list'] = true;
+	} else {
+		$options['order_by'] = 'rv.posted ASC';
+	}
+} else {
+	if (HYPEALIVE_RIVER_LOAD_STYLE == 'load_newer') {
+		$options['order_by'] = 'rv.posted ASC';
+		$list_options['pagination_position'] = 'before';
+		$list_options['reverse_list'] = true;
+	} else {
+		$options['order_by'] = 'rv.posted DESC';
+	}
 }
 
 $getter_options = $options;
-
-$list_options = array(
-	'list_class' => 'elgg-river',
-	'pagination' => true,
-	'limit_select_options' => array(25, 50, 100, 200)
-);
 
 $viewer_options = array(
 	'full_view' => false
