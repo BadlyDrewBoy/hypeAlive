@@ -31,20 +31,25 @@ function hj_alive_activity_filter_clauses($hook, $type, $options, $params) {
 	if (!elgg_in_context('activity')) {
 		return $options;
 	}
-	
+
 	$query = get_input("__tsp", false);
 
 	if ($query && is_array($query) && !empty($query)) {
 		foreach ($query as $tsp) {
-			list($type, $subtype) = explode(':', $tsp);
-			$type_subtype_pairs[$type][] = $subtype;
-		}
-		foreach ($type_subtype_pairs as $type => $subtypes) {
-			if (!is_array($subtypes)) {
-				$type_subtype_pairs[$type] = true;
+			list($entity_type, $entity_subtype) = explode(':', $tsp);
+			if (!is_array($options['types'])) {
+				$options['types'] = array($entity_type);
+			} else {
+				$options['types'][] = $entity_type;
+			}
+			if ($entity_subtype && !empty($entity_subtype)) {
+				if (!is_array($options['subtypes'])) {
+					$options['subtypes'] = array($entity_subtype);
+				} else {
+					$options['subtypes'][] = $entity_subtype;
+				}
 			}
 		}
-		$options['type_subtype_pairs'] = $type_subtype_pairs;
 	}
 
 	$query = get_input("members", false);
@@ -62,9 +67,8 @@ function hj_alive_comments_replacement($hook, $entity_type, $returnvalue, $param
 	if (elgg_instanceof($entity, 'object', 'hjcomment')) {
 		return elgg_view('framework/alive/replies', $params);
 	}
-	
+
 	return elgg_view('framework/alive/comments', $params);
-	
 }
 
 function hj_alive_can_comment($hook, $type, $return, $params) {
@@ -76,7 +80,6 @@ function hj_alive_can_comment($hook, $type, $return, $params) {
 	}
 
 	return $return;
-
 }
 
 function hj_alive_can_write_to_container($hook, $type, $return, $params) {

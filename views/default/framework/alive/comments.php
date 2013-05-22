@@ -12,8 +12,8 @@ if (!$entity) {
 	return true;
 }
 
-elgg_load_css('alive.stream.css');
-elgg_load_js('alive.stream.js');
+elgg_load_css('alive.comments.css');
+elgg_load_js('alive.comments.js');
 
 $params = hj_alive_prepare_view_params($entity);
 

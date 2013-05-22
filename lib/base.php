@@ -37,14 +37,14 @@ function hj_alive_count_comments($entity) {
 function hj_alive_count_likes($entity) {
 
 	$options = array(
-		'annotation_names' => array('likes'),
+		'annotation_names' => 'likes',
 		'annotation_values' => 1,
 		'guids' => $entity->guid,
-		'count' => true,
+		'annotation_calculation' => 'count'
 	);
 
 	$count = elgg_get_annotations($options);
-
+	
 	return $count;
 
 }
@@ -77,6 +77,18 @@ function hj_alive_count_shares($entity) {
 
 	return $count;
 
+}
+
+function hj_alive_get_stream_stats($entity) {
+
+	return array(
+		'comments' => hj_alive_count_comments($entity),
+		'likes' => hj_alive_count_likes($entity),
+		'bookmarks' => hj_alive_count_bookmarks($entity),
+		'shares' => hj_alive_count_shares($entity),
+		'substream' => elgg_view('framework/alive/comments/substream', array('entity' => $entity))
+	);
+	
 }
 
 function hj_alive_view_likes_list($params) {
@@ -236,31 +248,26 @@ function hj_alive_get_likes($params, $count = false) {
 	return $likes = elgg_get_entities_from_metadata($options);
 }
 
-function hj_alive_does_user_like($params) {
-	$container_guid = elgg_extract('container_guid', $params, null);
-	$river_id = elgg_extract('river_id', $params, null);
-	$owner_guid = elgg_get_logged_in_user_guid();
+function hj_alive_does_user_like($entity, $user = null) {
 
-	$options = array(
-		'type' => 'object',
-		'subtype' => 'hjannotation',
-		'owner_guid' => $owner_guid,
-		'container_guid' => $container_guid,
-		'metadata_name_value_pairs' => array(
-			array('name' => 'annotation_name', 'value' => 'likes'),
-			array('name' => 'annotation_value', 'value' => '1'),
-			array('name' => 'river_id', 'value' => $river_id)
-		),
-		'count' => false,
-		'limit' => 0
-	);
-
-	$likes = elgg_get_entities_from_metadata($options);
-
-	if ($likes && sizeof($likes) > 0) {
-		return array('self' => true, 'likes' => $likes);
+	if (!elgg_is_logged_in() || !elgg_instanceof($entity)) {
+		return false;
 	}
-	return false;
+
+	if (!$user) {
+		$user = elgg_get_logged_in_user_entity();
+	}
+
+	$likes = elgg_get_annotations(array(
+		'guids' => $entity->guid,
+		'annotation_owner_guids' => $user->guid,
+		'annotation_names' => 'likes',
+		'annotation_values' => 1,
+		'annotation_calculation' => 'count'
+	));
+
+	
+	return ($likes > 0) ? true : false;
 }
 
 function hj_alive_import_annotations($annotation_name) {
@@ -302,12 +309,41 @@ function hj_alive_annotation_match_exists($annotation) {
 	return false;
 }
 
-function hj_alive_notify_subscribed_users($guid) {
+function hj_alive_notify_subscribed_users($entity) {
 
-	$entity = get_entity($guid);
+	$original_container = $entity->getOriginalContainer();
+	$original_owner = $original_container->getOwnerEntity();
 
-	$subscribers = $entity->getSubscribedUsers();
+	$container = $entity->getContainerEntity();
+	$container_owner = $container->getOwnerEntity();
+
+	$depth = $entity->getDepthToOriginalContainer();
+
+	if ($depth > 1 && $original_owner->guid !== $container_owner->guid) {
+		// Notify comment owner that he has a new reply
+
+	} else {
+		// Notify entity owner that he has a new comment
+
+	}
+
+	if ($depth > 1) {
+		// Notify subscribed users about activity in the thread
+
+	} else {
+		// Notify subscribed users about activity on the item
+	}
+
 	$subtype = $entity->getSubtype();
+
+	$subscribers = elgg_get_entities_from_relationship(array(
+		'types' => 'user',
+		'relationship' => 'subscribed',
+		'relationship_guid' => $object->guid,
+		'inverse_relationship' => true,
+		'limit' => 0
+	));
+
 
 	$from = elgg_get_site_entity()->guid;
 

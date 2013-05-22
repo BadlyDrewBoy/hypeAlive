@@ -10,13 +10,6 @@ if (!$item) {
 $type = $item->getType();
 $subtype = $item->getSubtype();
 
-$view = "object/$type/$subtype/grids/stream";
-
-if (elgg_view_exists($view)) {
-	echo elgg_view($view, $vars);
-	return true;
-}
-
 $class = "$class elgg-item elgg-$type elgg-$type-$subtype";
 
 $id = false;
@@ -47,6 +40,11 @@ $attr = array(
 );
 
 $attributes = elgg_format_attributes($attr);
+
+// This is a nested stream
+// Hacking to avoid global catch
+global $_elgg_special_river_catch;
+$_elgg_special_river_catch = false;
 
 $item_view = elgg_view_list_item($item, $vars);
 

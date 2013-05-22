@@ -5,14 +5,46 @@
 	$graphics_url = $base_url . 'mod/hypeAlive/graphics/';
 	?>
 
-	.elgg-menu-comments, .elgg-menu-replies {
-		font-size:11px;
+	.elgg-menu-comments > li {
+		margin: 3px 10px;
+		display: inline-block;
+		vertical-align: middle;
+	}
+	.elgg-menu-comments > li > ul > li {
+		background: #f;
+		padding: 0px 6px;
+		border: 1px solid transparent;
+		font-size: 10px;
+		font-weight: bold;
+		margin: 0px 5px;
+		position: relative;
+		vertical-align: middle;
+		border-radius: 10px;
+		background: #f4f4f4;
+		border: 2px solid #e8e8e8;
+	}
+	.elgg-menu-comments {
+		margin-bottom: 5px;
+	}
+	.elgg-menu-comments > li > a {
+		font-size: 1.1em;
+		margin: 0;
+	}
+	.elgg-menu-comments > li ul a {
+		color: #666;
+		font-weight: bold;
+	}
+	.elgg-menu-comments > li > ul {
+		display: inline-block;
 	}
 
-	.elgg-menu-comments > li > a, .elgg-menu-replies > li > a {
-		margin-right: 10px
+	.elgg-menu-replies {
+		font-size:0.9em;
 	}
-
+	.elgg-menu-replies > li > ul > li {
+		border: 1px solid #e8e8e8;
+		font-size: 9px;
+	}
 	.elgg-menu-replies .elgg-menu-item-time {
 		font-size:10px;
 		font-style:italic;
@@ -144,7 +176,7 @@
 	}
 
 	.hj-replies-placeholder {
-		display: inline-block;
+		display: none;
 		padding: 5px 15px;
 		margin:5px 10px 0;
 		background: #fafafa;
@@ -170,5 +202,28 @@
 		display:inline-block;
 		margin-right:10px;
 		vertical-align:middle;
+	}
+
+	.elgg-river-substream {
+		border: none;
+		margin: 0;
+		padding: 10px;
+		background: #f4f4f4;
+		border-bottom: 1px solid #e8e8e8;
+	}
+	.elgg-river-substream > li {
+		display: inline-block;
+		border: none;
+		padding: 0;
+		position: relative;
+	}
+	.elgg-river-substream > li > a > img {
+		border: 2px solid #f4f4f4;
+	}
+	.elgg-river-substream > li > a > span.elgg-icon {
+		position: absolute;
+		z-index: 300;
+		left: -2px;
+		top: -2px;
 	}
 	<?php if (FALSE) : ?></style><?php endif; ?>

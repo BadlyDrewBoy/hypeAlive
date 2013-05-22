@@ -13,7 +13,7 @@ function hj_alive_page_handler($page) {
 		default :
 			return false;
 			break;
-			
+
 		case 'comments' :
 			switch ($page[1]) {
 				case 'content' :
@@ -61,6 +61,20 @@ function hj_alive_page_handler($page) {
 
 		case 'view' :
 
+			break;
+
+		case 'notifications' :
+			elgg_set_context('settings');
+			if (isset($page[1]) && $user = get_user_by_username($page[1])) {
+				if (!$user->canEdit()) {
+					forward();
+				}
+				elgg_set_page_owner_guid($user->guid);
+			}
+			$title = elgg_echo('hj:alive:stream:notifications');
+			$content = elgg_view('framework/stream/notifications');
+			$filter = false;
+			$sidebar = false;
 			break;
 	}
 

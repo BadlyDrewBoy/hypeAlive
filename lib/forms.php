@@ -112,26 +112,6 @@ function hj_alive_init_plugin_settings_form($hook, $type, $return, $params) {
 				'value' => $entity->likes,
 				'hint' => elgg_echo('edit:plugin:hypealive:params[likes]:hint')
 			),
-			'params[likes_style]' => array(
-				'input_type' => 'dropdown',
-				'options_values' => array(
-					'like' => elgg_echo('hj:alive:likes:style:like'),
-					'plusone' => elgg_echo('hj:alive:likes:style:plusone'),
-					'kudo' => elgg_echo('hj:alive:likes:style:kudo'),
-					'vote' => elgg_echo('hj:alive:likes:style:vote'),
-				),
-				'value' => $entity->likes,
-				'hint' => elgg_echo('edit:plugin:hypealive:params[likes_style]:hint')
-			),
-			'params[likes_limit]' => array(
-				'input_type' => 'dropdown',
-				'options_values' => array(
-					'one_only' => elgg_echo('hj:alive:likes:limit:one_only'),
-					'one_each' => elgg_echo('hj:alive:likes:limit:one_each')
-				),
-				'value' => $entity->likes,
-				'hint' => elgg_echo('edit:plugin:hypealive:params[likes_limit]:hint')
-			),
 			'params[livesearch]' => array(
 				'input_type' => 'dropdown',
 				'options_values' => array(

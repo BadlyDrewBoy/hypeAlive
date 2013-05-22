@@ -13,10 +13,10 @@ class hjComment extends hjObject {
 
 			if ($return) {
 				$origin = $this->getOriginalContainer();
-				if (!check_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $origin->guid)) {
+				if (!check_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $origin->guid)
+						&& !check_entity_relationship(elgg_get_logged_in_user_guid(), 'unsubscribed', $origin->guid)) {
 					add_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $origin->guid);
 				}
-				$this->notifySubscribedUsers();
 			}
 
 			return $return;
@@ -26,11 +26,8 @@ class hjComment extends hjObject {
 	}
 
 	public function getURL() {
-		return elgg_get_site_url() . "stream/view/{$this->getOriginalContainer()->guid}?comment=$this->guid";
-	}
-
-	public function getEditURL() {
-		return elgg_get_site_url() . "stream/edit/$this->guid";
+		$path = implode('/', $this->getAncestry());
+		return elgg_get_site_url() . "comments/view/$path";
 	}
 
 	public function getOriginalContainer() {
@@ -44,6 +41,21 @@ class hjComment extends hjObject {
 			}
 		}
 		return $container;
+	}
+
+	public function getAncestry() {
+		$check = true;
+		$container = $this;
+		$ancestry = array($container->guid);
+		while ($check) {
+			if (!elgg_instanceof($container, 'object', 'hjcomment')) {
+				$check = false;
+			} else {
+				$container = $container->getContainerEntity();
+				array_unshift($ancestry, $container->guid);
+			}
+		}
+		return $ancestry;
 	}
 
 	public function getDepthToOriginalContainer() {
@@ -63,10 +75,6 @@ class hjComment extends hjObject {
 
 	public function getOriginalOwner() {
 		return $this->findOriginalContainer()->getOwnerEntity();
-	}
-
-	public function notifySubscribedUsers() {
-		return hj_alive_notify_subscribed_users($this->guid);
 	}
 
 }

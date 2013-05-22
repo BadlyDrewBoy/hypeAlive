@@ -21,8 +21,6 @@ define('HYPEALIVE_COMMENTS_LIMIT', (int)elgg_get_plugin_setting('comments_limit'
 define('HYPEALIVE_COMMENTS_LOAD_LIMIT', (int)elgg_get_plugin_setting('comments_load_limit', 'hypeAlive'));
 
 define('HYPEALIVE_LIKES', elgg_get_plugin_setting('likes', 'hypeAlive'));
-define('HYPEALIVE_LIKES_STYLE', elgg_get_plugin_setting('likes_style', 'hypeAlive'));
-define('HYPEALIVE_LIKES_LIMIT', (int)elgg_get_plugin_setting('likes_limit', 'hypeAlive'));
 
 define('HYPEALIVE_SEARCH', elgg_get_plugin_setting('livesearch', 'hypeAlive'));
 

@@ -48,7 +48,7 @@ $english = array(
 	'edit:plugin:hypealive:params[river_tabs][mine]' => 'Activity Dashboard Tabs: Me',
 	'edit:plugin:hypealive:params[river_tabs][friends]' => 'Activity Dashboard Tabs: My Friends',
 	'edit:plugin:hypealive:params[river_tabs][groups]' => 'Activity Dashboard Tabs: My Groups',
-	'edit:plugin:hypealive:params[river_tabs][subscriptions]' => 'Activity Dashboard Tabs: Interests (Subscriptions)',
+	'edit:plugin:hypealive:params[river_tabs][subscriptions]' => 'Activity Dashboard Tabs: My Feed (Subscriptions)',
 	'edit:plugin:hypealive:params[river_tabs]:hint' => 'Position of the tab (1,2,3..) Leave empty or set to 0 to disable this tab',
 
 	
@@ -71,7 +71,8 @@ $english = array(
 	'hj:alive:river:tab:mine' => 'Me',
 	'hj:alive:river:tab:friends' => 'My Friends',
 	'hj:alive:river:tab:groups' => 'My Groups',
-	'hj:alive:river:tab:subscriptions' => 'My Interactions',
+	'hj:alive:river:tab:subscriptions' => 'My Feed',
+	'hj:alive:river:tab:bookmarks' => 'My Bookmarks',
 
 	'river:groups' => 'Activity in my groups',
 	'river:subscriptions' => 'My Interactions',
@@ -101,8 +102,60 @@ $english = array(
 	'hj:alive:comments:load:previous:remaining' => 'previous %s comments &#9651;',
 	'hj:alive:comments:load:previous:all' => '%s comments &#8711;',
 
+	'hj:alive:reply' => 'Reply',
+	'hj:alive:replies' => 'Replies',
 	'hj:alive:replies:show' => '%s replies',
 	'hj:alive:replies:hide' => 'Hide %s replies',
+
+	'hj:alive:likes' => 'Likes',
+	'hj:alive:like:create' => 'Like',
+	'hj:alive:like:remove' => 'Unlike',
+	'hj:alive:like:create:error' => 'Item can not be liked',
+	'hj:alive:like:create:success' => 'You now like this item',
+	'hj:alive:like:remove:error' => 'Item can not be unliked',
+	'hj:alive:like:remove:success' => 'You no longer like this item',
+
+	'hj:alive:bookmark:create' => 'Bookmark',
+	'hj:alive:bookmark:remove' => 'Unbookmark',
+	'hj:alive:bookmark:create:error' => 'Item can not be bookmarked',
+	'hj:alive:bookmark:create:success' => 'Item successfully bookmarked',
+	'hj:alive:bookmark:remove:error' => 'Bookmark can not be removed',
+	'hj:alive:bookmark:remove:success' => 'Bookmark successfully removed',
+
+	'hj:alive:subscription:create' => 'Follow',
+	'hj:alive:subscription:remove' => 'Unfollow',
+	'hj:alive:subscription:create:error' => 'You can\'t follow this item',
+	'hj:alive:subscription:create:success' => 'You are now following this item',
+	'hj:alive:subscription:remove:error' => 'Can not unfollow this item',
+	'hj:alive:subscription:remove:success' => 'You are no longer following this item',
+
+	'hj:alive:stream:notifications' => 'Followed Content Notifications',
+	
+	'hj:alive:share' => 'Share',
+	'hj:alive:shares' => 'Shares',
+	'hj:alive:share:success' => 'Item successfully shared',
+	'hj:alive:share:error' => 'There was a problem sharing this item',
+	
+	'hj:alive:comment:email:subject' => 'New comment on your content',
+	'hj:alive:comment:email:head' => '%s commented on your item %s:',
+	'hj:alive:comment:email:footer' => 'You can view the original item and reply here: %s',
+	'hj:alive:reply:email:subject' => 'New reply to your comment',
+	'hj:alive:reply:email:head' => '%s reply to your comment on %s:',
+	'hj:alive:reply:email:footer' => 'You can view the original item and reply here: %s',
+
+	'hj:alive:stream:desc' => '%s\'s activity',
+	
+	'hj:alive:river:stream:bookmark' => '%s bookmarked %s',
+	'hj:alive:river:stream:comment' => '%s commented on %s',
+	'hj:alive:river:stream:like' => '%s liked %s',
+	'hj:alive:river:stream:share' => '%s shared %s',
+	'hj:alive:river:stream:subscription' => '%s started following %s',
+
+	'hj:alive:river:substream:follow' => '%s started following this %s',
+	'hj:alive:river:substream:bookmark' => '%s bookmarked this %s',
+	'hj:alive:river:substream:comment' => '%s commented on this %s',
+	'hj:alive:river:substream:like' => '%s liked this %s',
+	'hj:alive:river:substream:share' => '%s shared this %s',
 	
 	/**
      * Comments

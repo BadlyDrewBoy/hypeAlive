@@ -6,6 +6,12 @@
  * @uses $vars['item'] ElggRiverItem
  * @uses $vars['responses'] Alternate override for this item
  */
+
+
+if (elgg_in_context('substream-view')) {
+	return true;
+}
+
 // allow river views to override the response content
 $responses = elgg_extract('responses', $vars, false);
 if ($responses) {

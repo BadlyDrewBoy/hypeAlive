@@ -20,7 +20,7 @@ $list_options = array(
 	'pagination' => true,
 	'pagination_type' => 'comments',
 	'pagination_position' => 'after',
-	'base_url' => "stream/replies/$container_guid",
+	'base_url' => "comments/replies/$container_guid",
 );
 
 $count = elgg_get_entities($options);
@@ -60,7 +60,7 @@ $viewer_options = array(
 if ($count) {
 	$content = elgg_view('output/url', array(
 		'text' => elgg_echo('hj:alive:replies:show', array($count)),
-		'href' => "stream/replies/$container_guid",
+		'href' => "comments/replies/$container_guid",
 		'data-streamid' => $container_guid,
 		'class' => 'hj-replies-placeholder'
 			));

@@ -2,7 +2,7 @@
 
 	elgg.provide('framework.alive');
 	elgg.provide('framework.alive.stream');
-	elgg.provide('framework.alive.likes');
+	elgg.provide('framework.alive.actions');
 
 	elgg.provide('framework.alive.comments.order');
 	elgg.provide('framework.alive.comments.load_style');
@@ -52,10 +52,12 @@
 		});
 
 		$('.hj-replies-placeholder')
+		.hide()
 		.live('click', function(event) {
 			event.preventDefault();
 
 			$elem = $(this);
+			$elem.show();
 			$loader = $('<span>').addClass('hj-ajax-loader hj-loader-bar');
 
 			elgg.get($elem.attr('href'), {
@@ -153,6 +155,14 @@
 						$('#'+list_id).prepend($item);
 					}
 					$input.val('').closest('.hj-comments-form').fadeOut();
+
+					var streamid = response.output.container_guid;
+
+					$('.elgg-menu-item-comments-count > a[data-streamid=' + streamid + ']').text(response.output.stats.comments);
+					$('.elgg-menu-item-likes-count > a[data-streamid=' + streamid + ']').text(response.output.stats.likes);
+					$('.elgg-menu-item-bookmarks-count > a[data-streamid=' + streamid + ']').text(response.output.stats.bookmarks);
+					$('.elgg-menu-item-shares-count > a[data-streamid=' + streamid + ']').text(response.output.stats.shares);
+					$('[id=substream-' + streamid + ']').replaceWith(response.output.stats.substream);
 				}
 				
 			},
@@ -275,114 +285,107 @@
 		return true;
 	}
 
-	framework.alive.likes.init = function() {
-		if(window.ajaxlikessready === undefined) {
-			window.ajaxlikesready = true;
-		}
-		framework.alive.likes.triggerRefresh();
+	framework.alive.actions.init = function() {
 
-		$('.elgg-menu-item-like')
-		.unbind('click')
-		.bind('click', framework.alive.likes.saveLike);
+		$('.elgg-menu-item-likes > a')
+		.live('click', function(e) {
+			e.preventDefault();
+			$element = $(this);
+			elgg.action($(this).attr('href'), {
+				success : function(response) {
+					if (response.status >= 0) {
+						if ($element.text() == elgg.echo('hj:alive:like:remove')) {
+							$element.text(elgg.echo('hj:alive:like:create'));
+							$element.removeClass('elgg-state-active');
+						} else {
+							$element.text(elgg.echo('hj:alive:like:remove'));
+							$element.addClass('elgg-state-active');
+						}
 
-		$('.elgg-menu-item-unlike')
-		.unbind('click')
-		.bind('click', framework.alive.likes.saveLike);
+						var streamid = response.output.container_guid;
 
-	};
-
-	framework.alive.likes.triggerRefresh = function() {
-		var time = 25000;
-		if (!window.likestimer) {
-			window.likestimer = true;
-			var refresh_likes = window.setTimeout(function(){
-				var ref = new Array();
-				// Let's get the timestamp of the first item in the list (newest comment)
-				$('.hj-likes-summary')
-				.each(function() {
-					var data = $(this).data('options');
-					ref.push(data);
-				});
-				if (window.ajaxlikesready) {
-					framework.alive.likes.refresh(ref);
-				}
-				window.likestimer = false;
-			}, time);
-		}
-	}
-
-	framework.alive.likes.refresh = function(data) {
-		if (!data.length) return true;
-		if (window.ajaxlikesready) {
-			window.ajaxlikesready = false;
-			elgg.action('action/like/get', {
-				data : {
-					data : data
-				},
-				success : function(data) {
-					if (data && data.output != 'null') {
-						$.each(data.output, function(key, val) {
-							var container = $('#hj-stream-'+ val.selector_id);
-							var likesList = container.find('.likes').first();
-							if (val.likes && val.likes.length > 0) {
-								likesList.html(val.likes);
-								if (likesList.find('.hj-likes-summary').text().length > 0) {
-									likesList.closest('.hj-stream-likes-block').show();
-								} else {
-									likesList.closest('.hj-stream-likes-block').hide();
-								}
-							} else {
-								likesList.closest('.hj-stream-likes-block').hide();
-							}
-							var menu = container.find('.hj-stream-menu').first();
-							if (val.self) {
-								$('.elgg-menu-item-like:first > a', menu)
-								.addClass('hidden');
-								$('.elgg-menu-item-unlike:first > a', menu)
-								.removeClass('hidden');
-							} else {
-								$('.elgg-menu-item-like:first > a', menu)
-								.removeClass('hidden');
-								$('.elgg-menu-item-unlike:first > a', menu)
-								.addClass('hidden');
-							}
-						});
+						$('.elgg-menu-item-comments-count > a[data-streamid=' + streamid + ']').text(response.output.stats.comments);
+						$('.elgg-menu-item-likes-count > a[data-streamid=' + streamid + ']').text(response.output.stats.likes);
+						$('.elgg-menu-item-bookmarks-count > a[data-streamid=' + streamid + ']').text(response.output.stats.bookmarks);
+						$('.elgg-menu-item-shares-count > a[data-streamid=' + streamid + ']').text(response.output.stats.shares);
+						$('[id=substream-' + streamid + ']').replaceWith(response.output.stats.substream);
 					}
-					window.ajaxlikesready = true;
-					elgg.trigger_hook('success', 'hj:framework:ajax');
 				}
-			});
-		}
-	}
+			})
+		})
 
-	framework.alive.likes.saveLike = function(event) {
-		event.preventDefault();
+		$('.elgg-menu-comments .elgg-menu-item-subscription > a')
+		.live('click', function(e) {
+			e.preventDefault();
+			$element = $(this);
+			elgg.action($(this).attr('href'), {
+				success : function(response) {
+					if (response.status >= 0) {
+						if ($element.text() == elgg.echo('hj:alive:subscription:remove')) {
+							$element.text(elgg.echo('hj:alive:subscription:create'));
+							$element.removeClass('elgg-state-active');
+						} else {
+							$element.text(elgg.echo('hj:alive:subscription:remove'));
+							$element.addClass('elgg-state-active');
+						}
+					}
+				}
+			})
+		})
 
-		var action_type = $(this).find('a:first').attr('rel');
-		var likesList = $(this)
-		.closest('.hj-stream')
-		.find('.hj-likes-summary')
-		.first();
+		$('.elgg-menu-comments .elgg-menu-item-bookmark > a')
+		.live('click', function(e) {
+			e.preventDefault();
+			$element = $(this);
+			elgg.action($(this).attr('href'), {
+				success : function(response) {
+					if (response.status >= 0) {
+						if ($element.text() == elgg.echo('hj:alive:bookmark:remove')) {
+							$element.text(elgg.echo('hj:alive:bookmark:create'));
+							$element.removeClass('elgg-state-active');
+						} else {
+							$element.text(elgg.echo('hj:alive:bookmark:remove'));
+							$element.addClass('elgg-state-active');
+						}
 
-		var data = new Object();
-		var ref = new Array();
+						var streamid = response.output.container_guid;
 
-		data = likesList.data('options');
+						$('.elgg-menu-item-comments-count > a[data-streamid=' + streamid + ']').text(response.output.stats.comments);
+						$('.elgg-menu-item-likes-count > a[data-streamid=' + streamid + ']').text(response.output.stats.likes);
+						$('.elgg-menu-item-bookmarks-count > a[data-streamid=' + streamid + ']').text(response.output.stats.bookmarks);
+						$('.elgg-menu-item-shares-count > a[data-streamid=' + streamid + ']').text(response.output.stats.shares);
+						$('[id=substream-' + streamid + ']').replaceWith(response.output.stats.substream);
+					}
+				}
+			})
+		})
 
-		data.action_type = action_type;
-		ref.push(data);
+		$('.elgg-menu-comments .elgg-menu-item-shares > a')
+		.live('click', function(e) {
+			e.preventDefault();
 
-		elgg.system_message(elgg.echo('hj:framework:processing'));
-		elgg.action('action/like/save', {
-			data : data,
-			success : function(output) {
-				framework.alive.likes.refresh(ref);
-			}
-		});
+			$element = $(this);
+			elgg.action($(this).attr('href'), {
+				success : function(response) {
+					if (response.status >= 0) {
+						$element.attr('href', 'javascript:void(0)');
+
+						var streamid = response.output.container_guid;
+
+						$('.elgg-menu-item-comments-count > a[data-streamid=' + streamid + ']').text(response.output.stats.comments);
+						$('.elgg-menu-item-likes-count > a[data-streamid=' + streamid + ']').text(response.output.stats.likes);
+						$('.elgg-menu-item-bookmarks-count > a[data-streamid=' + streamid + ']').text(response.output.stats.bookmarks);
+						$('.elgg-menu-item-shares-count > a[data-streamid=' + streamid + ']').text(response.output.stats.shares);
+						$('[id=substream-' + streamid + ']').replaceWith(response.output.stats.substream);
+					}
+				}
+			})
+		})
+
 	}
 
 	elgg.register_hook_handler('init', 'system', framework.alive.stream.init);
-	elgg.register_hook_handler('init', 'system', framework.alive.likes.init);
+	elgg.register_hook_handler('init', 'system', framework.alive.actions.init);
 
 	elgg.register_hook_handler('refresh:stream', 'framework:alive', framework.alive.stream.refreshLists);
 	
