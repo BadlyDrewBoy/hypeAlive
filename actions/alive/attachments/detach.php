@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Detach an entity from a comment
+ *
+ * @uses $guid_one
+ * @uses $guid_two
+ */
 $guid_one = get_input('guid_one');
 $guid_two = get_input('guid_two');
 

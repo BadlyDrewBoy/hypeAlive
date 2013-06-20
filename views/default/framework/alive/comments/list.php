@@ -1,19 +1,19 @@
 <?php
 
-$container_guid = elgg_extract('container_guid', $vars, null);
+$entity = elgg_extract('entity', $vars, false);
 $list_id = elgg_extract('list_id', $vars);
+
+if (!$entity) return;
+
+if (!$list_id) {
+	$list_id = "comments-$entity->guid";
+}
 
 $options = array(
 	'types' => 'object',
-	'subtypes' => array('hjcomment')
+	'subtypes' => array('hjcomment'),
+	'container_guid' => $entity->guid
 );
-
-if ($container_guid) {
-	if (!$list_id) {
-		$list_id = "comments-$container_guid";
-	}
-	$options['container_guids'] = $container_guid;
-}
 
 $list_options = array(
 	'list_type' => 'stream',
@@ -21,7 +21,7 @@ $list_options = array(
 	'pagination' => true,
 	'pagination_type' => 'comments',
 	'pagination_position' => 'after',
-	'base_url' => "stream/comments/content/$container_guid",
+	'base_url' => "stream/comments/content/$entity->guid",
 );
 
 $limit = (int) get_input("__lim_$list_id", false);

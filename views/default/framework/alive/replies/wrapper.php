@@ -1,10 +1,11 @@
 <?php
 
+$entity = elgg_extract('entity', $vars, false);
 $extend = elgg_view('framework/alive/replies/extend', $vars);
 
 $attr = array(
 	'class' => 'hj-stream hj-stream-replies clearfix',
-	'data-streamid' => elgg_extract('container_guid', $vars, null)
+	'data-streamid' => $entity->guid
 );
 $attr = elgg_format_attributes($attr);
 

@@ -54,7 +54,7 @@ function hj_alive_page_handler($page) {
 
 		case 'replies' :
 			$content = elgg_view('framework/alive/replies/list', array(
-				'container_guid' => $page[1],
+				'entity' => get_entity($page[1]),
 				'list_id' => get_input('list_id', false)
 					));
 			break;

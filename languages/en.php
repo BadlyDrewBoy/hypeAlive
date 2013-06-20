@@ -288,7 +288,7 @@ $english = array(
     'hj:alive:comments:remainder' => 'View remaining %s comments',
     'hj:alive:comments:nocomments' => 'Be first to comment',
     'hj:comment:commenton' => 'Comment on %s',
-    'hj:alive:comments:valuecantbeblank' => 'Comment can not be blank',
+    'hj:alive:comments:valuecantbeblank' => 'Comment can not be empty',
 
     'hj:alive:comments:lang:likes:you' => 'You ',
     'hj:alive:comments:lang:likes:and' => 'and ',

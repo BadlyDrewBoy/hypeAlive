@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Add a new comment
+ */
 $description = get_input('description', false);
 if (!$description || empty($description)) {
 	register_error(elgg_echo('hj:alive:comments:valuecantbeblank'));
@@ -114,13 +117,15 @@ if ($annotation->save()) {
 					));
 			notify_user($to, $commenter->guid, $subject, $body);
 		}
+
+		if (elgg_instanceof($container, 'object', 'hjcomment')) {
+			add_to_river('framework/river/stream/comment', 'stream:reply', $annotation->owner_guid, $annotation->guid, $container->access_id, $annotation->time_created);
+		} else {
+			add_to_river('framework/river/stream/comment', 'stream:comment', $annotation->owner_guid, $annotation->guid, $container->access_id, $annotation->time_created);
+		}
 	}
 
-	if (elgg_instanceof($container, 'object', 'hjcomment')) {
-		add_to_river('framework/river/stream/comment', 'stream:reply', $annotation->owner_guid, $annotation->guid, $container->access_id, $annotation->time_created);
-	} else {
-		add_to_river('framework/river/stream/comment', 'stream:comment', $annotation->owner_guid, $annotation->guid, $container->access_id, $annotation->time_created);
-	}
+
 	$output = array(
 		'guid' => $annotation->guid,
 		'container_guid' => $annotation->container_guid,

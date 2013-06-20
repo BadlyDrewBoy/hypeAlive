@@ -5,6 +5,17 @@
 	$graphics_url = $base_url . 'mod/hypeAlive/graphics/';
 	?>
 
+	.elgg-menu-interactions .elgg-state-loading:before,
+	.hj-stream-pagination .elgg-state-loading:before {
+		display:inline-block;
+		content:"";
+		width:16px;
+		min-height:11px;
+		vertical-align:middle;
+		margin-right:5px;
+		background:transparent url(<?php echo $graphics_url ?>ajax-loader-bar.gif) no-repeat 50% 50%;
+	}
+
 	.elgg-menu-comments > li {
 		margin: 3px 10px;
 		display: inline-block;
@@ -274,7 +285,7 @@
 	form.hj-comments-form fieldset input[type="submit"].hidden {
 		display:none;
 	}
-	form.hj-comments-form fieldset input[type="submit"].loading {
+	form.hj-comments-form fieldset input[type="submit"].elgg-state-loading {
 		background: #f4f4f4 url(<?php echo elgg_get_site_url() ?>mod/hypeAlive/graphics/ajax-loader.gif) no-repeat 50% 50%;
 	}
 	.hj-comments-attach {

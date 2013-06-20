@@ -91,28 +91,19 @@
 		$('.hj-stream-pagination a')
 		.live('click', framework.alive.stream.loadMore);
 
-		$('.hj-comments-form input[name="description"]')
-		.live('keyup keydown', function(e) {
-			if ($(this).val() == '') {
-				$(this).closest('form').find('input[type="submit"]').addClass('hidden');
-			} else {
-				$(this).closest('form').find('input[type="submit"]').removeClass('hidden');
-			}
-		})
-
 		$('.subscriptions-options-action')
 		.live('click', function(e) {
 			e.preventDefault();
 			$elem = $(this);
 			elgg.action($elem.attr('href'), {
 				beforeSend : function() {
-					$elem.addClass('loading');
+					$elem.addClass('elgg-state-loading');
 				},
 				success : function(data) {
 					$elem.remove();
 				},
 				error : function() {
-					$elem.removeClass('loading');
+					$elem.removeClass('elgg-state-loading');
 				}
 			})
 		})
@@ -121,12 +112,22 @@
 	framework.alive.stream.editComment = function(event) {
 		event.preventDefault();
 
+		$elem = $(this);
 		$comment = $(this).closest('.elgg-object-hjcomment');
 
 		elgg.ajax('ajax/view/framework/alive/comments/form', {
+			beforeSend : function() {
+				$elem.addClass('elgg-state-loading');
+			},
 			data : {
-				guid : $comment.data('uid'),
+				comment_guid : $comment.data('uid'),
 				list_id : $comment.closest('.elgg-list').attr('id')
+			},
+			success : function(data) {
+				$comment.html(data);
+			},
+			complete : function() {
+				$elem.removeClass('elgg-state-loading')
 			}
 		});
 		
@@ -136,6 +137,11 @@
 
 		var $form = $(this);
 
+		if ($('[name="description"]', $(this)).val() == '') {
+			elgg.register_error(elgg.echo('hj:alive:comments:valuecantbeblank'));
+			return false;
+		}
+		
 		var data = {};
 		data['X-Requested-With'] = 'XMLHttpRequest';
 		data['X-PlainText-Response'] = true;
@@ -145,27 +151,28 @@
 			data : data,
 			iframe : false,
 			beforeSend : function() {
-				$('input[type="submit"]', $form).addClass('loading');
+				$('input[type="submit"]', $form).addClass('elgg-state-loading');
 			},
 			complete : function() {
-				$('input[type="submit"]', $form).removeClass('loading');
+				$('input[type="submit"]', $form).removeClass('elgg-state-loading');
 			},
 			success : function(response, status, xhr) {
 
 				if (response.status >= 0) {
 					var list_id = $('[name=list_id]', $form).val();
 					$item = $(response.output.view).addClass('hj-comment-new');
-					$('[id=' + list_id + ']').each(function() {
-						if ($("[data-uid=" + response.output.guid + "]", $(this)).length) {
-							$("[data-uid=" + response.output.guid + "]", $(this)).replaceWith($item);
-						} else {
-							if (framework.alive.comments.order == 'asc') {
-								$(this).append($item);
-							} else {
-								$(this).prepend($item);
-							}
-						}
-					});
+					
+					if ($form.attr('rel') == 'new') {
+						$('[id=' + list_id + ']').each(function() {
+								if (framework.alive.comments.order == 'asc') {
+									$(this).append($item);
+								} else {
+									$(this).prepend($item);
+								}
+						});
+					} else {
+						$('.elgg-object-hjcomment[data-uid="' + response.output.guid + '"]').replaceWith($item);
+					}
 					//$form.fadeOut();
 
 					var streamid = response.output.container_guid;
@@ -186,7 +193,6 @@
 
 				$form.resetForm();
 				$form.find('.hj-alive-attachments-list').html('');
-				$form.find('input[type="submit"]').addClass('hidden')
 			}
 
 		});
@@ -202,7 +208,6 @@
 		event.preventDefault();
 
 		$elem = $(this);
-		$loader = $('<span>').addClass('hj-ajax-loader hj-loader-bar');
 		
 		elgg.get($elem.attr('href'), {
 			data : {
@@ -212,7 +217,7 @@
 			},
 			dataType : 'json',
 			beforeSend : function() {
-				$elem.prepend($loader);
+				$elem.addClass('elgg-state-loading');
 			},
 			success : function(response) {
 				if (response.status >= 0) {
@@ -221,7 +226,7 @@
 				}
 			},
 			complete : function() {
-				$loader.remove();
+				$elem.removeClass('elgg-state-loading');
 			}
 		});
 	}
@@ -380,6 +385,12 @@
 			e.preventDefault();
 			$element = $(this);
 			elgg.action($(this).attr('href'), {
+				beforeSend : function() {
+					$element.addClass('elgg-state-loading');
+				},
+				complete : function() {
+					$element.removeClass('elgg-state-loading');
+				},
 				success : function(response) {
 					if (response.status >= 0) {
 						if ($element.text() == elgg.echo('hj:alive:like:remove')) {
@@ -407,6 +418,12 @@
 			e.preventDefault();
 			$element = $(this);
 			elgg.action($(this).attr('href'), {
+				beforeSend : function() {
+					$element.addClass('elgg-state-loading');
+				},
+				complete : function() {
+					$element.removeClass('elgg-state-loading');
+				},
 				success : function(response) {
 					if (response.status >= 0) {
 						$element.remove();
@@ -420,6 +437,12 @@
 			e.preventDefault();
 			$element = $(this);
 			elgg.action($(this).attr('href'), {
+				beforeSend : function() {
+					$element.addClass('elgg-state-loading');
+				},
+				complete : function() {
+					$element.removeClass('elgg-state-loading');
+				},
 				success : function(response) {
 					if (response.status >= 0) {
 						if ($element.text() == elgg.echo('hj:alive:bookmark:remove')) {
@@ -448,6 +471,12 @@
 
 			$element = $(this);
 			elgg.action($(this).attr('href'), {
+				beforeSend : function() {
+					$element.addClass('elgg-state-loading');
+				},
+				complete : function() {
+					$element.removeClass('elgg-state-loading');
+				},
 				success : function(response) {
 					if (response.status >= 0) {
 						$element.replaceWith(elgg.echo('hj:alive:shares'));

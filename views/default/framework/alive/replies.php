@@ -8,7 +8,6 @@
  */
 
 $entity = elgg_extract('entity', $vars, false);
-$aname = elgg_extract('aname', $vars, 'generic_comment');
 
 if (!$entity) {
 	return true;
@@ -17,7 +16,7 @@ if (!$entity) {
 elgg_load_css('alive.stream.css');
 elgg_load_js('alive.stream.js');
 
-$params = hj_alive_prepare_view_params($entity, $aname);
+$params = hj_alive_prepare_view_params($entity);
 
 $menu = elgg_view_menu('interactions', array(
 	'entity' => $params['entity'],

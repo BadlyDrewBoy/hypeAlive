@@ -1,6 +1,6 @@
 <?php
 
-function hj_alive_prepare_view_params($entity, $annotation_name = null) {
+function hj_alive_prepare_view_params($entity) {
 
 	if ($entity->getType() == 'river') {
 		$entity = hj_alive_get_river_stream_object($entity);
@@ -8,7 +8,6 @@ function hj_alive_prepare_view_params($entity, $annotation_name = null) {
 
 	$params = array(
 		'entity' => $entity,
-		'container_guid' => $entity->guid,
 		'list_id' => "comments-$entity->guid"
 	);
 

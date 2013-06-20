@@ -1,17 +1,17 @@
 <?php
 
-$container_guid = elgg_extract('container_guid', $vars, null);
+$entity = elgg_extract('entity', $vars, null);
 $list_id = elgg_extract('list_id', $vars);
 
 $options = array(
 	'types' => 'object',
 	'subtypes' => array('hjcomment'),
-	'container_guids' => $container_guid,
+	'container_guids' => $entity->guid,
 	'count' => true
 );
 
 if (!$list_id) {
-	$list_id = "comments-$container_guid";
+	$list_id = "comments-$entity->guid";
 }
 
 $list_options = array(
@@ -20,7 +20,7 @@ $list_options = array(
 	'pagination' => true,
 	'pagination_type' => 'comments',
 	'pagination_position' => 'after',
-	'base_url' => "stream/replies/$container_guid",
+	'base_url' => "stream/replies/$entity->guid",
 );
 
 $count = elgg_get_entities($options);
@@ -60,12 +60,12 @@ $viewer_options = array(
 if ($count) {
 	$content = elgg_view('output/url', array(
 		'text' => elgg_echo('hj:alive:replies:show', array($count)),
-		'href' => "stream/replies/$container_guid",
-		'data-streamid' => $container_guid,
+		'href' => "stream/replies/$entity->guid",
+		'data-streamid' => $entity->guid,
 		'class' => 'hj-replies-placeholder'
 			));
 } else {
-	$content = hj_framework_view_list($list_id, $getter_options, $list_options, $viewer_options, 'elgg_get_entities_from_metadata');
+	$content = hj_framework_view_list($list_id, $getter_options, $list_options, $viewer_options, 'elgg_get_entities');
 }
 
 echo $content;

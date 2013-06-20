@@ -161,7 +161,7 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 				if (elgg_is_logged_in() || $replies_count) {
 					$items['reply'] = array(
 						'text' => (elgg_is_logged_in() && $entity->canComment()) ? elgg_echo('hj:alive:reply') : elgg_echo('hj:alive:replies'),
-						'href' => '#',
+						'href' => (elgg_is_logged_in() && $entity->canComment()) ? '#' : false,
 						'priority' => 200
 					);
 					$items['comments-count'] = array(
