@@ -1,0 +1,45 @@
+
+Graph translations
+
+- river:$action:$type:$subtype takes precedence
+- more granular control over river
+	SUBJECT
+		river
+			:subject
+				::undefined
+					or
+				::$gender		neutral|male|female
+					:$rel			self|friend|other
+
+	ACTION
+		river
+			:action
+				::undefined
+					or
+				::$action
+					::$gender
+						:$rel
+
+
+
+- Add comment / reply notification for owner
+- Add like notification for owner
+- Add share notification for owner
+
+- Notification settings
+-- Digest type
+	-- hourly
+	-- daily
+	-- weekly
+	-- monthly
+
+-- add_entity_relationship($content->guid, 'subscribed:notify:$cron', $user->guid);
+
+-- cron hook handler
+	-- get_relationships 'notification:notify:$cron'
+	-- iterate entities
+		-- get comments
+	-- last_cron_$cron < time - $cron
+
+
+
