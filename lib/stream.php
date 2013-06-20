@@ -187,7 +187,7 @@ function hj_alive_get_river_action_string($subject = null, $action = null, $obje
 			$gender = 'neutral';
 		}
 
-		if ($subject->guid == elgg_get_logged_in_user_guid()) {
+		if ($object->owner_guid == $subject->guid) {
 			$rel = 'self';
 		} else {
 			$rel = 'user';
@@ -250,7 +250,7 @@ function hj_alive_get_river_object_string($subject = null, $action = null, $obje
 			$gender = 'neutral';
 		}
 
-		if ($owner->guid == elgg_get_logged_in_user_guid()) {
+		if ($owner->guid == $subject->guid) {
 			$rel = 'self';
 		} else {
 			$rel = 'user';
