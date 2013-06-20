@@ -46,6 +46,11 @@ $attributes = elgg_format_attributes($attr);
 global $_elgg_special_river_catch;
 $_elgg_special_river_catch = false;
 
-$item_view = elgg_view_list_item($item, $vars);
+if (!$item instanceof ElggRiverItem) {
+	$item_view = elgg_view_list_item($item, $vars);
+} else {
+	$vars['item'] = $item;
+	$item_view = elgg_view('framework/river/elements/layout', $vars);
+}
 
 echo "<li $attributes>$item_view</li>";

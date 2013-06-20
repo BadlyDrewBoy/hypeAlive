@@ -2,8 +2,13 @@
 
 $extend = elgg_view('framework/alive/comments/extend', $vars);
 
+$class = 'hj-stream hj-comments-stream clearfix';
+if (isset($vars['class'])) {
+	$class = "{$class} {$vars['class']}";
+}
+
 $attr = array(
-	'class' => 'hj-stream hj-comments-stream clearfix',
+	'class' => $class,
 	'data-streamid' => elgg_extract('container_guid', $vars, null)
 );
 $attr = elgg_format_attributes($attr);

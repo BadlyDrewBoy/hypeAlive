@@ -20,7 +20,7 @@ $list_options = array(
 	'pagination' => true,
 	'pagination_type' => 'comments',
 	'pagination_position' => 'after',
-	'base_url' => "comments/replies/$container_guid",
+	'base_url' => "stream/replies/$container_guid",
 );
 
 $count = elgg_get_entities($options);

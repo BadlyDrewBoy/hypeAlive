@@ -14,6 +14,10 @@ if (HYPEALIVE_COMMENTS) {
 	elgg_register_entity_type('object', 'hjcomment');
 }
 
+if (HYPEALIVE_RIVER) {
+	elgg_register_plugin_hook_handler('view', 'river/elements/responses', 'hj_alive_river_responses_view');
+}
+
 // Clean up likes menu in case the likes plugin is enabled
 if (HYPEALIVE_LIKES) {
 	elgg_unregister_plugin_hook_handler('register', 'menu:entity', 'likes_entity_menu_setup');
@@ -34,20 +38,26 @@ function hj_alive_activity_filter_clauses($hook, $type, $options, $params) {
 
 	$query = get_input("__tsp", false);
 
-	if ($query && is_array($query) && !empty($query)) {
-		foreach ($query as $tsp) {
-			list($entity_type, $entity_subtype) = explode(':', $tsp);
-			if (!is_array($options['types'])) {
-				$options['types'] = array($entity_type);
+	if (!$query) {
+		return $options;
+	}
+
+	if (!is_array($query)) {
+		$query = array($query);
+	}
+
+	foreach ($query as $tsp) {
+		list($entity_type, $entity_subtype) = explode(':', $tsp);
+		if (!is_array($options['types'])) {
+			$options['types'] = array($entity_type);
+		} else {
+			$options['types'][] = $entity_type;
+		}
+		if ($entity_subtype && !empty($entity_subtype)) {
+			if (!is_array($options['subtypes'])) {
+				$options['subtypes'] = array($entity_subtype);
 			} else {
-				$options['types'][] = $entity_type;
-			}
-			if ($entity_subtype && !empty($entity_subtype)) {
-				if (!is_array($options['subtypes'])) {
-					$options['subtypes'] = array($entity_subtype);
-				} else {
-					$options['subtypes'][] = $entity_subtype;
-				}
+				$options['subtypes'][] = $entity_subtype;
 			}
 		}
 	}
@@ -63,6 +73,10 @@ function hj_alive_activity_filter_clauses($hook, $type, $options, $params) {
 
 function hj_alive_comments_replacement($hook, $entity_type, $returnvalue, $params) {
 
+	if (elgg_in_context('no-comments')) {
+		return null;
+	}
+	
 	$entity = elgg_extract('entity', $params);
 	if (elgg_instanceof($entity, 'object', 'hjcomment')) {
 		return elgg_view('framework/alive/replies', $params);
@@ -89,4 +103,12 @@ function hj_alive_can_write_to_container($hook, $type, $return, $params) {
 	}
 
 	return $return;
+}
+
+function hj_alive_river_responses_view($hook, $type, $output, $params) {
+
+	if (elgg_in_context('no-comments')) {
+		return null;
+	}
+	return elgg_view('framework/river/elements/responses', $params['vars'], false, false, $params['viewtype']);
 }

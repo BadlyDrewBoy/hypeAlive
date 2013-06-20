@@ -4,9 +4,9 @@ $guid = get_input('guid');
 $entity = get_entity($guid);
 
 if (!check_entity_relationship(elgg_get_logged_in_user_guid(), 'bookmarked', $guid)) {
-	add_entity_relationship(elgg_get_logged_in_user_guid(), 'bookmarked', $guid);
+	$id = add_entity_relationship(elgg_get_logged_in_user_guid(), 'bookmarked', $guid);
 
-	add_to_river('framework/river/feed/bookmark', 'feed:bookmark', elgg_get_logged_in_user_guid(), $entity->guid, $entity->access_id, time(), -1);
+	add_to_river('framework/river/stream/bookmark', 'stream:bookmark', elgg_get_logged_in_user_guid(), $entity->guid, $entity->access_id, time(), -1);
 
 	if (elgg_is_xhr()) {
 		print json_encode(array(

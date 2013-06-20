@@ -7,14 +7,14 @@ if (!elgg_instanceof($entity)) {
 }
 
 $commenter = $entity->getOwnerEntity();
-$object = $entity->getContainerEntity();
+$attachment = elgg_extract('attachment', $vars);
 
-$head = elgg_echo('hj:alive:comment:email:head', array(
-	$commenter->name, $object->title
+$head = elgg_echo('hj:alive:attachment:email:head', array(
+	$commenter->name, $attachment->title
 ));
 
 $body = "<blockquote>" . $entity->description . "</blockquote>";
-$footer = elgg_echo('hj:alive:comment:email:footer', array(
+$footer = elgg_echo('hj:alive:attachment:email:footer', array(
 	$entity->getURL()
 ));
 

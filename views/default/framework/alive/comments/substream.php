@@ -1,23 +1,35 @@
 <?php
 
+if (elgg_in_context('widgets')) {
+	return;
+}
+
+if (elgg_in_context('activity') && elgg_get_plugin_user_setting('river_grouping', elgg_get_logged_in_user_guid(), 'hypeAlive') !== 'grouped') {
+	return;
+}
+
 $options = array();
 $entity = elgg_extract('entity', $vars);
-
+$item = elgg_extract('item', $vars, false);
 $user = elgg_get_logged_in_user_entity();
 
 $dbprefix = elgg_get_config('dbprefix');
 
 $options['joins'][] = "JOIN {$dbprefix}entities object ON object.guid = rv.object_guid";
-$options['wheres'][] = "rv.object_guid = $entity->guid";
+$options['wheres'][] = "(rv.object_guid = $entity->guid) OR (rv.subtype = 'hjcomment' AND object.container_guid = $entity->guid)";
+if ($item->id > 0) {
+	$options['wheres'][] = "rv.id != $item->id";
+}
 $options['wheres'][] = get_access_sql_suffix('object');
-$options['wheres'][] = 'rv.action_type LIKE "feed:%"';
+//$options['wheres'][] = 'rv.action_type LIKE "stream:%"';
 
 $list_id = "substream-$entity->guid";
 
 $limit = (int) get_input("__lim_$list_id", false);
 
 if (!$limit) {
-	$limit = HYPEALIVE_RIVER_LIMIT;
+	//$limit = HYPEALIVE_RIVER_LIMIT;
+	$limit = 5;
 	set_input("__lim_$list_id", $limit);
 }
 
@@ -26,7 +38,8 @@ $list_options = array(
 	'list_class' => 'elgg-river-substream',
 	'pagination' => true,
 	'pagination_type' => 'river',
-	'pagination_position' => 'after'
+	'pagination_position' => 'after',
+	'base_url' => "stream/substream/$entity->guid"
 );
 
 if (HYPEALIVE_RIVER_ORDER == 'asc') {

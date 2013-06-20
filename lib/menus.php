@@ -20,6 +20,7 @@ if (HYPEALIVE_RIVER) {
 			'contexts' => array('settings')
 		));
 	}
+	elgg_register_admin_menu_item('language', 'graph', 'river');
 }
 
 elgg_register_menu_item('page', array(
@@ -29,181 +30,192 @@ elgg_register_menu_item('page', array(
 	'contexts' => array('settings')
 ));
 
-elgg_register_plugin_hook_handler('register', 'menu:comments', 'hj_alive_comments_menu');
-elgg_register_plugin_hook_handler('register', 'menu:replies', 'hj_alive_replies_menu');
+elgg_register_plugin_hook_handler('register', 'menu:interactions', 'hj_alive_comments_menu');
 
 function hj_alive_comments_menu($hook, $type, $return, $params) {
 
 	$entity = elgg_extract('entity', $params, false);
 	$viewer = elgg_get_logged_in_user_entity();
 
-	/**
-	 * Comment
-	 */
-	if (HYPEALIVE_COMMENTS) {
-		$items['comment'] = array(
-			'text' => ($entity->canComment()) ? elgg_echo('comment') : elgg_echo('comments'),
-			'href' => (elgg_is_logged_in()) ? '#' : false,
-			'priority' => 200
-		);
-		$items['comments-count'] = array(
-			'text' => hj_alive_count_comments($entity),
-			'href' => '#',
-			'priority' => 200,
-			'parent_name' => 'comment',
-			'data-streamid' => $entity->guid
-		);
+	if (!elgg_instanceof($entity)) {
+		return $return;
 	}
 
-	/**
-	 * Like / Unlike
-	 */
-	if (HYPEALIVE_LIKES) {
-		$style = HYPEALIVE_LIKES_STYLE;
-		$items['likes'] = array(
-			'text' => (elgg_is_logged_in()) ? (hj_alive_does_user_like($entity)) ? elgg_echo('hj:alive:like:remove') : elgg_echo('hj:alive:like:create')  : elgg_echo('hj:alive:likes'),
-			'href' => ($entity->canAnnotate()) ? "action/alive/like?guid=$entity->guid" : false,
-			'is_action' => true,
-			'class' => (hj_alive_does_user_like($entity)) ? 'elgg-state-active' : '',
-			'priority' => 300
-		);
+	switch ($entity->getSubtype()) {
 
-		$items['likes-count'] = array(
-			'text' => hj_alive_count_likes($entity),
-			'href' => '#',
-			'priority' => 300,
-			'parent_name' => 'likes',
-			'data-streamid' => $entity->guid
-		);
-	}
+		default :
+			/**
+			 * Comment
+			 */
+			if (HYPEALIVE_COMMENTS) {
+				$items['comment'] = array(
+					'text' => ($entity->canComment()) ? elgg_echo('comment') : elgg_echo('comments'),
+					'href' => (elgg_is_logged_in()) ? '#' : false,
+					'priority' => 200
+				);
+				$items['comments-count'] = array(
+					'text' => hj_alive_count_comments($entity),
+					'href' => '#',
+					'priority' => 200,
+					'parent_name' => 'comment',
+					'data-streamid' => $entity->guid
+				);
+			}
 
-	/**
-	 * Subscriptions / Bookmarks
-	 */
-	if (HYPEALIVE_SUBSCRIPTIONS && $viewer->guid != $entity->owner_guid && elgg_is_logged_in()) {
-		$subscribed = check_entity_relationship($viewer->guid, 'subscribed', $entity->guid);
-		$items['subscription'] = array(
-			'text' => ($subscribed) ? elgg_echo('hj:alive:subscription:remove') : elgg_echo('hj:alive:subscription:create'),
-			'href' => "action/alive/subscription?guid=$entity->guid",
-			'is_action' => true,
-			'class' => ($subscribed) ? 'elgg-state-active' : false,
-			'priority' => 900
-		);
-	}
+			/**
+			 * Like / Unlike
+			 */
+			if (HYPEALIVE_LIKES) {
+				$style = HYPEALIVE_LIKES_STYLE;
+				$items['likes'] = array(
+					'text' => (elgg_is_logged_in() && $viewer->guid != $entity->owner_guid && $entity->canAnnotate()) ? (hj_alive_does_user_like($entity)) ? elgg_echo('hj:alive:like:remove') : elgg_echo('hj:alive:like:create')  : elgg_echo('hj:alive:likes'),
+					'href' => (elgg_is_logged_in() && $viewer->guid != $entity->owner_guid && $entity->canAnnotate()) ? "action/alive/like?guid=$entity->guid" : false,
+					'is_action' => true,
+					'class' => (hj_alive_does_user_like($entity)) ? 'elgg-state-active' : '',
+					'priority' => 300
+				);
 
-	if (HYPEALIVE_BOOKMARKS && elgg_is_logged_in()) {
-		$bookmarked = check_entity_relationship($viewer->guid, 'bookmarked', $entity->guid);
-		$items['bookmark'] = array(
-			'text' => ($bookmarked) ? elgg_echo('hj:alive:bookmark:remove') : elgg_echo('hj:alive:bookmark:create'),
-			'href' => "action/alive/bookmark?guid=$entity->guid",
-			'is_action' => true,
-			'class' => ($bookmarked) ? 'elgg-state-active' : false,
-			'priority' => 500
-		);
-		$items['bookmarks-count'] = array(
-			'text' => hj_alive_count_bookmarks($entity),
-			'href' => '#',
-			'priority' => 500,
-			'parent_name' => 'bookmark',
-			'data-streamid' => $entity->guid
-		);
-	}
+				$items['likes-count'] = array(
+					'text' => hj_alive_count_likes($entity),
+					'href' => '#',
+					'priority' => 300,
+					'parent_name' => 'likes',
+					'data-streamid' => $entity->guid
+				);
+			}
 
-	/**
-	 * Shared
-	 */
-	if (HYPEALIVE_SHARES) {
-		$shared = check_entity_relationship($viewer->guid, 'shared', $entity->guid);
-		$items['shares'] = array(
-			'text' => (elgg_is_logged_in() && !$shared) ? elgg_echo('hj:alive:share') : elgg_echo('hj:alive:shares'),
-			'href' => (elgg_is_logged_in() && !$shared) ? "action/alive/share?guid=$entity->guid" : false,
-			'priority' => 600
-		);
-		$items['shares-count'] = array(
-			'text' => hj_alive_count_shares($entity),
-			'href' => '#',
-			'priority' => 500,
-			'parent_name' => 'shares',
-			'data-streamid' => $entity->guid
-		);
-	}
-
-	if ($items) {
-		foreach ($items as $name => $item) {
-			foreach ($return as $key => $val) {
-				if (!$val instanceof ElggMenuItem) {
-					unset($return[$key]);
-				}
-				if ($val instanceof ElggMenuItem && $val->getName() == $name) {
-					unset($return[$key]);
+			/**
+			 * Subscriptions / Bookmarks
+			 */
+			if (HYPEALIVE_SUBSCRIPTIONS && $viewer->guid != $entity->owner_guid && elgg_is_logged_in()) {
+				$subscribed = check_entity_relationship($viewer->guid, 'subscribed', $entity->guid);
+				if ($subscribed) {
+					$items['subscription'] = array(
+						'text' => elgg_echo('hj:alive:subscription:remove'),
+						'href' => "action/alive/subscription?guid=$entity->guid",
+						'is_action' => true,
+						'priority' => 900
+					);
 				}
 			}
-			$item['name'] = $name;
-			$return[$name] = ElggMenuItem::factory($item);
-		}
-	}
 
-	return $return;
-}
+			if (HYPEALIVE_BOOKMARKS) {
+				$bookmarked = check_entity_relationship($viewer->guid, 'bookmarked', $entity->guid);
+				$items['bookmark'] = array(
+					'text' => (elgg_is_logged_in() && $viewer->guid != $entity->owner_guid) ? (($bookmarked) ? elgg_echo('hj:alive:bookmark:remove') : elgg_echo('hj:alive:bookmark:create')) : elgg_echo('hj:alive:bookmarks'),
+					'href' => (elgg_is_logged_in() && $viewer->guid != $entity->owner_guid) ? "action/alive/bookmark?guid=$entity->guid" : false,
+					'is_action' => true,
+					'class' => ($bookmarked) ? 'elgg-state-active' : false,
+					'priority' => 500
+				);
+				$items['bookmarks-count'] = array(
+					'text' => hj_alive_count_bookmarks($entity),
+					'href' => '#',
+					'priority' => 500,
+					'parent_name' => 'bookmark',
+					'data-streamid' => $entity->guid
+				);
+			}
 
-function hj_alive_replies_menu($hook, $type, $return, $params) {
+			/**
+			 * Shares
+			 */
+			if (HYPEALIVE_SHARES
+					&& !elgg_instanceof($entity, 'object', 'hjstream')
+					&& in_array($entity->access_id, array(ACCESS_PUBLIC, ACCESS_LOGGED_IN))) {
+				$shared = check_entity_relationship($viewer->guid, 'shared', $entity->guid);
+				$items['shares'] = array(
+					'text' => (elgg_is_logged_in() && !$shared) ? elgg_echo('hj:alive:share') : elgg_echo('hj:alive:shares'),
+					'href' => (elgg_is_logged_in() && !$shared) ? "action/alive/share?guid=$entity->guid" : false,
+					'priority' => 600
+				);
+				$items['shares-count'] = array(
+					'text' => hj_alive_count_shares($entity),
+					'href' => '#',
+					'priority' => 500,
+					'parent_name' => 'shares',
+					'data-streamid' => $entity->guid
+				);
+			}
 
-	$entity = elgg_extract('entity', $params, false);
+			break;
 
-	/**
-	 * TimeStamp
-	 */
-	if (elgg_instanceof($entity, 'object', 'hjcomment') && $timestamp = $entity->time_created) {
-		$items['timestamp'] = array(
-			'text' => elgg_view_friendly_time($timestamp),
-			'href' => false,
-			'priority' => 100
-		);
-	}
+		case 'hjcomment' :
 
-	/**
-	 * Comment
-	 */
-	if (HYPEALIVE_COMMENTS) {
-		$replies_count = hj_alive_count_comments($entity);
-		if (elgg_is_logged_in() || $replies_count) {
-			$items['reply'] = array(
-				'text' => (elgg_is_logged_in()) ? elgg_echo('hj:alive:reply') : elgg_echo('hj:alive:replies'),
-				'href' => '#',
-				'priority' => 200
-			);
-			$items['comments-count'] = array(
-				'text' => $replies_count,
-				'href' => '#',
-				'priority' => 200,
-				'parent_name' => 'reply',
-				'data-streamid' => $entity->guid
-			);
-		}
-	}
+			/**
+			 * TimeStamp
+			 */
+			if (elgg_instanceof($entity, 'object', 'hjcomment') && $timestamp = $entity->time_created) {
+				$items['timestamp'] = array(
+					'text' => elgg_view_friendly_time($timestamp),
+					'href' => false,
+					'priority' => 100
+				);
+			}
 
-	/**
-	 * Like / Unlike
-	 */
-	if (HYPEALIVE_LIKES) {
-		$style = HYPEALIVE_LIKES_STYLE;
-		$likes_count = hj_alive_count_likes($entity);
-		if (elgg_is_logged_in() || $likes_count) {
-			$items['likes'] = array(
-				'text' => (elgg_is_logged_in()) ? (hj_alive_does_user_like($entity)) ? elgg_echo('hj:alive:like:remove') : elgg_echo('hj:alive:like:create')  : elgg_echo('hj:alive:likes'),
-				'href' => (elgg_is_logged_in()) ? "action/alive/like?guid=$entity->guid" : false,
-				'is_action' => true,
-				'class' => (hj_alive_does_user_like($entity)) ? 'elgg-state-active' : '',
-				'priority' => 300
-			);
-			$items['likes-count'] = array(
-				'text' => $likes_count,
-				'href' => '#',
-				'priority' => 300,
-				'parent_name' => 'likes',
-				'data-streamid' => $entity->guid
-			);
-		}
+			/**
+			 * Comment
+			 */
+			if (HYPEALIVE_COMMENTS) {
+				$replies_count = hj_alive_count_comments($entity);
+				if (elgg_is_logged_in() || $replies_count) {
+					$items['reply'] = array(
+						'text' => (elgg_is_logged_in() && $entity->canComment()) ? elgg_echo('hj:alive:reply') : elgg_echo('hj:alive:replies'),
+						'href' => '#',
+						'priority' => 200
+					);
+					$items['comments-count'] = array(
+						'text' => $replies_count,
+						'href' => '#',
+						'priority' => 200,
+						'parent_name' => 'reply',
+						'data-streamid' => $entity->guid
+					);
+				}
+			}
+
+			/**
+			 * Like / Unlike
+			 */
+			if (HYPEALIVE_LIKES) {
+				$style = HYPEALIVE_LIKES_STYLE;
+				$likes_count = hj_alive_count_likes($entity);
+				if (elgg_is_logged_in() || $likes_count) {
+					$items['likes'] = array(
+						'text' => (elgg_is_logged_in() && $viewer->guid != $entity->owner_guid && $entity->canAnnotate()) ? (hj_alive_does_user_like($entity)) ? elgg_echo('hj:alive:like:remove') : elgg_echo('hj:alive:like:create')  : elgg_echo('hj:alive:likes'),
+						'href' => (elgg_is_logged_in() && $viewer->guid != $entity->owner_guid && $entity->canAnnotate()) ? "action/alive/like?guid=$entity->guid" : false,
+						'is_action' => true,
+						'class' => (hj_alive_does_user_like($entity)) ? 'elgg-state-active' : '',
+						'priority' => 300
+					);
+					$items['likes-count'] = array(
+						'text' => $likes_count,
+						'href' => '#',
+						'priority' => 300,
+						'parent_name' => 'likes',
+						'data-streamid' => $entity->guid
+					);
+				}
+			}
+
+			if ($entity->canEdit()) {
+				$items['edit'] = array(
+					'text' => elgg_echo('edit'),
+					'href' => '#',
+					'data-uid' => $entity->guid,
+					'priority' => 990
+				);
+
+				$items['delete'] = array(
+					'text' => elgg_echo('delete'),
+					'href' => $entity->getDeleteURL(),
+					'class' => 'elgg-button-delete-entity',
+					'data-uid' => $entity->guid,
+					'priority' => 1000
+				);
+			}
+
+			break;
 	}
 
 	if ($items) {

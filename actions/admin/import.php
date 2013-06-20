@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Import Elgg comments and group discussions
+ */
+
 $limit = get_input('limit', 10);
 $offset = get_input('offset', 0);
 

@@ -7,27 +7,13 @@ class hjComment extends hjObject {
 		$this->attributes['subtype'] = "hjcomment";
 	}
 
-	public function save() {
-		if (!$this->guid) {
-			$return = parent::save();
-
-			if ($return) {
-				$origin = $this->getOriginalContainer();
-				if (!check_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $origin->guid)
-						&& !check_entity_relationship(elgg_get_logged_in_user_guid(), 'unsubscribed', $origin->guid)) {
-					add_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $origin->guid);
-				}
-			}
-
-			return $return;
-		}
-
-		return parent::save();
-	}
-
 	public function getURL() {
 		$path = implode('/', $this->getAncestry());
-		return elgg_get_site_url() . "comments/view/$path";
+		return elgg_get_site_url() . "stream/view/$path";
+	}
+
+	public function getEditURL() {
+		return elgg_get_site_url() . "stream/edit/$this->guid";
 	}
 
 	public function getOriginalContainer() {
@@ -77,5 +63,19 @@ class hjComment extends hjObject {
 		return $this->findOriginalContainer()->getOwnerEntity();
 	}
 
+	public function getSubscribedUsers() {
+
+		$options = array(
+			'type' => 'user',
+			'relationship' => 'subscribed',
+			'relationship_guid' => $this->getOriginalContainer()->guid,
+			'inverse_relationship' => true,
+			'limit' => 0
+		);
+
+		$users = elgg_get_entities_from_relationship($options);
+
+		return $users;
+	}
 }
 

@@ -1,20 +1,18 @@
 <?php
 
 $entity = elgg_extract('entity', $vars);
+$user = elgg_extract('user', $vars);
 
 if (!elgg_instanceof($entity)) {
 	return true;
 }
 
-$commenter = $entity->getOwnerEntity();
-$object = $entity->getContainerEntity();
-
-$head = elgg_echo('hj:alive:comment:email:head', array(
-	$commenter->name, $object->title
+$head = elgg_echo('hj:alive:like:email:head', array(
+	$user->name, $entity->title
 ));
 
 $body = "<blockquote>" . $entity->description . "</blockquote>";
-$footer = elgg_echo('hj:alive:comment:email:footer', array(
+$footer = elgg_echo('hj:alive:like:email:footer', array(
 	$entity->getURL()
 ));
 

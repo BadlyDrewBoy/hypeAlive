@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Upgrade script
+ */
 $subtypeIdComment = get_subtype_id('object', 'hjcomment');
 $subtypeIdGroupTopicPost = get_subtype_id('object', 'hjgrouptopicpost');
 

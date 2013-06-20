@@ -26,7 +26,8 @@ foreach ($defaults as $name => $value) {
 
 $subtypes = array(
 	'hjcomment' => 'hjComment',
-	'hjgrouptopicpost' => 'hjGroupTopicPost'
+	'hjgrouptopicpost' => 'hjGroupTopicPost',
+	'hjstream' => 'hjStream'
 );
 
 foreach ($subtypes as $subtype => $class) {

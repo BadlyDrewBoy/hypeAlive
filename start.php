@@ -1,8 +1,10 @@
 <?php
 
-/* hypeAlive
+/**
+ * hypeAlive
  *
- * Live feeds, comments and search Elgg
+ * Live feeds, comments and search for Elgg
+ * 
  * @package hypeJunction
  * @subpackage hypeAlive
  *
@@ -67,6 +69,7 @@ function hj_alive_init() {
 		'views',
 		'menus',
 		'hooks',
+		'events',
 		'stream'
 	);
 
@@ -78,9 +81,4 @@ function hj_alive_init() {
 		}
 	}
 
-}
-
-if (HYPEALIVE_RIVER_COMMENTS) {
-	elgg_register_event_handler('created', 'river', 'hj_alive_create_river_stream_object');
-	/** @todo: Add a cron job to remove hjstream objects for deleted river items */
 }

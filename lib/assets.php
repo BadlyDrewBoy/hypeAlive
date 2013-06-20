@@ -28,4 +28,8 @@ if (HYPEALIVE_RIVER) {
 	elgg_register_simplecache_view('css/framework/alive/river');
 }
 
+elgg_register_js('framework.attachments.js', elgg_get_simplecache_url('js', 'framework/attachments/attachments'));
+elgg_register_simplecache_view('js/framework/attachments/attachments');
 
+elgg_register_css('framework.attachments.css', elgg_get_simplecache_url('css', 'framework/attachments/attachments'));
+elgg_register_simplecache_view('css/framework/attachments/attachments');

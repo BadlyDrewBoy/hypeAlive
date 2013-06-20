@@ -7,6 +7,7 @@ elgg_register_action('hypeAlive/usersettings/save', $shortcuts['actions'] . 'use
 
 elgg_register_action('alive/admin/upgrade', $shortcuts['actions'] . 'admin/upgrade.php', 'admin');
 elgg_register_action('alive/admin/import', $shortcuts['actions'] . 'admin/import.php', 'admin');
+elgg_register_action('alive/admin/graph', $shortcuts['actions'] . 'admin/graph.php', 'admin');
 
 if (HYPEALIVE_COMMENTS) {
 	elgg_register_action('comment/save', $shortcuts['actions'] . 'alive/comment/save.php');
@@ -38,3 +39,6 @@ if (HYPEALIVE_SHARES) {
 if (HYPEALIVE_SEARCH) {
 	elgg_register_action('livesearch/parse', $shortcuts['actions'] . 'hj/livesearch/parse.php', 'public');
 }
+
+elgg_register_action('alive/attachments/upload', $shortcuts['actions'] . 'alive/attachments/upload.php');
+elgg_register_action('alive/attachments/detach', $shortcuts['actions'] . 'alive/attachments/detach.php');

@@ -21,7 +21,7 @@ $list_options = array(
 	'pagination' => true,
 	'pagination_type' => 'comments',
 	'pagination_position' => 'after',
-	'base_url' => "comments/comments/content/$container_guid",
+	'base_url' => "stream/comments/content/$container_guid",
 );
 
 $limit = (int) get_input("__lim_$list_id", false);

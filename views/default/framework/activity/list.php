@@ -17,8 +17,12 @@ if (elgg_instanceof($user, 'user')) {
 
 	$options['joins'][] = "JOIN {$dbprefix}entities object ON object.guid = rv.object_guid";
 	$options['joins'][] = "JOIN {$dbprefix}entities subject ON subject.guid = rv.subject_guid";
-	$options['group_by'] = "rv.object_guid";
-	
+
+	if (elgg_get_plugin_user_setting('river_grouping', $user->guid, 'hypeAlive') == 'grouped') {
+		$options['group_by'] = "rv.object_guid";
+		$options['wheres'][] = 'rv.action_type NOT LIKE "stream:%"';
+	}
+
 	$options['wheres'][] = get_access_sql_suffix('object');
 	if (elgg_is_admin_logged_in()) {
 		$options['wheres'][] = "object.enabled = 'yes' AND subject.enabled = 'yes'";
@@ -52,13 +56,13 @@ if (elgg_instanceof($user, 'user')) {
 	switch ($page_type) {
 		case 'mine':
 			$options['subject_guid'] = $user->guid;
-			$options['wheres'][] = 'rv.action_type NOT LIKE "feed:%"';
+//			$options['wheres'][] = 'rv.action_type NOT LIKE "stream:%"';
 			break;
 
 		case 'friends':
 			$options['relationship_guid'] = $user->guid;
 			$options['relationship'] = 'friend';
-			$options['wheres'][] = 'rv.action_type NOT LIKE "feed:%"';
+//			$options['wheres'][] = 'rv.action_type NOT LIKE "stream:%"';
 			break;
 
 		case 'groups' :
@@ -77,19 +81,7 @@ if (elgg_instanceof($user, 'user')) {
 			}
 			$in_groups = implode(',', $group_guids);
 			$options['wheres'][] = "(object.container_guid IN ($in_groups))";
-			$options['wheres'][] = 'rv.action_type NOT LIKE "feed:%"';
-			break;
-
-		case 'subscriptions' :
-			$msnid = get_metastring_id('river_id');
-			$options['joins'][] = "JOIN {$dbprefix}entity_relationships er ON (er.guid_one = $user->guid AND er.relationship = 'subscribed')";
-			$options['wheres'][] = "(rv.object_guid = er.guid_two OR rv.id IN (
-				SELECT msv.string
-				FROM {$dbprefix}metadata md
-				JOIN {$dbprefix}metastrings msv ON md.value_id = msv.id
-				WHERE md.entity_guid = er.guid_two AND md.name_id = $msnid
-					))";
-			$options['wheres'][] = 'rv.action_type LIKE "feed:%"';
+//			$options['wheres'][] = 'rv.action_type NOT LIKE "stream:%"';
 			break;
 
 		case 'bookmarks' :
@@ -101,13 +93,13 @@ if (elgg_instanceof($user, 'user')) {
 				JOIN {$dbprefix}metastrings msv ON md.value_id = msv.id
 				WHERE md.entity_guid = er.guid_two AND md.name_id = $msnid
 					))";
-			$options['wheres'][] = 'rv.action_type NOT LIKE "feed:%"';
+//			$options['wheres'][] = 'rv.action_type NOT LIKE "stream:%"';
 			break;
 
 		default:
 		case 'everyone' :
 		case 'all' :
-			$options['wheres'][] = 'rv.action_type NOT LIKE "feed:%"';
+//			$options['wheres'][] = 'rv.action_type NOT LIKE "stream:%"';
 			break;
 	}
 }
@@ -115,10 +107,18 @@ if (elgg_instanceof($user, 'user')) {
 $list_id = elgg_extract('list_id', $vars, 'activity');
 
 $limit = (int) get_input("__lim_$list_id", false);
+$offset = (int) get_input("__off_$list_id", false);
 
 if (!$limit) {
 	$limit = HYPEALIVE_RIVER_LIMIT;
 	set_input("__lim_$list_id", $limit);
+}
+
+if (!$offset) {
+	$offset = get_input('offset', null);
+	if ($offset) {
+		set_input("__off_$list_id", $offset);
+	}
 }
 
 $list_options = array(

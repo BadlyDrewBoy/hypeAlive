@@ -9,21 +9,24 @@ if (!hj_alive_does_user_like($entity)) {
 
 	if ($id) {
 
-		add_to_river('framework/river/feed/like', 'feed:like', elgg_get_logged_in_user_guid(), $entity->guid, $entity->access_id, time(), $id);
-		
-		// Subscribe user to this item
-		$container = $entity;
-		while ($check) {
-			if (!elgg_instanceof($container, 'object', 'hjcomment')) {
-				$check = false;
-			} else {
-				$container = $container->getContainerEntity();
-			}
+		add_to_river('framework/river/stream/like', 'stream:like', elgg_get_logged_in_user_guid(), $entity->guid, $entity->access_id, time(), $id);
+
+		// Subscribe user to this item if the autosubscribe setting is not turned off
+		if (!$entity instanceof hjComment && $entity->owner_guid != elgg_get_logged_in_user_guid()
+				&& !check_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $entity->guid)
+//				&& !check_entity_relationship(elgg_get_logged_in_user_guid(), 'unsubscribed', $entity->guid)
+				&& elgg_get_plugin_user_setting('comments_autosubscribe', elgg_get_logged_in_user_guid(), 'hypeAlive') !== false) {
+			add_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $entity->guid);
 		}
-		if (!check_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $container->guid)
-				&& !check_entity_relationship(elgg_get_logged_in_user_guid(), 'unsubscribed', $container->guid)) {
-			add_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $container->guid);
-		}
+
+		// Notify entity owner
+		$subject = elgg_echo('hj:alive:like:email:subject');
+		$body = elgg_view('framework/alive/notifications/like', array(
+			'entity' => $entity,
+			'user' => elgg_get_logged_in_user_entity()
+				));
+		if (elgg_get_plugin_user_setting('notify_likes', $entity->owner_guid, 'hypeAlive') !== false)
+			notify_user($entity->owner_guid, elgg_get_logged_in_user_guid(), $subject, $body);
 
 		if (elgg_is_xhr()) {
 			print json_encode(array(

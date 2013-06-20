@@ -14,24 +14,22 @@
 		background: #f;
 		padding: 0px 6px;
 		border: 1px solid transparent;
-		font-size: 10px;
+		font-size: 0.85em;
 		font-weight: bold;
 		margin: 0px 5px;
 		position: relative;
 		vertical-align: middle;
-		border-radius: 10px;
 		background: #f4f4f4;
-		border: 2px solid #e8e8e8;
+		border: 1px solid #e8e8e8;
 	}
 	.elgg-menu-comments {
 		margin-bottom: 5px;
 	}
 	.elgg-menu-comments > li > a {
-		font-size: 1.1em;
 		margin: 0;
 	}
 	.elgg-menu-comments > li ul a {
-		color: #666;
+		color: inherit;
 		font-weight: bold;
 	}
 	.elgg-menu-comments > li > ul {
@@ -43,57 +41,40 @@
 	}
 	.elgg-menu-replies > li > ul > li {
 		border: 1px solid #e8e8e8;
-		font-size: 9px;
+		font-size: 0.8em;
 	}
 	.elgg-menu-replies .elgg-menu-item-time {
-		font-size:10px;
+		font-size:0.85em;
 		font-style:italic;
 		font-color:#666;
 		margin:0 10px;
 	}
 
-	form.hj-comments-form {
-		padding: 3px;
-		border: 1px solid #f4f4f4;
-		background: #f4f4f4;
-		border-bottom: 1px solid #e8e8e8;
-	}
-	form.hj-comments-form fieldset {
-		padding: 0px 3px;
-		border: #f4f4f4;
-		background: #fff;
-		margin: 0;
-	}
-	form.hj-comments-form fieldset input {
-		border: none;
-		padding: 0px 5px;
-		line-height: 25px;
-		margin: 0;
-	}
+
 	.hj-comments-list {
 		border: none;
 		margin: 0;
-		font-size:11px;
+		font-size:0.9em;
 	}
 	.hj-comments-list > li.elgg-item {
-		padding: 3px 0 5px 6px;
-		background: #f4f4f4;
-		border-bottom:1px solid #e8e8e8;
+		padding: 3px 0 5px 8px;
+		border-bottom:1px solid #f4f4f4;
+		border-left:1px solid #f4f4f4;
 	}
 	.hj-comments-list > li.elgg-item .hj-comments-list > li.elgg-item {
 		border: none;
 		padding: 5px 0 5px 10px;
 	}
-	form.hj-comments-form fieldset .elgg-image {
-		margin: 0;
+
+	.hj-comments-stream {
+		margin-top:10px;
+		padding-top:10px;
+		border-top:1px solid #e8e8e8;
 	}
-	form.hj-comments-form fieldset input[type="text"] {
-		background: #fff;
-	}
-	form.hj-comments-form fieldset input[type="submit"] {
-		background: #f4f4f4;
-		color: #ccc;
-		right: 17px;
+	.hj-comments-stream.hj-comments-river-stream {
+		margin-top:0;
+		padding-top:0;
+		border:0;
 	}
 	.hj-stream-header {
 		margin: 5px 0 0;
@@ -104,9 +85,6 @@
 	.hj-stream-comments-block .hj-stream-comments-block {
 		padding: 2px 0 2px 2px;
 		margin: 3px;
-	}
-	.hj-stream-comments-block .hj-stream-comments-block form.hj-comments-form {
-		border: 1px solid #e8e8e8;
 	}
 
 	.hj-stream textarea {
@@ -161,7 +139,7 @@
 		background: #f4f4f4;
 		border:none;
 		color: #999;
-		font-size: 11px;
+		font-size: 0.9em;
 	}
 	.hj-stream-pagination a[rel="previous"] {
 		border-bottom: 1px solid #e8e8e8;
@@ -169,7 +147,8 @@
 	}
 	.hj-stream-pagination a[rel="next"] {
 		border-bottom: 1px solid #e8e8e8;
-		padding: 5px 10px;
+		padding: 0 10px;
+		line-height:24px;
 	}
 	.hj-stream-list li[rel="placeholder"] {
 		display: none;
@@ -178,52 +157,155 @@
 	.hj-replies-placeholder {
 		display: none;
 		padding: 5px 15px;
-		margin:5px 10px 0;
+		margin:20px 10px 0;
 		background: #fafafa;
 		text-shadow: 1px 1px  #fff;
 		vertical-align: middle;
 	}
 	.hj-replies-list {
-		background: #fafafa;
 		border: none;
 		margin: 0;
 	}
 	.hj-replies-list > li {
 		padding: 5px;
+		border:none;
+		border-left:1px solid #f4f4f4;
+		border-bottom:1px solid #f4f4f4;
 	}
 	.hj-replies-list > li:last-child {
 		border: none;
-	}
-	form.hj-replies-form {
-		margin: 0;
-		background: #fafafa;
 	}
 	.hj-stream .hj-loader-bar {
 		display:inline-block;
 		margin-right:10px;
 		vertical-align:middle;
 	}
-
+	.elgg-river li.hj-framework-list-pagination-wrapper {
+		padding: 0;
+		border: 0;
+	}
 	.elgg-river-substream {
 		border: none;
 		margin: 0;
-		padding: 10px;
-		background: #f4f4f4;
-		border-bottom: 1px solid #e8e8e8;
 	}
 	.elgg-river-substream > li {
-		display: inline-block;
 		border: none;
+		margin: 0 10px 0;
+		padding: 2px 0 2px 10px;
+		line-height: 25px;
+		border-bottom: 1px solid #f4f4f4;
+		border-left: 1px solid #f4f4f4;
+		font-size: 0.85em;
+	}
+
+	.elgg-river-substream > li.hj-framework-list-pagination-wrapper {
+		padding:0;
+		border-bottom:0;
+	}
+	form.hj-comments-form {
+		border: 1px solid #f4f4f4;
+		height: auto;
 		padding: 0;
-		position: relative;
+		background:none;
+		-webkit-border-radius:0;
+		-moz-border-radius:0;
+		border-radius:0;
 	}
-	.elgg-river-substream > li > a > img {
-		border: 2px solid #f4f4f4;
+	form.hj-comments-form fieldset {
+		padding: 0;
+		margin: 0;
 	}
-	.elgg-river-substream > li > a > span.elgg-icon {
-		position: absolute;
-		z-index: 300;
-		left: -2px;
-		top: -2px;
+	form.hj-comments-form .elgg-image-block {
+		padding: 0;
+		margin: 0;
+	}
+	form.hj-comments-form .elgg-image {
+		background: #f4f4f4;
+		height: 25px;
+		padding: 5px;
+		margin:0;
+	}
+	form.hj-comments-form input[type="text"],
+	form.hj-comments-form input[type="text"]:focus {
+		height: 25px;
+		line-height: 25px;
+		width: 100%;
+		border: 0;
+		background:none;
+		padding:0;
+	}
+
+	form.hj-comments-form textarea,
+	form.hj-comments-form textarea:focus {
+		line-height: 25px;
+		width: 100%;
+		border: 0;
+		background:none;
+	}
+	form.hj-comments-form .elgg-body {
+		padding: 5px;
+		margin: 0;
+		border-left:1px solid #f4f4f4;
+		border-right:1px inset #e8e8e8;
+	}
+	form.hj-comments-form .elgg-image-alt {
+		height: 31px;
+		padding: 0;
+		margin: 0;
+	}
+	form.hj-comments-form fieldset input[type="submit"] {
+		border: 0;
+		color: transparent;
+		text-shadow: none;
+		box-shadow: none;
+		right: 0;
+		font-weight: normal;
+		margin: 0;
+		height: 35px;
+		padding: 5px;
+		box-sizing: content-box;
+		border-radius: 0;
+		background: #f4f4f4 url(<?php echo elgg_get_site_url() ?>mod/hypeAlive/graphics/comment.png) no-repeat 50% 50%;
+		background-size: 15px;
+		display:inline-block;
+		box-sizing:border-box;
+		position:relative;
+	}
+	form.hj-comments-form fieldset input[type="submit"].hidden {
+		display:none;
+	}
+	form.hj-comments-form fieldset input[type="submit"].loading {
+		background: #f4f4f4 url(<?php echo elgg_get_site_url() ?>mod/hypeAlive/graphics/ajax-loader.gif) no-repeat 50% 50%;
+	}
+	.hj-comments-attach {
+		width: 25px;
+		height: 19px;
+		padding: 8px;
+		display: block;
+		background: #f4f4f4 url(<?php echo elgg_get_site_url() ?>mod/hypealive/graphics/clip.png) no-repeat 50% 50%;
+		background-size: 18px;
+		border-right: 1px inset #e8e8e8;
+		display:inline-block;
+		vertical-align:top;
+	}
+
+	.notifications-options tr {
+		border-bottom: 1px solid #e8e8e8;
+		background:none;
+	}
+	.notifications-options {
+		border: none;
+	}
+	.notifications-options td {
+		border: none;
+		line-height:25px;
+		padding:8px;
+		width:auto;
+	}
+	.notifications-options tr:nth-child(even) td {
+		background:#f4f4f4;
+	}
+	.elgg-table.notifications-options td.table-cell-icon {
+		width:25px;
 	}
 	<?php if (FALSE) : ?></style><?php endif; ?>

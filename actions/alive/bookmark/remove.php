@@ -7,7 +7,7 @@ if (check_entity_relationship(elgg_get_logged_in_user_guid(), 'bookmarked', $gui
 	remove_entity_relationship(elgg_get_logged_in_user_guid(), 'bookmarked', $guid);
 
 	elgg_delete_river(array(
-		'action_type' => 'feed:bookmark',
+		'action_type' => 'stream:bookmark',
 		'subject_guid' => elgg_get_logged_in_user_guid(),
 		'object_guid' => $entity->guid
 	));

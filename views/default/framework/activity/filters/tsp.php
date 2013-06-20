@@ -15,12 +15,14 @@ if ($hidden_types_subtypes) {
 	$hidden_types_subtypes = array();
 }
 
+$options[0] = elgg_echo('all');
+
 $registered_entities = elgg_get_config('registered_entities');
 if (!empty($registered_entities)) {
 	foreach ($registered_entities as $type => $subtypes) {
 		if (!count($subtypes)) {
 			$label = elgg_echo("item:$type");
-			$options[$label] = $type;
+			$options[$type] = $label;
 			$default[] = $type;
 		} else {
 			foreach ($subtypes as $subtype) {
@@ -28,18 +30,18 @@ if (!empty($registered_entities)) {
 					continue;
 				}
 				$label = elgg_echo("item:$type:$subtype");
-				$options[$label] = "$type:$subtype";
+				$options["$type:$subtype"] = $label;
 				$default[] = "$type:$subtype";
 			}
 		}
 	}
 }
 
-$body .= elgg_view('input/checkboxes', array(
+$body .= elgg_view('input/dropdown', array(
 	'name' => "__tsp",
 	'value' => ($river_selector) ? $river_selector : $default,
 	'default' => false,
-	'options' => $options
+	'options_values' => $options
 		));
 
 // Reset all offsets so that lists return to first page
@@ -54,15 +56,6 @@ foreach ($query as $key => $val) {
 }
 
 $footer .= '<div class="hj-ajax-loader hj-loader-indicator hidden"></div>';
-
-$footer .= elgg_view('input/submit', array(
-	'value' => elgg_echo('filter'),
-		));
-
-$footer .= elgg_view('input/reset', array(
-	'value' => elgg_echo('reset'),
-	'class' => 'elgg-button-reset'
-));
 
 $filter = elgg_view_module('form', '', $body, array(
 	'footer' => $footer

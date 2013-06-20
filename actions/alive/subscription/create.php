@@ -6,7 +6,12 @@ $entity = get_entity($guid);
 if (!check_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $guid)) {
 	add_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $guid);
 
-	add_to_river('framework/river/feed/subscription', 'feed:subscription', elgg_get_logged_in_user_guid(), $entity->guid, $entity->access_id, time(), $id);
+	if (check_entity_relationship(elgg_get_logged_in_user_guid(), 'unsubscribed', $guid)) {
+		// user is resubscribing
+		remove_entity_relationship(elgg_get_logged_in_user_guid(), 'unsubscribed', $guid);
+	}
+
+	add_to_river('framework/river/stream/subscription', 'stream:subscription', elgg_get_logged_in_user_guid(), $entity->guid, $entity->access_id, time(), -1);
 
 	if (elgg_is_xhr()) {
 		print json_encode(array(
@@ -16,8 +21,6 @@ if (!check_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $gu
 	}
 
 	system_message(elgg_echo('hj:alive:subscription:create:success'));
-	forward(REFERER);
+} else {
+	register_error(elgg_echo('hj:alive:subscription:create:error'));
 }
-
-register_error(elgg_echo('hj:alive:subscription:create:error'));
-forward(REFERER);

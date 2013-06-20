@@ -27,7 +27,7 @@ if ($comments_count <= 0) {
 $comments_view = hj_alive_view_comments_list($entity, $params);
 
 if (elgg_is_logged_in()) {
-	$menu = elgg_view_menu('comments', array(
+	$menu = elgg_view_menu('interactions', array(
 		'entity' => $entity,
 		'class' => 'elgg-menu-hz',
 		'sort_by' => 'priority',

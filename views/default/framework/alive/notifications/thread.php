@@ -2,22 +2,20 @@
 
 $entity = elgg_extract('entity', $vars);
 
-if (!elgg_instanceof($entity, 'object', 'hjcomment')) {
-	echo elgg_view('framework/alive/notifications/comment', $vars);
+if (!elgg_instanceof($entity)) {
 	return true;
 }
 
 $commenter = $entity->getOwnerEntity();
 $object = $entity->getOriginalContainer();
-$object_owner = $object->getOwnerEntity();
+$object_owner = $entity->getOwnerEntity();
 
-$head = elgg_echo('hj:alive:reply:email:head', array(
+$head = elgg_echo('hj:alive:thread:email:head', array(
 	$commenter->name, $object_owner->name, $object->title
 ));
 
 $body = "<blockquote>" . $entity->description . "</blockquote>";
-
-$footer = elgg_echo('hj:alive:reply:email:footer', array(
+$footer = elgg_echo('hj:alive:thread:email:footer', array(
 	$entity->getURL()
 ));
 

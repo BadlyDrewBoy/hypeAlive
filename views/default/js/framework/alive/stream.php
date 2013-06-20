@@ -51,6 +51,9 @@
 
 		});
 
+		$('.elgg-menu-comments .elgg-menu-item-edit')
+		.live('click', framework.alive.stream.editComment);
+
 		$('.hj-replies-placeholder')
 		.hide()
 		.live('click', function(event) {
@@ -81,80 +84,89 @@
 
 		});
 
-		$('.hj-comments-edit')
-		.live('click', framework.alive.stream.editComment);
-
 		$('.hj-comments-form')
 		.removeAttr('onsubmit')
 		.live('submit', framework.alive.stream.saveComment);
 
 		$('.hj-stream-pagination a')
 		.live('click', framework.alive.stream.loadMore);
+
+		$('.hj-comments-form input[name="description"]')
+		.live('keyup keydown', function(e) {
+			if ($(this).val() == '') {
+				$(this).closest('form').find('input[type="submit"]').addClass('hidden');
+			} else {
+				$(this).closest('form').find('input[type="submit"]').removeClass('hidden');
+			}
+		})
+
+		$('.subscriptions-options-action')
+		.live('click', function(e) {
+			e.preventDefault();
+			$elem = $(this);
+			elgg.action($elem.attr('href'), {
+				beforeSend : function() {
+					$elem.addClass('loading');
+				},
+				success : function(data) {
+					$elem.remove();
+				},
+				error : function() {
+					$elem.removeClass('loading');
+				}
+			})
+		})
 	};
 
 	framework.alive.stream.editComment = function(event) {
 		event.preventDefault();
 
-		var
-		params = $(this).data('options').params,
-		item = $('#elgg-object-' + params.entity_guid),
-		item_html = item.html(),
-		value = item.find('.annotation-value').html(),
-		id = params.entity_guid,
-		form = item.closest('.annotations').siblings('.hj-comments-form').last().find('form').html();
+		$comment = $(this).closest('.elgg-object-hjcomment');
 
-		item.html($('<form>').html(form));
-		var input = item.find('[name="description"]');
-		input.focus();
-		input.val(value);
-		item.find('[name="annotation_guid"]').val(id);
-
-		item
-		.find('form')
-		.bind('submit', function(event) {
-			event.preventDefault();
-			input.addClass('hj-input-processing');
-			value = input.val();
-			elgg.action('action/comment/save', {
-				data : {
-					annotation_guid : id,
-					description : value
-				},
-				success : function() {
-					item.html(item_html);
-					item.find('.annotation-value').html(value);
-					elgg.trigger_hook('success', 'hj:framework:ajax');
-				}
-			})
+		elgg.ajax('ajax/view/framework/alive/comments/form', {
+			data : {
+				guid : $comment.data('uid'),
+				list_id : $comment.closest('.elgg-list').attr('id')
+			}
 		});
-
-
+		
 	}
 
 	framework.alive.stream.saveComment = function(event) {
 
-		event.preventDefault();
+		var $form = $(this);
 
-		$form = $(this);
-		$input = $('[name="description"]', $form);
+		var data = {};
+		data['X-Requested-With'] = 'XMLHttpRequest';
+		data['X-PlainText-Response'] = true;
 
-		elgg.action($form.attr('action'), {
-			data : $form.serialize(),
+		var params = ({
+			dataType : 'json',
+			data : data,
+			iframe : false,
 			beforeSend : function() {
-				$input.addClass('hj-input-processing');
-				elgg.system_message(elgg.echo('hj:framework:ajax:saving'));
+				$('input[type="submit"]', $form).addClass('loading');
 			},
-			success : function(response) {
+			complete : function() {
+				$('input[type="submit"]', $form).removeClass('loading');
+			},
+			success : function(response, status, xhr) {
 
 				if (response.status >= 0) {
 					var list_id = $('[name=list_id]', $form).val();
 					$item = $(response.output.view).addClass('hj-comment-new');
-					if (framework.alive.comments.order == 'asc') {
-						$('#'+list_id).append($item);
-					} else {
-						$('#'+list_id).prepend($item);
-					}
-					$input.val('').closest('.hj-comments-form').fadeOut();
+					$('[id=' + list_id + ']').each(function() {
+						if ($("[data-uid=" + response.output.guid + "]", $(this)).length) {
+							$("[data-uid=" + response.output.guid + "]", $(this)).replaceWith($item);
+						} else {
+							if (framework.alive.comments.order == 'asc') {
+								$(this).append($item);
+							} else {
+								$(this).prepend($item);
+							}
+						}
+					});
+					//$form.fadeOut();
 
 					var streamid = response.output.container_guid;
 
@@ -165,11 +177,24 @@
 					$('[id=substream-' + streamid + ']').replaceWith(response.output.stats.substream);
 				}
 				
-			},
-			complete : function() {
-				$input.removeClass('hj-input-processing');
+				if (response.system_messages.success) {
+					elgg.system_message(response.system_messages.success);
+				}
+				if (response.system_messages.error) {
+					elgg.system_message(response.system_messages.success);
+				}
+
+				$form.resetForm();
+				$form.find('.hj-alive-attachments-list').html('');
+				$form.find('input[type="submit"]').addClass('hidden')
 			}
+
 		});
+
+		$form.ajaxSubmit(params);
+
+		return false;
+
 	}
 
 	framework.alive.stream.loadMore = function(event) {
@@ -209,80 +234,143 @@
 
 		$.each(updatedLists, function(key, updatedList) {
 
-			var $currentList = $('#' + updatedList.list_id),
-			$currentListItems = $('.elgg-item', $currentList);
+			var $currentLists = $('[id=' + updatedList.list_id + ']');
 
-			var $listBody = $currentList;
+			$currentLists.each(function() {
+
+				var $currentList = $(this);
+
+				var $currentListItems = $('.elgg-item', $currentList);
+
+				var $listBody = $currentList;
+
+				if (!updatedList.items) {
+					updatedList.items = new Array();
+				}
+
+				$('[rel=placeholder]', $currentList).remove();
+
+				$.each(updatedList.items, function(pos, itemView) {
+					var itemUid = $(itemView).data('uid');
+
+					var $new = $(itemView).addClass('hj-framework-list-item-new');
+					var $existing = $listBody.find('.elgg-item[data-uid=' + itemUid + ']').eq(0);
+
+					var $first = $listBody.find('.elgg-item').first();
+					var $last = $first.siblings('.elgg-item').andSelf().last();
+
+					if (!$first.length) {
+						$listBody.append($new);
+						$first = $last = $existing = $new;
+					}
+
+					if (updatedList.list_id == 'activity') {
+						var order = framework.alive.river.order;
+					} else {
+						var order = framework.alive.comments.order;
+					}
+					if (order == 'asc') {
+						if ($existing.length > 0) {
+							if ($existing.data('ts') < $new.data('ts')) {
+								$existing.replaceWith($new.fadeIn());
+							}
+						} else {
+							if ($first.data('ts') >= $new.data('ts')) {
+								$first.before($new.fadeIn());
+							} else if ($last.data('ts') <= $new.data('ts')) {
+								$last.after($new.fadeIn());
+							} else {
+								$first.siblings('.elgg-item').andSelf().each(function() {
+									if ($new.data('ts') > $(this).data('ts') && $new.data('ts') <= $(this).nextAll('.elgg-item').eq(0).data('ts')) {
+										$(this).after($new.fadeIn());
+									}
+								})
+							}
+						}
+					} else {
+						if ($existing.length > 0) {
+							if ($existing.data('ts') < $new.data('ts')) {
+								$existing.replaceWith($new.fadeIn());
+							}
+						} else {
+							if ($new.data('ts') >= $first.data('ts')) {
+								$first.before($new.fadeIn());
+							} else if ($new.data('ts') <= $last.data('ts')) {
+								$last.after($new.fadeIn());
+							} else {
+								$first.siblings('.elgg-item').andSelf().each(function() {
+									if ($new.data('ts') <= $(this).data('ts') && $new.data('ts') > $(this).nextAll('.elgg-item:first').data('ts')) {
+										$(this).after($new.fadeIn());
+									}
+								})
+							}
+						}
+					}
+				})
+
+				$('.hj-framework-list-pagination-wrapper[for=' + updatedList.list_id + ']', $currentList).replaceWith(updatedList.pagination);
+			})
+
+		})
+		return true;
+	}
+
+	framework.alive.stream.processUpdatedList = function(hook, type, updatedList) {
+
+		var	listType = updatedList.list_type;
+
+		var $currentLists = $('[id=' + updatedList.list_id + ']');
+
+		$currentLists.each(function() {
+
+			var $currentList = $(this);
+
+			var $currentListItems = $('.elgg-item', $currentList);
+
+			switch (listType) {
+
+				case 'stream' :
+					var $listBody = $currentList;
+					break;
+
+				case 'substream' :
+					var $listBody = $currentList;
+					break;
+
+				default :
+					return false;
+					break;
+			}
+
+			var updatedListItemUids = new Array(), currentListItemUids = new Array(), updatedListItemViews = new Array();
+
+			$currentListItems.each(function() {
+				currentListItemUids.push($(this).data('uid'));
+			});
 
 			if (!updatedList.items) {
 				updatedList.items = new Array();
 			}
 
-			$('[rel=placeholder]', $currentList).remove();
-
+			var $newList = $listBody.clone(true).html('');
 			$.each(updatedList.items, function(pos, itemView) {
 				var itemUid = $(itemView).data('uid');
-
+				updatedListItemUids.push(itemUid);
+				updatedListItemViews[itemUid] = itemView;
 				var $new = $(itemView).addClass('hj-framework-list-item-new');
-				var $existing = $listBody.find('.elgg-item[data-uid=' + itemUid + ']').eq(0);
-
-				var $first = $listBody.find('.elgg-item').first();
-				var $last = $first.siblings('.elgg-item').andSelf().last();
-
-				if (!$first.length) {
-					$listBody.append($new);
-					$first = $last = $existing = $new;
+				var $existing = $currentList.find('.elgg-item[data-uid=' + itemUid + ']:first');
+				if (($existing.length == 0) || ($existing.length && $new.data('ts') > $existing.data('ts'))) {
+					var $append = $new;
+				} else if ($existing.length && $new.data('ts') <= $existing.data('ts')) {
+					var $append = $existing;
 				}
-
-				if (updatedList.list_id == 'activity') {
-					var order = framework.alive.river.order;
-				} else {
-					var order = framework.alive.comments.order;
-				}
-				if (order == 'asc') {
-					if ($existing.length > 0) {
-						if ($existing.data('ts') < $new.data('ts')) {
-							$existing.replaceWith($new.fadeIn());
-						}
-					} else {
-						if ($first.data('ts') >= $new.data('ts')) {
-							$first.before($new.fadeIn());
-						} else if ($last.data('ts') <= $new.data('ts')) {
-							$last.after($new.fadeIn());
-						} else {
-							$first.siblings('.elgg-item').andSelf().each(function() {
-								if ($new.data('ts') > $(this).data('ts') && $new.data('ts') <= $(this).nextAll('.elgg-item').eq(0).data('ts')) {
-									$(this).after($new.fadeIn());
-								}
-							})
-						}
-					}
-				} else {
-					if ($existing.length > 0) {
-						if ($existing.data('ts') < $new.data('ts')) {
-							$existing.replaceWith($new.fadeIn());
-						}
-					} else {
-						if ($new.data('ts') >= $first.data('ts')) {
-							$first.before($new.fadeIn());
-						} else if ($new.data('ts') <= $last.data('ts')) {
-							$last.after($new.fadeIn());
-						} else {
-							$first.siblings('.elgg-item').andSelf().each(function() {
-								if ($new.data('ts') <= $(this).data('ts') && $new.data('ts') > $(this).nextAll('.elgg-item:first').data('ts')) {
-									$(this).after($new.fadeIn());
-								}
-							})
-						}
-					}
-				}
+				$newList.append($append);
 			})
+			$listBody.replaceWith($newList);
 
-
-			$('.hj-framework-list-pagination-wrapper[for=' + updatedList.list_id + ']').replaceWith(updatedList.pagination);
+			$('.hj-framework-list-pagination-wrapper[for=' + updatedList.list_id + ']', $currentList).replaceWith(updatedList.pagination);
 
 		})
-		return true;
 	}
 
 	framework.alive.actions.init = function() {
@@ -321,13 +409,7 @@
 			elgg.action($(this).attr('href'), {
 				success : function(response) {
 					if (response.status >= 0) {
-						if ($element.text() == elgg.echo('hj:alive:subscription:remove')) {
-							$element.text(elgg.echo('hj:alive:subscription:create'));
-							$element.removeClass('elgg-state-active');
-						} else {
-							$element.text(elgg.echo('hj:alive:subscription:remove'));
-							$element.addClass('elgg-state-active');
-						}
+						$element.remove();
 					}
 				}
 			})
@@ -368,7 +450,7 @@
 			elgg.action($(this).attr('href'), {
 				success : function(response) {
 					if (response.status >= 0) {
-						$element.attr('href', 'javascript:void(0)');
+						$element.replaceWith(elgg.echo('hj:alive:shares'));
 
 						var streamid = response.output.container_guid;
 
@@ -388,5 +470,8 @@
 	elgg.register_hook_handler('init', 'system', framework.alive.actions.init);
 
 	elgg.register_hook_handler('refresh:stream', 'framework:alive', framework.alive.stream.refreshLists);
+
+	elgg.register_hook_handler('refresh:lists:stream', 'framework', framework.alive.stream.processUpdatedList);
+	elgg.register_hook_handler('refresh:lists:substream', 'framework', framework.alive.stream.processUpdatedList);
 	
 <?php if (FALSE) : ?></script><?php endif; ?>

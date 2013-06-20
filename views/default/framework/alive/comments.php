@@ -12,14 +12,15 @@ if (!$entity) {
 	return true;
 }
 
-elgg_load_css('alive.comments.css');
-elgg_load_js('alive.comments.js');
+elgg_load_css('alive.stream.css');
+elgg_load_js('alive.stream.js');
 
 $params = hj_alive_prepare_view_params($entity);
+$params = array_merge($vars, $params);
 
-$menu = elgg_view_menu('comments', array(
+$menu = elgg_view_menu('interactions', array(
 	'entity' => $params['entity'],
-	'class' => 'elgg-menu-hz',
+	'class' => 'elgg-menu-hz elgg-menu-comments',
 	'sort_by' => 'priority',
 	'params' => $params
 		));

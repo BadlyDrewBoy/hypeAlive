@@ -59,6 +59,16 @@ if ($group_options) {
 	$form_body .= elgg_view_module('info', $title, $body);
 }
 
+$title = elgg_echo('hj:alive:river:river_grouping');
+$body = elgg_view('input/dropdown', array(
+	'name' => 'params[river_grouping]',
+	'options_values' => array(
+		'default' => elgg_echo('hj:alive:river:river_grouping:default'),
+		'grouped' => elgg_echo('hj:alive:river:river_grouping:grouped')
+	),
+	'value' => elgg_get_plugin_user_setting('river_grouping', $user->guid, 'hypeAlive')
+));
+$form_body .= elgg_view_module('info', $title, $body);
 
 $form_body .= elgg_view('input/hidden', array(
 	'name' => 'user_guid',

@@ -6,7 +6,7 @@ $entity = get_entity($guid);
 if (!check_entity_relationship(elgg_get_logged_in_user_guid(), 'shared', $guid)) {
 	add_entity_relationship(elgg_get_logged_in_user_guid(), 'shared', $guid);
 
-	add_to_river('framework/river/feed/share', 'feed:share', elgg_get_logged_in_user_guid(), $entity->guid, $entity->access_id, time());
+	add_to_river('framework/river/stream/share', 'share', elgg_get_logged_in_user_guid(), $entity->guid, $entity->access_id, time());
 
 	if (elgg_is_xhr()) {
 		print json_encode(array(
