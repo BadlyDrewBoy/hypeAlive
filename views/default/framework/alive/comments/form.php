@@ -56,7 +56,7 @@ if (HYPEALIVE_COMMENT_FORM == 'advanced') {
 $params = elgg_clean_vars($vars);
 
 $comments_count = hj_alive_count_comments($container, $params);
-if ($comments_count <= 0 || elgg_instanceof($container, 'object', 'hjcomment')) {
+if ($comments_count <= 0 || elgg_instanceof($container, 'object', 'hjcomment') && !$comment) {
 	$class .= ' hidden';
 }
 

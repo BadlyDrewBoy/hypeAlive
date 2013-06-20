@@ -29,7 +29,7 @@ function hj_alive_page_handler($page) {
 					}
 
 					$content .= elgg_view('framework/alive/comments/list', array(
-						'container_guid' => $container->guid,
+						'entity' => $container,
 						'list_id' => get_input('list_id', false)
 							));
 

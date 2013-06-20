@@ -20,7 +20,6 @@ if (HYPEALIVE_RIVER) {
 			'contexts' => array('settings')
 		));
 	}
-	elgg_register_admin_menu_item('language', 'graph', 'river');
 }
 
 elgg_register_menu_item('page', array(
@@ -51,7 +50,8 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 				$items['comment'] = array(
 					'text' => ($entity->canComment()) ? elgg_echo('comment') : elgg_echo('comments'),
 					'href' => (elgg_is_logged_in()) ? '#' : false,
-					'priority' => 200
+					'priority' => 200,
+					'data-streamid' => $entity->guid
 				);
 				$items['comments-count'] = array(
 					'text' => hj_alive_count_comments($entity),
@@ -72,7 +72,8 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 					'href' => (elgg_is_logged_in() && $viewer->guid != $entity->owner_guid && $entity->canAnnotate()) ? "action/alive/like?guid=$entity->guid" : false,
 					'is_action' => true,
 					'class' => (hj_alive_does_user_like($entity)) ? 'elgg-state-active' : '',
-					'priority' => 300
+					'priority' => 300,
+					'data-streamid' => $entity->guid
 				);
 
 				$items['likes-count'] = array(
@@ -94,7 +95,16 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 						'text' => elgg_echo('hj:alive:subscription:remove'),
 						'href' => "action/alive/subscription?guid=$entity->guid",
 						'is_action' => true,
-						'priority' => 900
+						'priority' => 900,
+						'data-streamid' => $entity->guid
+					);
+				} else {
+					$items['subscription'] = array(
+						'text' => elgg_echo('hj:alive:subscription:create'),
+						'href' => "action/alive/subscription?guid=$entity->guid",
+						'is_action' => true,
+						'priority' => 900,
+						'data-streamid' => $entity->guid
 					);
 				}
 			}
@@ -106,7 +116,8 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 					'href' => (elgg_is_logged_in() && $viewer->guid != $entity->owner_guid) ? "action/alive/bookmark?guid=$entity->guid" : false,
 					'is_action' => true,
 					'class' => ($bookmarked) ? 'elgg-state-active' : false,
-					'priority' => 500
+					'priority' => 500,
+					'data-streamid' => $entity->guid
 				);
 				$items['bookmarks-count'] = array(
 					'text' => hj_alive_count_bookmarks($entity),
@@ -127,14 +138,15 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 				$items['shares'] = array(
 					'text' => (elgg_is_logged_in() && !$shared) ? elgg_echo('hj:alive:share') : elgg_echo('hj:alive:shares'),
 					'href' => (elgg_is_logged_in() && !$shared) ? "action/alive/share?guid=$entity->guid" : false,
-					'priority' => 600
+					'priority' => 600,
+					'data-streamid' => $entity->guid
 				);
 				$items['shares-count'] = array(
 					'text' => hj_alive_count_shares($entity),
 					'href' => '#',
 					'priority' => 500,
 					'parent_name' => 'shares',
-					'data-streamid' => $entity->guid
+					'data-streamid' => $entity->guid,
 				);
 			}
 
@@ -158,12 +170,23 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 			 */
 			if (HYPEALIVE_COMMENTS) {
 				$replies_count = hj_alive_count_comments($entity);
-				if (elgg_is_logged_in() || $replies_count) {
-					$items['reply'] = array(
-						'text' => (elgg_is_logged_in() && $entity->canComment()) ? elgg_echo('hj:alive:reply') : elgg_echo('hj:alive:replies'),
-						'href' => (elgg_is_logged_in() && $entity->canComment()) ? '#' : false,
-						'priority' => 200
-					);
+
+				if ($entity->getDepthToOriginalContainer() <= HYPEALIVE_MAX_COMMENT_DEPTH) {
+					if (elgg_is_logged_in() && $entity->canComment()) {
+						$items['reply'] = array(
+							'text' => elgg_echo('hj:alive:reply'),
+							'href' => '#',
+							'priority' => 200,
+							'data-streamid' => $entity->guid
+						);
+					} else if ($replies_count) {
+						$items['reply'] = array(
+							'text' => elgg_echo('hj:alive:replies'),
+							'href' => '#',
+							'priority' => 200,
+							'data-streamid' => $entity->guid
+						);
+					}
 					$items['comments-count'] = array(
 						'text' => $replies_count,
 						'href' => '#',
@@ -186,7 +209,8 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 						'href' => (elgg_is_logged_in() && $viewer->guid != $entity->owner_guid && $entity->canAnnotate()) ? "action/alive/like?guid=$entity->guid" : false,
 						'is_action' => true,
 						'class' => (hj_alive_does_user_like($entity)) ? 'elgg-state-active' : '',
-						'priority' => 300
+						'priority' => 300,
+						'data-streamid' => $entity->guid
 					);
 					$items['likes-count'] = array(
 						'text' => $likes_count,
@@ -203,7 +227,8 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 					'text' => elgg_echo('edit'),
 					'href' => '#',
 					'data-uid' => $entity->guid,
-					'priority' => 990
+					'priority' => 990,
+					'data-streamid' => $entity->guid
 				);
 
 				$items['delete'] = array(
@@ -231,48 +256,6 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 			$item['name'] = $name;
 			$return[$name] = ElggMenuItem::factory($item);
 		}
-	}
-
-	return $return;
-}
-
-function hj_alive_commentshead_menu($hook, $type, $return, $params) {
-	$entity = elgg_extract('entity', $params, false);
-
-	if (!$entity && !elgg_instanceof($entity, 'object', 'hjannotation')) {
-		return $return;
-	}
-	unset($return);
-
-	$params = hj_framework_extract_params_from_entity($entity, $params);
-	$params = hj_framework_json_query(array('params' => $params));
-	/**
-	 * Delete
-	 */
-	if ($entity->canEdit()) {
-		$edit = array(
-			'name' => 'edit',
-			'text' => elgg_echo('hj:framework:edit'),
-			'class' => 'hj-comments-edit',
-			'href' => "javascript:void(0)",
-			'data-options' => htmlentities($params, ENT_QUOTES, 'UTF-8'),
-			'priority' => 800,
-			'section' => 'dropdown'
-		);
-		$return[] = ElggMenuItem::factory($edit);
-
-		$delete = array(
-			'name' => 'delete',
-			'text' => elgg_echo('hj:framework:delete'),
-			'class' => 'hj-ajaxed-remove',
-			'id' => "hj-ajaxed-remove-$entity->guid",
-			'href' => "action/framework/entities/delete?e=$entity->guid",
-			'data-options' => htmlentities($params, ENT_QUOTES, 'UTF-8'),
-			'is_action' => true,
-			'priority' => 1000,
-			'section' => 'dropdown'
-		);
-		$return[] = ElggMenuItem::factory($delete);
 	}
 
 	return $return;

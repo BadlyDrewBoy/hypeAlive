@@ -43,9 +43,8 @@ function hj_alive_count_likes($entity) {
 	);
 
 	$count = elgg_get_annotations($options);
-	
-	return $count;
 
+	return $count;
 }
 
 function hj_alive_count_bookmarks($entity) {
@@ -60,7 +59,6 @@ function hj_alive_count_bookmarks($entity) {
 	$count = elgg_get_entities_from_relationship($options);
 
 	return $count;
-
 }
 
 function hj_alive_count_shares($entity) {
@@ -75,19 +73,25 @@ function hj_alive_count_shares($entity) {
 	$count = elgg_get_entities_from_relationship($options);
 
 	return $count;
-
 }
 
 function hj_alive_get_stream_stats($entity) {
 
 	return array(
-		'comments' => hj_alive_count_comments($entity),
-		'likes' => hj_alive_count_likes($entity),
-		'bookmarks' => hj_alive_count_bookmarks($entity),
-		'shares' => hj_alive_count_shares($entity),
+		'counter' => array(
+			'comments' => hj_alive_count_comments($entity),
+			'likes' => hj_alive_count_likes($entity),
+			'bookmarks' => hj_alive_count_bookmarks($entity),
+			'shares' => hj_alive_count_shares($entity),
+		),
+		'rels' => array(
+			'likes' => hj_alive_does_user_like($entity),
+			'bookmarked' => check_entity_relationship(elgg_get_logged_in_user_guid(), 'bookmarked', $entity->guid),
+			'shared' => check_entity_relationship(elgg_get_logged_in_user_guid(), 'shared', $entity->guid),
+			'subscribed' => check_entity_relationship(elgg_get_logged_in_user_guid(), 'subscribed', $entity->guid),
+		),
 		'substream' => elgg_view('framework/alive/comments/substream', array('entity' => $entity))
 	);
-	
 }
 
 function hj_alive_view_likes_list($params) {
@@ -263,9 +267,9 @@ function hj_alive_does_user_like($entity, $user = null) {
 		'annotation_names' => 'likes',
 		'annotation_values' => 1,
 		'annotation_calculation' => 'count'
-	));
+			));
 
-	
+
 	return ($likes > 0) ? true : false;
 }
 
@@ -320,15 +324,12 @@ function hj_alive_notify_subscribed_users($entity) {
 
 	if ($depth > 1 && $original_owner->guid !== $container_owner->guid) {
 		// Notify comment owner that he has a new reply
-
 	} else {
 		// Notify entity owner that he has a new comment
-
 	}
 
 	if ($depth > 1) {
 		// Notify subscribed users about activity in the thread
-
 	} else {
 		// Notify subscribed users about activity on the item
 	}
@@ -341,7 +342,7 @@ function hj_alive_notify_subscribed_users($entity) {
 		'relationship_guid' => $object->guid,
 		'inverse_relationship' => true,
 		'limit' => 0
-	));
+			));
 
 
 	$from = elgg_get_site_entity()->guid;
@@ -361,11 +362,10 @@ function hj_alive_notify_subscribed_users($entity) {
 		'text' => elgg_echo('hj:framework:notification:link'),
 		'href' => $entity->getURL(),
 		'is_trusted' => true
-	));
+			));
 	$footer = elgg_echo('hj:framework:notification:full_link', array($link));
 
 	$message = "<p>$summary</p><p>$body</p><p>$footer</p>";
 
 	notify_user($subscribers, $from, $subject, $message);
-
 }

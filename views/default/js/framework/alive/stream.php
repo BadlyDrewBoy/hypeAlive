@@ -91,22 +91,6 @@
 		$('.hj-stream-pagination a')
 		.live('click', framework.alive.stream.loadMore);
 
-		$('.subscriptions-options-action')
-		.live('click', function(e) {
-			e.preventDefault();
-			$elem = $(this);
-			elgg.action($elem.attr('href'), {
-				beforeSend : function() {
-					$elem.addClass('elgg-state-loading');
-				},
-				success : function(data) {
-					$elem.remove();
-				},
-				error : function() {
-					$elem.removeClass('elgg-state-loading');
-				}
-			})
-		})
 	};
 
 	framework.alive.stream.editComment = function(event) {
@@ -160,28 +144,25 @@
 
 				if (response.status >= 0) {
 					var list_id = $('[name=list_id]', $form).val();
-					$item = $(response.output.view).addClass('hj-comment-new');
+					$item = $(response.output.view).addClass('hj-comment-new').clone();
 					
 					if ($form.attr('rel') == 'new') {
 						$('[id=' + list_id + ']').each(function() {
-								if (framework.alive.comments.order == 'asc') {
-									$(this).append($item);
-								} else {
-									$(this).prepend($item);
-								}
+							if (framework.alive.comments.order == 'asc') {
+								$(this).append($item.clone());
+							} else {
+								$(this).prepend($item.clone());
+							}
 						});
 					} else {
-						$('.elgg-object-hjcomment[data-uid="' + response.output.guid + '"]').replaceWith($item);
+						$('.elgg-object-hjcomment[data-uid="' + response.output.guid + '"]').each(function() {
+							$(this).html($item.html());
+						})
 					}
-					//$form.fadeOut();
 
-					var streamid = response.output.container_guid;
 
-					$('.elgg-menu-item-comments-count > a[data-streamid=' + streamid + ']').text(response.output.stats.comments);
-					$('.elgg-menu-item-likes-count > a[data-streamid=' + streamid + ']').text(response.output.stats.likes);
-					$('.elgg-menu-item-bookmarks-count > a[data-streamid=' + streamid + ']').text(response.output.stats.bookmarks);
-					$('.elgg-menu-item-shares-count > a[data-streamid=' + streamid + ']').text(response.output.stats.shares);
-					$('[id=substream-' + streamid + ']').replaceWith(response.output.stats.substream);
+					elgg.trigger_hook('refresh:stats', 'framework:alive', { response : response });
+					
 				}
 				
 				if (response.system_messages.success) {
@@ -393,21 +374,7 @@
 				},
 				success : function(response) {
 					if (response.status >= 0) {
-						if ($element.text() == elgg.echo('hj:alive:like:remove')) {
-							$element.text(elgg.echo('hj:alive:like:create'));
-							$element.removeClass('elgg-state-active');
-						} else {
-							$element.text(elgg.echo('hj:alive:like:remove'));
-							$element.addClass('elgg-state-active');
-						}
-
-						var streamid = response.output.container_guid;
-
-						$('.elgg-menu-item-comments-count > a[data-streamid=' + streamid + ']').text(response.output.stats.comments);
-						$('.elgg-menu-item-likes-count > a[data-streamid=' + streamid + ']').text(response.output.stats.likes);
-						$('.elgg-menu-item-bookmarks-count > a[data-streamid=' + streamid + ']').text(response.output.stats.bookmarks);
-						$('.elgg-menu-item-shares-count > a[data-streamid=' + streamid + ']').text(response.output.stats.shares);
-						$('[id=substream-' + streamid + ']').replaceWith(response.output.stats.substream);
+						elgg.trigger_hook('refresh:stats', 'framework:alive', { response : response });
 					}
 				}
 			})
@@ -426,7 +393,7 @@
 				},
 				success : function(response) {
 					if (response.status >= 0) {
-						$element.remove();
+						elgg.trigger_hook('refresh:stats', 'framework:alive', { response : response });
 					}
 				}
 			})
@@ -445,21 +412,7 @@
 				},
 				success : function(response) {
 					if (response.status >= 0) {
-						if ($element.text() == elgg.echo('hj:alive:bookmark:remove')) {
-							$element.text(elgg.echo('hj:alive:bookmark:create'));
-							$element.removeClass('elgg-state-active');
-						} else {
-							$element.text(elgg.echo('hj:alive:bookmark:remove'));
-							$element.addClass('elgg-state-active');
-						}
-
-						var streamid = response.output.container_guid;
-
-						$('.elgg-menu-item-comments-count > a[data-streamid=' + streamid + ']').text(response.output.stats.comments);
-						$('.elgg-menu-item-likes-count > a[data-streamid=' + streamid + ']').text(response.output.stats.likes);
-						$('.elgg-menu-item-bookmarks-count > a[data-streamid=' + streamid + ']').text(response.output.stats.bookmarks);
-						$('.elgg-menu-item-shares-count > a[data-streamid=' + streamid + ']').text(response.output.stats.shares);
-						$('[id=substream-' + streamid + ']').replaceWith(response.output.stats.substream);
+						elgg.trigger_hook('refresh:stats', 'framework:alive', { response : response });
 					}
 				}
 			})
@@ -479,15 +432,7 @@
 				},
 				success : function(response) {
 					if (response.status >= 0) {
-						$element.replaceWith(elgg.echo('hj:alive:shares'));
-
-						var streamid = response.output.container_guid;
-
-						$('.elgg-menu-item-comments-count > a[data-streamid=' + streamid + ']').text(response.output.stats.comments);
-						$('.elgg-menu-item-likes-count > a[data-streamid=' + streamid + ']').text(response.output.stats.likes);
-						$('.elgg-menu-item-bookmarks-count > a[data-streamid=' + streamid + ']').text(response.output.stats.bookmarks);
-						$('.elgg-menu-item-shares-count > a[data-streamid=' + streamid + ']').text(response.output.stats.shares);
-						$('[id=substream-' + streamid + ']').replaceWith(response.output.stats.substream);
+						elgg.trigger_hook('refresh:stats', 'framework:alive', { response : response });
 					}
 				}
 			})
@@ -495,6 +440,42 @@
 
 	}
 
+	framework.alive.stream.refreshStats = function(hook, type, params) {
+
+		var streamid = params.response.output.container_guid;
+		var stats = params.response.output.stats;
+
+		$('.elgg-menu-item-comments-count > a[data-streamid=' + streamid + ']').text(stats.counter.comments);
+		$('.elgg-menu-item-likes-count > a[data-streamid=' + streamid + ']').text(stats.counter.likes);
+		$('.elgg-menu-item-bookmarks-count > a[data-streamid=' + streamid + ']').text(stats.counter.bookmarks);
+		$('.elgg-menu-item-shares-count > a[data-streamid=' + streamid + ']').text(stats.counter.shares);
+
+		if (stats.rels.likes) {
+			$('.elgg-menu-item-likes > a[data-streamid=' + streamid + ']').text(elgg.echo('hj:alive:like:remove')).addClass('elgg-state-active');
+		} else  {
+			$('.elgg-menu-item-likes > a[data-streamid=' + streamid + ']').text(elgg.echo('hj:alive:like:create')).removeClass('elgg-state-active');
+		}
+
+		if (stats.rels.bookmarked) {
+			$('.elgg-menu-item-bookmark > a[data-streamid=' + streamid + ']').text(elgg.echo('hj:alive:bookmark:remove')).addClass('elgg-state-active');
+		} else  {
+			$('.elgg-menu-item-bookmark > a[data-streamid=' + streamid + ']').text(elgg.echo('hj:alive:bookmark:create')).removeClass('elgg-state-active');
+		}
+
+		if (stats.rels.shared) {
+			$('.elgg-menu-item-shares > a[data-streamid=' + streamid + ']').removeAttr('href').text(elgg.echo('hj:alive:shares')).removeClass('elgg-state-active');
+		}
+
+		if (stats.rels.subscribed) {
+			$('.elgg-menu-item-subscription > a[data-streamid=' + streamid + ']').text(elgg.echo('hj:alive:subscription:remove')).addClass('elgg-state-active');
+		} else  {
+			$('.elgg-menu-item-subscription > a[data-streamid=' + streamid + ']').text(elgg.echo('hj:alive:subscription:create')).removeClass('elgg-state-active');
+		}
+
+		$('[id=substream-' + streamid + ']').replaceWith($(stats.substream).clone());
+
+	}
+	
 	elgg.register_hook_handler('init', 'system', framework.alive.stream.init);
 	elgg.register_hook_handler('init', 'system', framework.alive.actions.init);
 
@@ -502,5 +483,7 @@
 
 	elgg.register_hook_handler('refresh:lists:stream', 'framework', framework.alive.stream.processUpdatedList);
 	elgg.register_hook_handler('refresh:lists:substream', 'framework', framework.alive.stream.processUpdatedList);
+
+	elgg.register_hook_handler('refresh:stats', 'framework:alive', framework.alive.stream.refreshStats);
 	
 <?php if (FALSE) : ?></script><?php endif; ?>
