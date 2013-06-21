@@ -20,7 +20,7 @@ $params = array_merge($vars, $params);
 
 $menu = elgg_view_menu('interactions', array(
 	'entity' => $params['entity'],
-	'class' => 'elgg-menu-hz elgg-menu-comments',
+	'class' => 'elgg-menu-hz elgg-menu-discussions',
 	'sort_by' => 'priority',
 	'params' => $params
 		));

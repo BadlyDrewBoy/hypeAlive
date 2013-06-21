@@ -316,7 +316,7 @@ function hj_alive_get_river_object_string($subject = null, $action = null, $obje
 		if (elgg_instanceof($container, 'group')) {
 			$group_link = elgg_view('output/url', array(
 				'text' => $container->name,
-				'href' => $contianer->getURL(),
+				'href' => $container->getURL(),
 				'is_trusted' => true
 					));
 			$suffix .= elgg_echo('river:group', array($group_link));

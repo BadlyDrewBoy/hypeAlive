@@ -205,6 +205,7 @@ $english = array(
 	// object
 	'river:thread' => 'in a discussion about the %s',
 	'river:owner' => '%s\'s',
+	'river:group' => 'in the group %s',
 	'river:preposition::default' => 'this',
 	'river:preposition::self' => 'their own',
 	'river:preposition::female:self' => 'her own',
@@ -232,11 +233,12 @@ $english = array(
 	'river:object::item:object:hjforumtopic' => 'forum topic',
 	'river:object::item:object:hjforumpost' => 'forum post',
 	'river:object::item:object:hjfile' => 'file',
-
+	'river:object::item:object:hjgrouptopicpost' => 'post',
 	'river:object::item:object:blog' => 'blog post',
 	'river:object::item:object:page_top' => 'page',
 	'river:object::item:object:page' => 'subpage',
 	'river:object::item:object:file' => 'file',
+	'river:object::item:object:groupforumtopic' => 'group topic',
 	'river:object::item:object:favorite_track' => 'favorite track',
 	'river:object::item:object:hjalbum' => 'album',
 	'river:object::item:object:hjalbumimage' => 'image',
@@ -244,6 +246,7 @@ $english = array(
 	'river:object::item:object:hjevent' => 'event',
 	'river:object::item:object:hjplace' => 'place',
 	'river:object::item:object:hjexperience' => 'work experience',
+	'river:object::item:object:hjportfoliofile' => 'file',
 
 	'river:object::join::item:group:default' => 'the group %2$s',
 	'river:object::friend::item:user:default' => '%2$s',

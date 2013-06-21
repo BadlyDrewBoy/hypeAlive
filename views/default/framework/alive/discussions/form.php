@@ -11,7 +11,9 @@ if (!$container) {
 	$container = get_entity($comment->container_guid);
 }
 
-if (!elgg_is_logged_in() || !$container || !$container->canAnnotate()) {
+var_dump($container);
+
+if (!elgg_is_logged_in() || !$container || !$container->canWriteToContainer(0, 'object', 'hjgrouptopicpost')) {
 	return true;
 }
 
@@ -55,7 +57,7 @@ if (HYPELIVE_FORUM_FORM == 'advanced') {
 
 $params = elgg_clean_vars($vars);
 
-$comments_count = hj_alive_count_comments($container, $params);
+$comments_count = hj_alive_count_discussion_replies($container, $params);
 if ($comments_count <= 0 || elgg_instanceof($container, 'object', 'hjcomment') && !$comment) {
 	$class .= ' hidden';
 }

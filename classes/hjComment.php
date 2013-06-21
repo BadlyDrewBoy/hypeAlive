@@ -20,7 +20,7 @@ class hjComment extends hjObject {
 		$check = true;
 		$container = $this;
 		while ($check) {
-			if (!elgg_instanceof($container, 'object', 'hjcomment')) {
+			if (!$container instanceof hjComment) {
 				$check = false;
 			} else {
 				$container = $container->getContainerEntity();
@@ -34,7 +34,7 @@ class hjComment extends hjObject {
 		$container = $this;
 		$ancestry = array($container->guid);
 		while ($check) {
-			if (!elgg_instanceof($container, 'object', 'hjcomment')) {
+			if (!$container instanceof hjComment) {
 				$check = false;
 			} else {
 				$container = $container->getContainerEntity();
@@ -49,7 +49,7 @@ class hjComment extends hjObject {
 		$container = $this;
 		$count = 1;
 		while ($check) {
-			if (!elgg_instanceof($container, 'object', 'hjcomment')) {
+			if (!$container instanceof hjComment) {
 				$check = false;
 			} else {
 				$container = $container->getContainerEntity();

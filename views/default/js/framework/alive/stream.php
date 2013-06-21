@@ -184,6 +184,7 @@
 
 	}
 
+
 	framework.alive.stream.loadMore = function(event) {
 
 		event.preventDefault();
