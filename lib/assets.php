@@ -12,6 +12,14 @@ elgg_register_simplecache_view('js/framework/alive/stream');
 elgg_register_css('alive.stream.css', elgg_get_simplecache_url('css', 'framework/alive/stream'));
 elgg_register_simplecache_view('css/framework/alive/stream');
 
+if (HYPEALIVE_FORUM_COMMENTS) {
+	elgg_register_js('alive.discussions.js', elgg_get_simplecache_url('js', 'framework/alive/discussions'));
+	elgg_register_simplecache_view('js/framework/alive/discussions');
+
+	elgg_register_css('alive.discussions.css', elgg_get_simplecache_url('css', 'framework/alive/discussions'));
+	elgg_register_simplecache_view('css/framework/alive/discussions');
+}
+
 if (HYPEALIVE_SEARCH) {
 	elgg_register_js('alive.search.js', elgg_get_simplecache_url('js', 'framework/alive/search'));
 	elgg_register_simplecache_view('js/framework/alive/search');

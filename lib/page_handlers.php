@@ -52,6 +52,30 @@ function hj_alive_page_handler($page) {
 
 			break;
 
+		case 'discussions' :
+			switch ($page[1]) {
+				case 'content' :
+				default :
+
+					$container = get_entity($page[2]);
+					if (!elgg_instanceof($container)) {
+						return false;
+					}
+
+					if (!elgg_is_xhr()) {
+						forward($container->getURL());
+					}
+
+					$content .= elgg_view('framework/alive/discussions/list', array(
+						'entity' => $container,
+						'list_id' => get_input('list_id', false)
+							));
+
+					break;
+			}
+
+			break;
+
 		case 'replies' :
 			$content = elgg_view('framework/alive/replies/list', array(
 				'entity' => get_entity($page[1]),
@@ -67,7 +91,7 @@ function hj_alive_page_handler($page) {
 			break;
 
 		case 'view' :
-			
+
 			if (!isset($page[1])) {
 				return false;
 			}

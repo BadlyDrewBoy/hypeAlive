@@ -14,6 +14,10 @@ if (HYPEALIVE_COMMENTS) {
 	elgg_register_action('reply/save', $shortcuts['actions'] . 'alive/comment/save.php');
 }
 
+if (HYPEALIVE_FORUM_COMMENTS) {
+	elgg_register_action('discussions/save', $shortcuts['actions'] . 'alive/discussions/save.php');
+}
+
 if (HYPEALIVE_LIKES) {
 	elgg_register_action('alive/like', $shortcuts['actions'] . 'alive/like/default.php');
 	elgg_register_action('alive/like/create', $shortcuts['actions'] . 'alive/like/create.php');

@@ -3,6 +3,7 @@
 $english = array(
 
 	'item:object:hjcomment' => 'Comment',
+	'item:object:hjgrouptopicpost' => 'Discussion topic post',
 	'item:object:hjstream' => 'Activity',
 
 	'edit:plugin:hypealive:params[comments]' => 'Content comments',
@@ -195,9 +196,9 @@ $english = array(
 	'river:action::create::item:object:favorite_track' => 'imported',
 	'river:action::create::item:object:hjalbumimage' => 'uploaded',
 	'river:action::create::item:object:hjplace' => 'added',
-	'river:action::create::item:object:hjexperience' => 'listed',
-	'river:action::create::item:object:hjskill' => 'listed',
-	'river:action::create::item:object:hjlanguage' => 'listed',
+	'river:action::create::item:object:hjexperience' => 'added',
+	'river:action::create::item:object:hjskill' => 'added',
+	'river:action::create::item:object:hjlanguage' => 'added',
 	'river:action::create::item:object:hjportfoliofile' => 'uploaded',
 	'river:action::create::item:object:hjwall' => 'posted',
 
@@ -249,10 +250,10 @@ $english = array(
 	'river:object::messageboard' => 'on %2$s\'s messagboard',
 	'river:object::create::item:object:thewire' => 'to the wire',
 	'river:object::claim::item:object:hjbadge' => 'a new badge %2$s',
-	'river:object::create::item:object:hjexperience' => '%2$s to their portfolio',
-	'river:object::create::item:object:hjskill' => '%2$s to their portfolio',
-	'river:object::create::item:object:hjlanguage' => '%2$s to their portfolio',
-	'river:object::create::item:object:hjportfoliofile' => '%2$s to their portfolio',
+	'river:object::create::item:object:hjexperience' => '%s %s to their portfolio',
+	'river:object::create::item:object:hjskill' => '%s %s to their portfolio',
+	'river:object::create::item:object:hjlanguage' => '%s %s to their portfolio',
+	'river:object::create::item:object:hjportfoliofile' => '%s %s to their portfolio',
 	'river:object::create::item:object:hjwall' => 'on their wall',
 
 	/**

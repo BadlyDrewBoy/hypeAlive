@@ -172,6 +172,56 @@ function hj_alive_init_plugin_settings_form($hook, $type, $return, $params) {
 				'value' => $entity->forum_comments,
 				'hint' => elgg_echo('edit:plugin:hypealive:params[forum_comments]:hint')
 			),
+			'params[max_forum_comment_depth]' => array(
+				'input_type' => 'dropdown',
+				'options' => array(5, 4, 3, 2, 1),
+				'value' => $entity->max_forum_comment_depth,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[max_forum_comment_depth]:hint')
+			),
+			'params[forum_comment_form]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'simple' => elgg_echo('hj:alive:forum_comment_form:simple'),
+					'advanced' => elgg_echo('hj:alive:forum_comment_form:advanced'),
+				),
+				'value' => $entity->forum_comment_form,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[forum_comment_form]:hint')
+			),
+			'params[forum_comment_form_position]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'before' => elgg_echo('hj:alive:forum_comment_form_position:before'),
+					'after' => elgg_echo('hj:alive:forum_comment_form_position:after'),
+				),
+				'value' => $entity->forum_comment_form_position,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[forum_comment_form_position]:hint')
+			),
+			'params[forum_comments_order]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'asc' => elgg_echo('hj:alive:forum_comment_order:chronological'),
+					'desc' => elgg_echo('hj:alive:forum_comment_order:reverse_chronological'),
+				),
+				'value' => $entity->forum_comments_order,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[forum_comments_order]:hint')
+			),
+			'params[forum_comments_load_style]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'load_newer' => elgg_echo('hj:alive:forum_comments_load_style:newer'),
+					'load_older' => elgg_echo('hj:alive:forum_comments_load_style:older'),
+				),
+				'value' => $entity->forum_comments_load_style,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[forum_comments_load_style]:hint')
+			),
+			'params[forum_comments_limit]' => array(
+				'value' => $entity->forum_comments_limit,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[forum_comments_limit]:hint')
+			),
+			'params[forum_comments_load_limit]' => array(
+				'value' => $entity->forum_comments_load_limit,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[forum_comments_load_limit]:hint')
+			),
 			'params[likes]' => array(
 				'input_type' => 'dropdown',
 				'options_values' => array(

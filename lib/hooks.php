@@ -1,5 +1,9 @@
 <?php
 
+elgg_register_plugin_hook_handler('permissions_check:comment', 'all', 'hj_alive_can_comment');
+elgg_register_plugin_hook_handler('container_permissions_check', 'all', 'hj_alive_can_write_to_container');
+
+
 // Custom activity filter clause
 if (HYPEALIVE_RIVER) {
 	elgg_register_plugin_hook_handler('custom_sql_clause', 'framework:lists', 'hj_alive_activity_filter_clauses');
@@ -25,10 +29,8 @@ if (HYPEALIVE_LIKES) {
 
 if (HYPEALIVE_FORUM_COMMENTS) {
 	elgg_register_entity_type('object', 'hjgrouptopicpost');
+	elgg_register_plugin_hook_handler('view', 'discussion/replies', 'hj_alive_forum_comments_view');
 }
-
-elgg_register_plugin_hook_handler('permissions_check:comment', 'all', 'hj_alive_can_comment');
-elgg_register_plugin_hook_handler('container_permissions_check', 'all', 'hj_alive_can_write_to_container');
 
 function hj_alive_activity_filter_clauses($hook, $type, $options, $params) {
 
@@ -76,20 +78,25 @@ function hj_alive_comments_replacement($hook, $entity_type, $returnvalue, $param
 	if (elgg_in_context('no-comments')) {
 		return null;
 	}
-	
+
 	$entity = elgg_extract('entity', $params);
-	if (elgg_instanceof($entity, 'object', 'hjcomment')) {
+	if ($entity instanceof hjComment) {
 		return elgg_view('framework/alive/replies', $params);
 	}
 
 	return elgg_view('framework/alive/comments', $params);
 }
 
+
+function hj_alive_forum_comments_view($hook, $type, $returnvalue, $params) {
+	return elgg_view('framework/alive/discussions', $params['vars']);
+}
+
 function hj_alive_can_comment($hook, $type, $return, $params) {
 
 	$entity = elgg_extract('entity', $params);
 
-	if (elgg_instanceof($entity, 'object', 'hjcomment')) {
+	if ($entity instanceof hjComment) {
 		return ($entity->getDepthToOriginalContainer() <= HYPEALIVE_MAX_COMMENT_DEPTH);
 	}
 

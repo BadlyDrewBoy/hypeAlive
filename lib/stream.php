@@ -308,8 +308,19 @@ function hj_alive_get_river_object_string($subject = null, $action = null, $obje
 	}
 
 
-	if (elgg_instanceof($object, 'object', 'hjcomment')) {
-		$suffix = elgg_echo('river:thread', array(hj_alive_get_river_object_string(null, null, $object->getOriginalContainer())));
+	if ($object instanceof hjComment) {
+		$original = $object->getOriginalContainer();
+		$container = $original->getContainerEntity();
+
+		$suffix = elgg_echo('river:thread', array(hj_alive_get_river_object_string(null, null, $original)));
+		if (elgg_instanceof($container, 'group')) {
+			$group_link = elgg_view('output/url', array(
+				'text' => $container->name,
+				'href' => $contianer->getURL(),
+				'is_trusted' => true
+					));
+			$suffix .= elgg_echo('river:group', array($group_link));
+		}
 	}
 
 	if (!elgg_in_context('substream-view')) {
@@ -335,16 +346,15 @@ function hj_alive_get_river_object_string($subject = null, $action = null, $obje
 	} else {
 		if ($comment) {
 			$desc = elgg_get_excerpt($comment->description, 50);
-			if (elgg_instanceof($object, 'object', 'hjcomment')) {
+			if ($object instanceof hjComment) {
 				$str = elgg_echo("river:object::substream:comment", array($prefix, elgg_echo("river:object::$obj_ns"), $desc));
 			} else {
 				$str = elgg_echo("river:object::substream:desc", array(elgg_echo("river:object::$obj_ns"), $desc));
 			}
-		} else if ($action == 'stream:like' && elgg_instanceof($object, 'object', 'hjcomment')) {
-				$desc = elgg_get_excerpt($object->description, 50);
-				$str = elgg_echo("river:object::substream:comment", array($prefix, elgg_echo("river:object::$obj_ns"), $desc));
-		}
-		else {
+		} else if ($action == 'stream:like' && $object instanceof hjComment) {
+			$desc = elgg_get_excerpt($object->description, 50);
+			$str = elgg_echo("river:object::substream:comment", array($prefix, elgg_echo("river:object::$obj_ns"), $desc));
+		} else {
 			$str = elgg_echo("river:object::substream:default", array(elgg_echo("river:object::$obj_ns")));
 		}
 	}
