@@ -57,23 +57,12 @@ if ($annotation->save()) {
 
 	if (!$guid) {
 		if ($annotation->owner_guid != $container->owner_guid) {
-			if ($container instanceof hjComment) {
-				// Notify about a reply
-				$subject = elgg_echo('hj:alive:reply:email:subject');
-				$body = elgg_view('framework/alive/notifications/reply', array(
-					'entity' => $annotation
-						));
-				if (elgg_get_plugin_user_setting('notify_comments', $commentee->guid, 'hypeAlive') !== false)
-					notify_user($commentee->guid, $commenter->guid, $subject, $body);
-			} else {
-				// Notify about a comment
-				$subject = elgg_echo('hj:alive:comment:email:subject', array($commenter->name));
-				$body = elgg_view('framework/alive/notifications/comment', array(
-					'entity' => $annotation
-						));
-				if (elgg_get_plugin_user_setting('notify_comments', $commentee->guid, 'hypeAlive') !== false)
-					notify_user($commentee->guid, $commenter->guid, $subject, $body);
-			}
+			// Notify about a reply
+			$subject = elgg_echo('hj:alive:discussion:email:subject', array($commenter->name));
+			$body = elgg_view('framework/alive/notifications/discussion', array(
+				'entity' => $annotation
+					));
+			notify_user($commentee->guid, $commenter->guid, $subject, $body);
 		}
 
 		// Notify the owner of the original content
@@ -100,9 +89,6 @@ if ($annotation->save()) {
 			}
 			if (check_entity_relationship($subscriber->guid, 'unsubscribed', $original_container->guid)) {
 				// user change notification settings for this thread
-				unset($subscribers[$key]);
-			}
-			if (elgg_get_plugin_user_setting('notify_comments', $subscriber->guid, 'hypeAlive') == false) {
 				unset($subscribers[$key]);
 			}
 		}

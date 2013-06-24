@@ -48,7 +48,7 @@ $body = elgg_view('framework/alive/notifications/settings_list');
 
 $form_body .= elgg_view_module('info', $title, $body);
 
-$form_body .= elgg_view('input/submit');
+$form_body .= elgg_view('input/submit', array('value' => elgg_echo('save')));
 
 echo elgg_view('input/form', array(
 	'action' => 'action/hypeAlive/usersettings/save',

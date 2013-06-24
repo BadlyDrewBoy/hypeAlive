@@ -153,7 +153,7 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 					} else if ($replies_count) {
 						$items['comment'] = array(
 							'text' => elgg_echo('hj:alive:replies'),
-							'href' => '#',
+							'href' => false,
 							'priority' => 200,
 							'data-streamid' => $entity->guid
 						);
@@ -212,7 +212,7 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 			/**
 			 * Subscriptions / Bookmarks
 			 */
-			if (HYPEALIVE_SUBSCRIPTIONS && $viewer->guid != $entity->owner_guid && elgg_is_logged_in()) {
+			if (HYPEALIVE_SUBSCRIPTIONS && $viewer->guid != $entity->owner_guid && elgg_is_logged_in() && isset($items['comment'])) {
 				$subscribed = check_entity_relationship($viewer->guid, 'subscribed', $entity->guid);
 				if ($subscribed) {
 					$items['subscription'] = array(

@@ -99,7 +99,6 @@ function hj_alive_comments_replacement($hook, $entity_type, $returnvalue, $param
 			return elgg_view('framework/alive/comments', $params);
 			break;
 	}
-	
 }
 
 function hj_alive_forum_comments_view($hook, $type, $returnvalue, $params) {
@@ -111,9 +110,10 @@ function hj_alive_can_comment($hook, $type, $return, $params) {
 	$entity = elgg_extract('entity', $params);
 
 	if (elgg_instanceof($entity, 'object', 'hjcomment')) {
+		if (elgg_instanceof($entity->getContainerEntity(), 'object', 'groupforumtopic')) {
+			return ($entity->getDepthToOriginalContainer() <= HYPEALIVE_MAX_FORUM_COMMENT_DEPTH);
+		}
 		return ($entity->getDepthToOriginalContainer() <= HYPEALIVE_MAX_COMMENT_DEPTH);
-	} else if (elgg_instanceof($entity, 'object', 'hjgrouptopicpost')) {
-		return ($entity->getDepthToOriginalContainer() <= HYPEALIVE_MAX_FORUM_COMMENT_DEPTH);
 	}
 
 	return $return;
@@ -121,8 +121,26 @@ function hj_alive_can_comment($hook, $type, $return, $params) {
 
 function hj_alive_can_write_to_container($hook, $type, $return, $params) {
 
-	if ($params['subtype'] === 'hjcomment') {
-		return true;
+	$subtype = elgg_extract('subtype', $params);
+	$user = elgg_extract('user', $params);
+	$container = elgg_extract('container', $params);
+
+	switch ($subtype) {
+
+		case 'hjcomment' :
+			return true;
+			break;
+
+		case 'hjgrouptopicpost' :
+			$container = $container->getContainerEntity();
+			if (elgg_instanceof($container)) {
+				return $container->canWriteToContainer($user->guid);
+			}
+			return $return;
+			break;
+
+		default :
+			return $return;
 	}
 
 	return $return;

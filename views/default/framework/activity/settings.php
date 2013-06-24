@@ -75,7 +75,7 @@ $form_body .= elgg_view('input/hidden', array(
 	'value' => $user->guid
 		));
 
-$form_body .= elgg_view('input/submit');
+$form_body .= elgg_view('input/submit', array('value' => elgg_echo('save')));
 
 echo elgg_view('input/form', array(
 	'action' => 'action/hypeAlive/usersettings/save',

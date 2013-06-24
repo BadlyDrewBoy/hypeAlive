@@ -398,6 +398,10 @@ $english = array(
 	'hj:alive:comment:email:head' => '%s commented on your item %s:',
 	'hj:alive:comment:email:footer' => 'You can view the original item and reply here: %s',
 
+	'hj:alive:discussion:email:subject' => 'New reply on your group topic',
+	'hj:alive:discussion:email:head' => '%s replied to your your topic %s:',
+	'hj:alive:discussion:email:footer' => 'You can view the original item and reply here: %s',
+
 	'hj:alive:reply:email:subject' => 'New response to your comment',
 	'hj:alive:reply:email:head' => '%s replied to your comment on %s\'s item %s:',
 	'hj:alive:reply:email:footer' => 'You can view the discussion thread and reply here: %s',

@@ -101,6 +101,10 @@ function hj_alive_page_handler($page) {
 			if (!$entity)
 				return false;
 
+			if (!elgg_instanceof($entity, 'object', 'hjstream')) {
+				forward($entity->getURL());
+			}
+			
 			$owner = $entity->getOwnerEntity();
 
 			elgg_push_breadcrumb(elgg_echo('activity'), 'activity');
