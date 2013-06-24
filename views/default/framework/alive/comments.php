@@ -8,12 +8,16 @@
 
 $entity = elgg_extract('entity', $vars, false);
 
+if (elgg_instanceof($entity, 'object', 'hjcomment')) {
+	echo elgg_view('framework/alive/replies', $vars);
+	return;
+} else if (elgg_instanceof($entity, 'object', 'groupforumtopic')) {
+	echo elgg_view('framework/alive/discussions', $vars);
+	return;
+}
 if (!$entity) {
 	return true;
 }
-
-elgg_load_css('alive.stream.css');
-elgg_load_js('alive.stream.js');
 
 $params = hj_alive_prepare_view_params($entity);
 $params = array_merge($vars, $params);

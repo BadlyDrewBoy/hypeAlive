@@ -82,7 +82,9 @@
 		padding-top:10px;
 		border-top:1px solid #e8e8e8;
 	}
-	.hj-comments-stream.hj-comments-river-stream {
+	.hj-comments-stream.hj-comments-river-stream,
+	.hj-comments-stream.hj-discussions-stream
+	{
 		margin-top:0;
 		padding-top:0;
 		border:0;
@@ -318,5 +320,11 @@
 	}
 	.elgg-table.notifications-options td.table-cell-icon {
 		width:25px;
+	}
+
+	.elgg-object-hjgrouptopicpost .hj-comments-stream {
+		border: none;
+		margin-top: 0;
+		padding-top: 0;
 	}
 	<?php if (FALSE) : ?></style><?php endif; ?>

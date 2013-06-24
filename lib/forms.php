@@ -8,31 +8,6 @@ function hj_alive_init_plugin_settings_form($hook, $type, $return, $params) {
 
 	$river_tabs = ($entity->river_tabs) ? unserialize($entity->river_tabs) : array();
 
-	// Types and subtypes to rate
-	$dbprefix = elgg_get_config('dbprefix');
-	$data = get_data("SELECT type AS type, subtype AS subtype
-								FROM {$dbprefix}entity_subtypes");
-
-	foreach ($data as $r) {
-		$type = $r->type;
-		$subtype = $r->subtype;
-
-		$types[$type][] = $subtype;
-
-		$str = elgg_echo("item:$type:$subtype");
-		$subtype_options[$str] = "$type:$subtype";
-	}
-
-	if (!array_key_exists('user', $types)) {
-		$str = elgg_echo("item:user");
-		$subtype_options[$str] = "user:default";
-	}
-
-	if (!array_key_exists('group', $types)) {
-		$str = elgg_echo("item:group");
-		$subtype_options[$str] = "group:default";
-	}
-
 	$config = array(
 		'fields' => array(
 			'params[river]' => array(
@@ -52,6 +27,15 @@ function hj_alive_init_plugin_settings_form($hook, $type, $return, $params) {
 				),
 				'value' => $entity->river_comments,
 				'hint' => elgg_echo('edit:plugin:hypealive:params[river_comments]:hint')
+			),
+			'params[river_grouping]' => array(
+				'input_type' => 'dropdown',
+				'options_values' => array(
+					'default' => elgg_echo('hj:alive:river:river_grouping:default'),
+					'grouped' => elgg_echo('hj:alive:river:river_grouping:grouped')
+				),
+				'value' => $entity->river_grouping,
+				'hint' => elgg_echo('edit:plugin:hypealive:params[river_grouping]:hint')
 			),
 			'params[river_order]' => array(
 				'input_type' => 'dropdown',

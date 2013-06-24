@@ -10,9 +10,10 @@ if (HYPEALIVE_RIVER) {
 }
 
 // Replace default comments
+// Register default comments bar
+elgg_register_plugin_hook_handler('comments', 'all', 'hj_alive_comments_replacement');
+
 if (HYPEALIVE_COMMENTS) {
-	// Register default comments bar
-	elgg_register_plugin_hook_handler('comments', 'all', 'hj_alive_comments_replacement');
 	// Remove default comments search
 	elgg_unregister_plugin_hook_handler('search', 'comments', 'search_comments_hook');
 	elgg_register_entity_type('object', 'hjcomment');
@@ -30,6 +31,7 @@ if (HYPEALIVE_LIKES) {
 if (HYPEALIVE_FORUM_COMMENTS) {
 	elgg_register_entity_type('object', 'hjgrouptopicpost');
 	elgg_register_plugin_hook_handler('view', 'discussion/replies', 'hj_alive_forum_comments_view');
+	elgg_register_plugin_hook_handler('view', 'river/object/groupforumtopic/create', 'hj_alive_forum_comments_river_view');
 }
 
 function hj_alive_activity_filter_clauses($hook, $type, $options, $params) {
@@ -80,13 +82,25 @@ function hj_alive_comments_replacement($hook, $entity_type, $returnvalue, $param
 	}
 
 	$entity = elgg_extract('entity', $params);
-	if ($entity instanceof hjComment) {
-		return elgg_view('framework/alive/replies', $params);
+
+	switch ($entity->getSubtype()) {
+
+		case 'hjcomment' :
+		case 'hjgrouptopicpost' :
+			return elgg_view('framework/alive/replies', $params);
+
+			break;
+
+		case 'groupforumtopic' :
+			return elgg_view('framework/alive/discussions', $params);
+			break;
+
+		default :
+			return elgg_view('framework/alive/comments', $params);
+			break;
 	}
-
-	return elgg_view('framework/alive/comments', $params);
+	
 }
-
 
 function hj_alive_forum_comments_view($hook, $type, $returnvalue, $params) {
 	return elgg_view('framework/alive/discussions', $params['vars']);
@@ -96,8 +110,10 @@ function hj_alive_can_comment($hook, $type, $return, $params) {
 
 	$entity = elgg_extract('entity', $params);
 
-	if ($entity instanceof hjComment) {
+	if (elgg_instanceof($entity, 'object', 'hjcomment')) {
 		return ($entity->getDepthToOriginalContainer() <= HYPEALIVE_MAX_COMMENT_DEPTH);
+	} else if (elgg_instanceof($entity, 'object', 'hjgrouptopicpost')) {
+		return ($entity->getDepthToOriginalContainer() <= HYPEALIVE_MAX_FORUM_COMMENT_DEPTH);
 	}
 
 	return $return;
@@ -118,4 +134,9 @@ function hj_alive_river_responses_view($hook, $type, $output, $params) {
 		return null;
 	}
 	return elgg_view('framework/river/elements/responses', $params['vars'], false, false, $params['viewtype']);
+}
+
+function hj_alive_forum_comments_river_view($hook, $type, $output, $params) {
+
+	return elgg_view('framework/river/object/groupforumtopic/create', $params['vars'], false, false, $params['viewtype']);
 }

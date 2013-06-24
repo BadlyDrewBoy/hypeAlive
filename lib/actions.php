@@ -46,3 +46,5 @@ if (HYPEALIVE_SEARCH) {
 
 elgg_register_action('alive/attachments/upload', $shortcuts['actions'] . 'alive/attachments/upload.php');
 elgg_register_action('alive/attachments/detach', $shortcuts['actions'] . 'alive/attachments/detach.php');
+
+elgg_register_action('alive/delete', $shortcuts['actions'] . 'alive/delete/object.php');

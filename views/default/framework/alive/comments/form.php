@@ -55,11 +55,6 @@ if (HYPEALIVE_COMMENT_FORM == 'advanced') {
 
 $params = elgg_clean_vars($vars);
 
-$comments_count = hj_alive_count_comments($container, $params);
-if ($comments_count <= 0 || elgg_instanceof($container, 'object', 'hjcomment') && !$comment) {
-	$class .= ' hidden';
-}
-
 if ($comment) {
 	$owner = get_entity($comment->owner_guid);
 } else {
@@ -74,7 +69,7 @@ $form = elgg_view('input/form', array(
 	'body' => $form_body,
 	'enctype' => 'application/json',
 	'action' => 'action/comment/save',
-	'class' => "hj-comments-form $class",
+	'class' => "hj-comments-form hidden $class",
 	'rel' => ($comment) ? 'edit' : 'new'
 		));
 

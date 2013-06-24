@@ -13,9 +13,13 @@ class hjComment extends hjObject {
 	}
 
 	public function getEditURL() {
-		return elgg_get_site_url() . "stream/edit/$this->guid";
+		return elgg_get_site_url() . "ajax/view/framework/alive/comments/form?comment_guid=$this->guid";
 	}
 
+	public function getDeleteURL() {
+		return elgg_add_action_tokens_to_url(elgg_normalize_url("action/alive/delete?guid=$this->guid"));
+	}
+	
 	public function getOriginalContainer() {
 		$check = true;
 		$container = $this;

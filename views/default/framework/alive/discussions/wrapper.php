@@ -4,7 +4,7 @@ $entity = elgg_extract('entity', $vars);
 
 $extend = elgg_view('framework/alive/discussions/extend', $vars);
 
-$class = 'hj-stream hj-comments-stream clearfix';
+$class = 'hj-stream hj-comments-stream hj-discussions-stream clearfix';
 if (isset($vars['class'])) {
 	$class = "{$class} {$vars['class']}";
 }

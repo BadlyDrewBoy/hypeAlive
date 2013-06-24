@@ -99,7 +99,7 @@ function hj_alive_get_stream_stats($entity) {
 
 	return array(
 		'counter' => array(
-			'comments' => hj_alive_count_comments($entity),
+			'comments' => (elgg_instanceof($entity, 'object', 'groupforumtopic')) ? hj_alive_count_discussion_replies($entity) : hj_alive_count_comments($entity),
 			'likes' => hj_alive_count_likes($entity),
 			'bookmarks' => hj_alive_count_bookmarks($entity),
 			'shares' => hj_alive_count_shares($entity),

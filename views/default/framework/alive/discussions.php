@@ -12,15 +12,12 @@ if (!$entity) {
 	return true;
 }
 
-elgg_load_css('alive.discussions.css');
-elgg_load_js('alive.discussions.js');
-
 $params = hj_alive_prepare_view_params($entity);
 $params = array_merge($vars, $params);
 
 $menu = elgg_view_menu('interactions', array(
 	'entity' => $params['entity'],
-	'class' => 'elgg-menu-hz elgg-menu-discussions',
+	'class' => 'elgg-menu-hz elgg-menu-comments elgg-menu-discussions',
 	'sort_by' => 'priority',
 	'params' => $params
 		));

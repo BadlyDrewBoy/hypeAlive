@@ -1,7 +1,5 @@
 <?php
 
-elgg_load_js('alive.stream.js');
-
 $entity = elgg_extract('entity', $vars);
 
 echo elgg_view('output/url', array(

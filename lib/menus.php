@@ -62,7 +62,8 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 			if (HYPEALIVE_COMMENTS) {
 				$replies_count = hj_alive_count_comments($entity);
 
-				if ($entity->getDepthToOriginalContainer() <= HYPEALIVE_MAX_COMMENT_DEPTH) {
+				if ((elgg_instanceof($entity, 'object', 'hjcomment') && $entity->getDepthToOriginalContainer() <= HYPEALIVE_MAX_COMMENT_DEPTH)
+						|| (elgg_instanceof($entity, 'object', 'hjgrouptopicpost') && $entity->getDepthToOriginalContainer() <= HYPEALIVE_MAX_FORUM_COMMENT_DEPTH)) {
 					if (elgg_is_logged_in() && $entity->canComment()) {
 						$items['reply'] = array(
 							'text' => elgg_echo('hj:alive:reply'),
@@ -116,7 +117,7 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 			if ($entity->canEdit()) {
 				$items['edit'] = array(
 					'text' => elgg_echo('edit'),
-					'href' => '#',
+					'href' => $entity->getEditURL(),
 					'data-uid' => $entity->guid,
 					'priority' => 990,
 					'data-streamid' => $entity->guid
@@ -125,7 +126,6 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 				$items['delete'] = array(
 					'text' => elgg_echo('delete'),
 					'href' => $entity->getDeleteURL(),
-					'class' => 'elgg-button-delete-entity',
 					'data-uid' => $entity->guid,
 					'priority' => 1000
 				);
@@ -165,8 +165,11 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 						'parent_name' => 'comment',
 						'data-streamid' => $entity->guid
 					);
-				} else {
-					if (HYPEALIVE_COMMENTS) {
+				}
+			} else {
+				if (HYPEALIVE_COMMENTS) {
+					$comments_count = hj_alive_count_comments($entity);
+					if ($entity->canComment() || $comments_count) {
 						$items['comment'] = array(
 							'text' => ($entity->canComment()) ? elgg_echo('comment') : elgg_echo('comments'),
 							'href' => (elgg_is_logged_in() && $entity->canComment()) ? '#' : false,
@@ -174,7 +177,7 @@ function hj_alive_comments_menu($hook, $type, $return, $params) {
 							'data-streamid' => $entity->guid
 						);
 						$items['comments-count'] = array(
-							'text' => hj_alive_count_comments($entity),
+							'text' => $comments_count,
 							'href' => '#',
 							'priority' => 200,
 							'parent_name' => 'comment',

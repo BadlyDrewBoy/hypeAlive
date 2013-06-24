@@ -7,4 +7,5 @@ if (HYPEALIVE_SEARCH) {
 }
 
 elgg_register_ajax_view('framework/alive/comments/form');
+elgg_register_ajax_view('framework/alive/discussions/form');
 elgg_register_ajax_view('framework/alive/attachments/form');

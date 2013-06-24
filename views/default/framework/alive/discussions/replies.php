@@ -6,7 +6,7 @@ $params = elgg_clean_vars($vars);
 $comments_list = hj_alive_view_discussion_replies_list($entity, $params);
 $comments_input = elgg_view('framework/alive/discussions/form', $params);
 
-if (HYPEALIVE_FORUM_FORM_POSITION == 'before') {
+if (HYPEALIVE_FORUM_COMMENT_FORM_POSITION == 'before') {
 	$comments = "$comments_input$comments_list";
 } else {
 	$comments = "$comments_list$comments_input";

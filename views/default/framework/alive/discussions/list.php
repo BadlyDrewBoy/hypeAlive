@@ -16,23 +16,23 @@ $options = array(
 );
 
 $list_options = array(
-	'list_type' => 'discussions',
+	'list_type' => 'stream',
 	'list_class' => 'hj-comments-list hj-discussion-replies-list',
 	'pagination' => true,
-	'pagination_type' => 'comments',
+	'pagination_type' => 'discussions',
 	'pagination_position' => 'after',
-	'base_url' => "discussions/discussions/content/$entity->guid",
+	'base_url' => "stream/discussions/content/$entity->guid",
 );
 
 $limit = (int) get_input("__lim_$list_id", false);
 
 if (!$limit) {
-	$limit = HYPEALIVE_COMMENTS_LIMIT;
+	$limit = HYPEALIVE_FORUM_COMMENTS_LIMIT;
 	set_input("__lim_$list_id", $limit);
 }
 
-if (HYPEALIVE_COMMENTS_ORDER == 'asc') {
-	if (HYPEALIVE_COMMENTS_LOAD_STYLE == 'load_older') {
+if (HYPEALIVE_FORUM_COMMENTS_ORDER == 'asc') {
+	if (HYPEALIVE_FORUM_COMMENTS_LOAD_STYLE == 'load_older') {
 		$options['order_by'] = 'e.time_created DESC';
 		$list_options['pagination_position'] = 'before';
 		$list_options['reverse_list'] = true;
@@ -40,7 +40,7 @@ if (HYPEALIVE_COMMENTS_ORDER == 'asc') {
 		$options['order_by'] = 'e.time_created ASC';
 	}
 } else {
-	if (HYPEALIVE_COMMENTS_LOAD_STYLE == 'load_newer') {
+	if (HYPEALIVE_FORUM_COMMENTS_LOAD_STYLE == 'load_newer') {
 		$options['order_by'] = 'e.time_created ASC';
 		$list_options['pagination_position'] = 'before';
 		$list_options['reverse_list'] = true;

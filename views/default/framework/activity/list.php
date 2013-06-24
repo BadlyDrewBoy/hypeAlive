@@ -11,22 +11,27 @@ if (!$user) {
 }
 $page_type = elgg_extract('page_type', $vars, HYPEALIVE_RIVER_DEFAULT);
 
+$dbprefix = elgg_get_config('dbprefix');
+
+$options['joins'][] = "JOIN {$dbprefix}entities object ON object.guid = rv.object_guid";
+$options['joins'][] = "JOIN {$dbprefix}entities subject ON subject.guid = rv.subject_guid";
+
+$grouped = elgg_get_plugin_user_setting('river_grouping', $user->guid, 'hypeAlive');
+if (!$grouped) {
+	$grouped = elgg_get_plugin_setting('river_grouping', 'hypeAlive');
+}
+if (!$grouped || $grouped == 'grouped') {
+	$options['group_by'] = "rv.object_guid";
+	$options['wheres'][] = 'rv.action_type NOT LIKE "stream:%"';
+}
+
+$options['wheres'][] = get_access_sql_suffix('object');
+if (elgg_is_admin_logged_in()) {
+	$options['wheres'][] = "object.enabled = 'yes' AND subject.enabled = 'yes'";
+}
+
 if (elgg_instanceof($user, 'user')) {
 
-	$dbprefix = elgg_get_config('dbprefix');
-
-	$options['joins'][] = "JOIN {$dbprefix}entities object ON object.guid = rv.object_guid";
-	$options['joins'][] = "JOIN {$dbprefix}entities subject ON subject.guid = rv.subject_guid";
-
-	if (elgg_get_plugin_user_setting('river_grouping', $user->guid, 'hypeAlive') == 'grouped') {
-		$options['group_by'] = "rv.object_guid";
-		$options['wheres'][] = 'rv.action_type NOT LIKE "stream:%"';
-	}
-
-	$options['wheres'][] = get_access_sql_suffix('object');
-	if (elgg_is_admin_logged_in()) {
-		$options['wheres'][] = "object.enabled = 'yes' AND subject.enabled = 'yes'";
-	}
 	$hidden_types_subtypes = elgg_get_plugin_user_setting('river_hidden_types_subtypes', $user->guid, 'hypeAlive');
 	if ($hidden_types_subtypes) {
 		$value = unserialize($hidden_types_subtypes);

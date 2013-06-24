@@ -28,9 +28,7 @@ $comment = elgg_echo('hj:alive:comments:commentcontent', array($author, $comment
 
 $extras = elgg_view('framework/alive/comments/attachments', $vars);
 
-if (HYPEALIVE_COMMENTS) {
-	$bar = elgg_view_comments($entity, true, $vars);
-}
+$bar = elgg_view_comments($entity, true, $vars);
 
 $content = <<<HTML
     <div class="clearfix">

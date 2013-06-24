@@ -3,15 +3,23 @@
 if (elgg_in_context('widgets')) {
 	return;
 }
+$user = elgg_get_page_owner_entity();
+if (!$user) {
+	$user = elgg_get_logged_in_user_entity();
+}
 
-if (elgg_in_context('activity') && elgg_get_plugin_user_setting('river_grouping', elgg_get_logged_in_user_guid(), 'hypeAlive') !== 'grouped') {
+$grouped = elgg_get_plugin_user_setting('river_grouping', $user->guid, 'hypeAlive');
+if (!$grouped) {
+	$grouped = elgg_get_plugin_setting('river_grouping', 'hypeAlive');
+}
+
+if (elgg_in_context('activity') && ($grouped && $grouped != 'grouped')) {
 	return;
 }
 
 $options = array();
 $entity = elgg_extract('entity', $vars);
 $item = elgg_extract('item', $vars, false);
-$user = elgg_get_logged_in_user_entity();
 
 $dbprefix = elgg_get_config('dbprefix');
 

@@ -5,12 +5,11 @@
 	elgg.provide('framework.alive.actions');
 
 	elgg.provide('framework.alive.comments.order');
-	elgg.provide('framework.alive.comments.load_style');
-
+	elgg.provide('framework.alive.discussions.order');
 	elgg.provide('framework.alive.river.order');
-	elgg.provide('framework.alive.river.load_style');
 
 	framework.alive.comments.order = '<?php echo HYPEALIVE_COMMENTS_ORDER ?>';
+	framework.alive.discussions.order = '<?php echo HYPEALIVE_FORUM_COMMENTS_ORDER ?>';
 	framework.alive.river.order = '<?php echo HYPEALIVE_RIVER_ORDER ?>';
 
 	framework.alive.stream.init = function() {
@@ -53,6 +52,9 @@
 
 		$('.elgg-menu-comments .elgg-menu-item-edit')
 		.live('click', framework.alive.stream.editComment);
+
+		$('.elgg-menu-comments .elgg-menu-item-delete')
+		.live('click', framework.alive.stream.deleteComment);
 
 		$('.hj-replies-placeholder')
 		.hide()
@@ -97,24 +99,61 @@
 		event.preventDefault();
 
 		$elem = $(this);
-		$comment = $(this).closest('.elgg-object-hjcomment');
+		$comment = $(this).closest('.elgg-object-hjcomment,.elgg-object-hjgrouptopicpost');
 
-		elgg.ajax('ajax/view/framework/alive/comments/form', {
+		elgg.ajax($elem.find('a:first').attr('href'), {
 			beforeSend : function() {
 				$elem.addClass('elgg-state-loading');
 			},
 			data : {
-				comment_guid : $comment.data('uid'),
+				//comment_guid : $comment.data('uid'),
 				list_id : $comment.closest('.elgg-list').attr('id')
 			},
 			success : function(data) {
 				$comment.html(data);
+				$comment.find('form').removeClass('hidden');
 			},
 			complete : function() {
 				$elem.removeClass('elgg-state-loading')
 			}
 		});
 		
+	}
+
+	framework.alive.stream.deleteComment = function(event) {
+
+		event.preventDefault();
+
+		$element = $(this);
+
+		var confirmText = elgg.echo('question:areyousure');
+		if (!confirm(confirmText)) {
+			return false;
+		}
+
+		elgg.action($element.find('a:first').attr('href'), {
+			dataType : 'json',
+			beforeSend : function() {
+				elgg.system_message(elgg.echo('hj:framework:ajax:deleting'));
+				$element.addClass('loading')
+			},
+			complete : function() {
+				$element.removeClass('loading')
+			},
+			success : function(response) {
+
+				if (response.status >= 0) {
+					var uid = response.output.guid;
+					$('[data-uid="' + uid + '"], [id="elgg-object-' + uid + '"]')
+					.remove()
+
+					elgg.trigger_hook('refresh:stats', 'framework:alive', { response : response });
+				}
+			}
+
+		})
+
+		return false;
 	}
 
 	framework.alive.stream.saveComment = function(event) {
@@ -148,14 +187,22 @@
 					
 					if ($form.attr('rel') == 'new') {
 						$('[id=' + list_id + ']').each(function() {
-							if (framework.alive.comments.order == 'asc') {
-								$(this).append($item.clone());
+							if ($(this).is('.hj-discussion-replies-list')) {
+								if (framework.alive.discussions.order == 'asc') {
+									$(this).append($item.clone());
+								} else {
+									$(this).prepend($item.clone());
+								}
 							} else {
-								$(this).prepend($item.clone());
+								if (framework.alive.comments.order == 'asc') {
+									$(this).append($item.clone());
+								} else {
+									$(this).prepend($item.clone());
+								}
 							}
 						});
 					} else {
-						$('.elgg-object-hjcomment[data-uid="' + response.output.guid + '"]').each(function() {
+						$('.elgg-object-hjcomment[data-uid="' + response.output.guid + '"], .elgg-object-hjgrouptopicpost[data-uid="' + response.output.guid + '"]').each(function() {
 							$(this).html($item.html());
 						})
 					}
@@ -251,8 +298,10 @@
 						$first = $last = $existing = $new;
 					}
 
-					if (updatedList.list_id == 'activity') {
+					if ($currentList.is('#activity')) {
 						var order = framework.alive.river.order;
+					} else if ($currentList.is('.hj-discussion-replies-list')) {
+						var order = framework.alive.discussions.order;
 					} else {
 						var order = framework.alive.comments.order;
 					}

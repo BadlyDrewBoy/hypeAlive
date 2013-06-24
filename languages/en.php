@@ -73,7 +73,32 @@ $english = array(
 	'edit:plugin:hypealive:params[river_tabs][bookmarks]' => 'Activity Dashboard Tabs: My Bookmarks',
 	'edit:plugin:hypealive:params[river_tabs]:hint' => 'Position of the tab (1,2,3..) Leave empty or set to 0 to disable this tab',
 
-	
+	'edit:plugin:hypealive:params[river_grouping]' => 'Group similar river items',
+	'edit:plugin:hypealive:params[river_grouping]:hint' => 'Should river items be grouped by default for logged out users and users with not set preference',
+
+	'edit:plugin:hypealive:params[max_forum_comment_depth]' => 'Depth of the discussions tree',
+	'edit:plugin:hypealive:params[max_forum_comment_depth]:hint' => 'Maximum number of branches in a discussions tree',
+	'edit:plugin:hypealive:params[forum_comment_form]' => 'Reply input style',
+	'edit:plugin:hypealive:params[forum_comment_form]:hint' => 'Type of the form to be used for reply inputs',
+	'hj:alive:forum_comment_form:simple' => 'Simple form (one-liner)',
+	'hj:alive:forum_comment_form:advanced' => 'Advanced form (multiple lines)',
+	'edit:plugin:hypealive:params[forum_comment_form_position]' => 'Position of the reply input',
+	'edit:plugin:hypealive:params[forum_comment_form_position]:hint' => 'Where in the discussion tree should the reply input form be displayed',
+	'hj:alive:forum_comment_form_position:after' => 'Below the replies',
+	'hj:alive:forum_comment_form_position:before' => 'Above the replies',
+	'edit:plugin:hypealive:params[forum_comments_order]' => 'Ordering of replies',
+	'edit:plugin:hypealive:params[forum_comments_order]:hint' => 'How should the replies be ordered when displayed',
+	'hj:alive:forum_comment_order:chronological' => 'Chronological (oldest to newest)',
+	'hj:alive:forum_comment_order:reverse_chronological' => 'Reverse (newest to oldest)',
+	'edit:plugin:hypealive:params[forum_comments_load_style]' => 'Viewing and loading of the replies',
+	'edit:plugin:hypealive:params[forum_comments_load_style]:hint' => 'In cases, where the number of replies exceeds the initial display limit, there will be an option to show older/earlier replies',
+	'hj:alive:forum_comments_load_style:older' => 'Show latest replies with a link to load earlier replies',
+	'hj:alive:forum_comments_load_style:newer' => 'Show older replies with a link to load newer replies',
+	'edit:plugin:hypealive:params[forum_comments_limit]' => 'Initial number of replies to show',
+	'edit:plugin:hypealive:params[forum_comments_limit]:hint' => 'A number of replies to show before adding an option to load older/newer replies',
+	'edit:plugin:hypealive:params[forum_comments_load_limit]' => 'Number of replies to load per iteration',
+	'edit:plugin:hypealive:params[forum_comments_load_limit]:hint' => 'A number of replies that can be loaded at a time using the "show older/newer" link',
+
 	'hj:alive:admin:upgrade' => 'Upgrade',
 	'hj:alive:admin:upgrade_start' => 'Start Upgrade',
 	'hj:alive:admin:upgrade_warning' => 'You are about to start a lengthy operation. Are you sure you want to continue?',
@@ -123,6 +148,14 @@ $english = array(
 	'hj:alive:comments:load:previous' => 'previous %s comments &#9651;',
 	'hj:alive:comments:load:previous:remaining' => 'previous %s comments &#9651;',
 	'hj:alive:comments:load:previous:all' => '%s comments &#8711;',
+
+	'hj:alive:discussions:load:next' => 'next %s replies &#9661;',
+	'hj:alive:discussions:load:next:remaining' => 'next %s replies &#9661;',
+	'hj:alive:discussions:load:next:all' => '%s replies &#9661;',
+
+	'hj:alive:discussions:load:previous' => 'previous %s replies &#9651;',
+	'hj:alive:discussions:load:previous:remaining' => 'previous %s replies &#9651;',
+	'hj:alive:discussions:load:previous:all' => '%s replies &#8711;',
 
 	'hj:alive:reply' => 'Reply',
 	'hj:alive:replies' => 'Replies',
@@ -224,8 +257,8 @@ $english = array(
 	'river:object::substream:desc' => 'this %s: <i>%s</i>',
 	'river:object::substream:comment' => '%s %s: <i>%s</i>',
 
-	 'river:object::item:group:default' => 'group',
-	 'river:object::item:user:default' => 'user',
+	'river:object::item:group:default' => 'group',
+	'river:object::item:user:default' => 'user',
 
 	'river:object::item:object:hjcomment' => 'comment',
 	'river:object::item:object:hjstream' => 'activity',
@@ -238,6 +271,7 @@ $english = array(
 	'river:object::item:object:page_top' => 'page',
 	'river:object::item:object:page' => 'subpage',
 	'river:object::item:object:file' => 'file',
+	'river:object::item:object:thewire' => 'wire post',
 	'river:object::item:object:groupforumtopic' => 'group topic',
 	'river:object::item:object:favorite_track' => 'favorite track',
 	'river:object::item:object:hjalbum' => 'album',
@@ -247,6 +281,7 @@ $english = array(
 	'river:object::item:object:hjplace' => 'place',
 	'river:object::item:object:hjexperience' => 'work experience',
 	'river:object::item:object:hjportfoliofile' => 'file',
+	'river:object::item:object:hjwall' => 'wall post',
 
 	'river:object::join::item:group:default' => 'the group %2$s',
 	'river:object::friend::item:user:default' => '%2$s',

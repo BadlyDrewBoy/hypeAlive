@@ -11,8 +11,6 @@ if (!$container) {
 	$container = get_entity($comment->container_guid);
 }
 
-var_dump($container);
-
 if (!elgg_is_logged_in() || !$container || !$container->canWriteToContainer(0, 'object', 'hjgrouptopicpost')) {
 	return true;
 }
