@@ -23,7 +23,7 @@ if (HYPEALIVE_RIVER) {
 	elgg_register_plugin_hook_handler('view', 'river/elements/responses', 'hj_alive_river_responses_view');
 }
 
-// Clean up likes menu in case the likes plugin is enabled
+// Clean up likes menu in case the likes plugin is enabledf
 if (HYPEALIVE_LIKES) {
 	elgg_unregister_plugin_hook_handler('register', 'menu:entity', 'likes_entity_menu_setup');
 }
@@ -40,36 +40,33 @@ function hj_alive_activity_filter_clauses($hook, $type, $options, $params) {
 		return $options;
 	}
 
-	$query = get_input("__tsp", false);
+	$tsps = get_input("__tsp", false);
+	$members = get_input("members", false);
 
-	if (!$query) {
-		return $options;
-	}
-
-	if (!is_array($query)) {
-		$query = array($query);
-	}
-
-	foreach ($query as $tsp) {
-		list($entity_type, $entity_subtype) = explode(':', $tsp);
-		if (!is_array($options['types'])) {
-			$options['types'] = array($entity_type);
-		} else {
-			$options['types'][] = $entity_type;
+	if ($tsps) {
+		if (!is_array($tsps)) {
+			$tsps = array($tsps);
 		}
-		if ($entity_subtype && !empty($entity_subtype)) {
-			if (!is_array($options['subtypes'])) {
-				$options['subtypes'] = array($entity_subtype);
+
+		foreach ($tsps as $tsp) {
+			list($entity_type, $entity_subtype) = explode(':', $tsp);
+			if (!is_array($options['types'])) {
+				$options['types'] = array($entity_type);
 			} else {
-				$options['subtypes'][] = $entity_subtype;
+				$options['types'][] = $entity_type;
+			}
+			if ($entity_subtype && !empty($entity_subtype)) {
+				if (!is_array($options['subtypes'])) {
+					$options['subtypes'] = array($entity_subtype);
+				} else {
+					$options['subtypes'][] = $entity_subtype;
+				}
 			}
 		}
 	}
 
-	$query = get_input("members", false);
-
-	if ($query && is_array($query) && !empty($query)) {
-		$options['subject_guids'] = $query;
+	if ($members && is_array($members)) {
+		$options['subject_guids'] = $members;
 	}
 
 	return $options;

@@ -6,9 +6,8 @@ $list_type = get_input("__list_type_$list_id", 'table');
 
 $getter_options = array(
 	'types' => 'object',
-	//'subtypes' => array_diff(get_registered_entity_types('object'), array('hjcomment')),
-	'subtypes' => array('file', 'hjfile'),
-	'owner_guids' => elgg_get_logged_in_user_guid()
+	'owner_guids' => elgg_get_logged_in_user_guid(),
+	'metadata_names' => 'simpletype'
 );
 
 $list_options = array(
@@ -69,6 +68,6 @@ if (!get_input("__ord_$list_id", false)) {
 	set_input("__dir_$list_id", 'DESC');
 }
 
-$content = hj_framework_view_list($list_id, $getter_options, $list_options, $viewer_options, 'elgg_get_entities');
+$content = hj_framework_view_list($list_id, $getter_options, $list_options, $viewer_options, 'elgg_get_entities_from_metadata');
 
 echo $content;

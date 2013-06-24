@@ -169,11 +169,8 @@
 
 	.hj-replies-placeholder {
 		display: none;
-		padding: 5px 15px;
-		margin:20px 10px 0;
-		background: #fafafa;
-		text-shadow: 1px 1px  #fff;
-		vertical-align: middle;
+		line-height:35px;
+		margin:0 10px;
 	}
 	.hj-replies-list {
 		border: none;
@@ -326,5 +323,18 @@
 		border: none;
 		margin-top: 0;
 		padding-top: 0;
+	}
+
+	.hj-comments-attachments-gallery li {
+		display:inline-block;
+		vertical-align:middle;
+		margin:5px;
+		padding:3px;
+		border:1px solid #e8e8e8;
+	}
+
+	.hj-framework-list-wrapper .elgg-river-attachments {
+		border:0;
+		font-size:100%;
 	}
 	<?php if (FALSE) : ?></style><?php endif; ?>

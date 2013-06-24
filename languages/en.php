@@ -406,8 +406,8 @@ $english = array(
 	'hj:alive:reply:email:head' => '%s replied to your comment on %s\'s item %s:',
 	'hj:alive:reply:email:footer' => 'You can view the discussion thread and reply here: %s',
 
-	'hj:alive:thread:email:subject' => 'New comment in a followed discussion thread',
-	'hj:alive:thread:email:subject:owner' => 'New comment in a discussion about your content',
+	'hj:alive:thread:email:subject' => 'New post in a followed discussion thread',
+	'hj:alive:thread:email:subject:owner' => 'New post in a discussion about your content',
 	'hj:alive:thread:email:head' => '%s posted to the discussion thread on %s\'s item %s:',
 	'hj:alive:thread:email:footer' => 'You can view the original item and reply here: %s',
 

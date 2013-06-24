@@ -292,7 +292,10 @@ function hj_alive_get_river_object_string($subject = null, $action = null, $obje
 	}
 
 	if (elgg_instanceof($object, 'object')) {
-		if ($object->title != '') {
+		if (elgg_instanceof($object, 'object', 'hjstream')) {
+			$items = elgg_get_river(array('ids' => $object->river_id));
+			$title = '"' . hj_alive_get_river_summary($items[0]) . '"';
+		} else if ($object->title != '') {
 			$title = elgg_view('output/url', array(
 				'text' => $object->title,
 				'href' => $object->getURL(),
@@ -381,15 +384,18 @@ function hj_alive_get_river_attachments($item) {
 	$view_action = str_replace(':', '_', "river/attachment/$action_type/$type/$subtype");
 	$view_object = "river/attachment/$type/$subtype";
 
+	$view = false;
+	elgg_push_context('activity');
 	if (elgg_view_exists($view_action)) {
-		return elgg_view($view_action, array('entity' => $object));
+		$view = elgg_view($view_action, array('entity' => $object));
 	} else if (elgg_view_exists($view_object)) {
-		return elgg_view($view_object, array('entity' => $object));
+		$view = elgg_view($view_object, array('entity' => $object));
 	} else {
-		return elgg_view_entity($object, array('full_view' => false, 'list_type' => 'gallery'));
+		$view = elgg_view_entity($object, array('full_view' => false, 'list_type' => 'gallery'));
 	}
+	elgg_pop_context();
 
-	return false;
+	return $view;
 }
 
 function hj_alive_get_river_responses($item) {
@@ -403,10 +409,8 @@ function hj_alive_get_river_responses($item) {
 	switch ($object->getSubtype()) {
 
 		case 'hjstream' :
-			return false;
-			break;
-
 		case 'hjcomment' :
+		case 'hjgrouptopicpost' :
 			return false;
 			break;
 
