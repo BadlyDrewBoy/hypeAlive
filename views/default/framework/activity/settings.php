@@ -16,7 +16,10 @@ if (!empty($registered_entities)) {
 		} else {
 			foreach ($subtypes as $subtype) {
 				$label = elgg_echo("item:$type:$subtype");
-				$options[$label] = get_subtype_id($type, $subtype);
+				$id = get_subtype_id($type, $subtype);
+				if ($id) {
+					$options[$label] = $id;
+				}
 			}
 		}
 	}

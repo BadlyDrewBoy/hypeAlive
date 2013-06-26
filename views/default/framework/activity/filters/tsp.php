@@ -26,7 +26,8 @@ if (!empty($registered_entities)) {
 			$default[] = $type;
 		} else {
 			foreach ($subtypes as $subtype) {
-				if (in_array(get_subtype_id($type, $subtype), $hidden_types_subtypes)) {
+				$id = get_subtype_id($type, $subtype);
+				if (!$id || in_array($id, $hidden_types_subtypes)) {
 					continue;
 				}
 				$label = elgg_echo("item:$type:$subtype");
