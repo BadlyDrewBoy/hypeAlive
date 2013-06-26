@@ -1,21 +1,19 @@
 <?php
 
-if (!elgg_get_plugin_setting('upgrade_1-9', 'hypeAlive')) {
-	$old_annotations_count = elgg_get_entities_from_metadata(array(
-		'types' => 'object',
-		'subtypes' => array('hjannotation'),
-		'metadata_names' => array('annotation_name'),
-		'metadata_values' => array('generic_comment', 'group_topic_post', 'likes'),
-		'count' => true
-			));
-
-	if ($old_annotations_count) {
-		echo elgg_view('framework/alive/admin/upgrade', array(
-			'count' => $old_annotations_count
+$old_annotations_count = elgg_get_entities_from_metadata(array(
+	'types' => 'object',
+	'subtypes' => array('hjannotation'),
+	'metadata_names' => array('annotation_name'),
+	'metadata_values' => array('generic_comment', 'group_topic_post', 'likes'),
+	'count' => true
 		));
-	} else {
-		elgg_set_plugin_setting('upgrade_1-9', 'hypeAlive');
-	}
+
+if ($old_annotations_count) {
+	echo elgg_view('framework/alive/admin/upgrade', array(
+		'count' => $old_annotations_count
+	));
+} else {
+	elgg_set_plugin_setting('upgrade_1-9', 'hypeAlive');
 }
 
 if (elgg_get_plugin_setting('upgrade_1-9', 'hypeAlive')) {
