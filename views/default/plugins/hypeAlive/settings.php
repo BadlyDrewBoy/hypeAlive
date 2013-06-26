@@ -13,7 +13,7 @@ if ($old_annotations_count) {
 		'count' => $old_annotations_count
 	));
 } else {
-	elgg_set_plugin_setting('upgrade_1-9', 'hypeAlive');
+	elgg_set_plugin_setting('upgrade_1-9', true, 'hypeAlive');
 }
 
 if (elgg_get_plugin_setting('upgrade_1-9', 'hypeAlive')) {
